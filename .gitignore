@@ -11,7 +11,7 @@
 *.userprefs
 ConnectionStrings.config
 [Pp]roject[Tt]racking/[Cc]onnection[Ss]trings.config
-ProjectTracking/ConnectionStrings.config
+VehicleControl/ConnectionStrings.config
 [Pp]roperties/
 
 # Build results
