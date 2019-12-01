@@ -1,0 +1,21 @@
+{
+  "compileOnSave": true,
+
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es6",
+    "lib": ["es6", "dom"],
+    "esModuleInterop": true,
+    "jsx": "react",    
+    "module": "commonjs",
+    "moduleResolution": "node"
+
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ]
+}

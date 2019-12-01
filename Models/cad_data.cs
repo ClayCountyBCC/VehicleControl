@@ -8,4 +8,5 @@ namespace VehicleControl.Models
   public class cad_data
   {
   }
+
 }
