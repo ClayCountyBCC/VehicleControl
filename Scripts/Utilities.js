@@ -1,4 +1,3 @@
-/// <reference path="MenuItem.ts" />
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var Utilities;
 (function (Utilities) {
+    const app_path = "/vehiclecontrol";
     function Hide(e) {
         if (typeof e == "string") {
             e = document.getElementById(e);
@@ -219,6 +219,18 @@ var Utilities;
     //      return response.json();
     //    });
     //}
+    function Get_Path(app_name = "") {
+        if (app_name.length === 0)
+            app_name = app_path;
+        console.log('using app path ' + app_path);
+        let path = "/";
+        let i = window.location.pathname.toLowerCase().indexOf(app_name);
+        if (i == 0) {
+            path = app_name + "/";
+        }
+        return path;
+    }
+    Utilities.Get_Path = Get_Path;
     function Get_Empty(url) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield fetch(url, {
@@ -238,7 +250,7 @@ var Utilities;
     Utilities.Get_Empty = Get_Empty;
     function Get(url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(url, {
+            const response = yield fetch(Get_Path() + url, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json" //,"Upgrade-Insecure-Requests": "1"
@@ -254,15 +266,16 @@ var Utilities;
     }
     Utilities.Get = Get;
     function Post(url, data) {
-        return fetch(url, {
-            method: "POST",
-            body: JSON.stringify(data),
-            cache: "no-cache",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        }).then(response => {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(Get_Path() + url, {
+                method: "POST",
+                body: JSON.stringify(data),
+                cache: "no-cache",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            });
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
@@ -271,22 +284,17 @@ var Utilities;
     }
     Utilities.Post = Post;
     function Post_Empty(url, data) {
-        return fetch(url, {
-            method: "POST",
-            body: data !== null ? JSON.stringify(data) : "",
-            cache: "no-cache",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        }).then(response => {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(url, {
+                method: "POST",
+                body: data !== null ? JSON.stringify(data) : "",
+                cache: "no-cache",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            });
             return response;
-            //console.log('Post Response', response);
-            //if (!response.ok)
-            //{
-            //  throw new Error(response.statusText)
-            //}
-            //return response;
         });
     }
     Utilities.Post_Empty = Post_Empty;
@@ -336,128 +344,137 @@ var Utilities;
         b.classList.toggle("is-loading", disabled);
     }
     Utilities.Toggle_Loading_Button = Toggle_Loading_Button;
-    function Create_Menu_Element(menuItem) {
-        let li = document.createElement("li");
-        if (menuItem.selected)
-            li.classList.add("is-active");
-        let a = document.createElement("a");
-        a.id = menuItem.id;
-        a.onclick = function () {
-            Update_Menu(menuItem);
-        };
-        if (menuItem.icon.length > 0) {
-            let span = document.createElement("span");
-            span.classList.add("icon");
-            //span.classList.add(Transaction.app_input_size);
-            let i = document.createElement("i");
-            let icons = menuItem.icon.split(" ");
-            for (let icon of icons) {
-                i.classList.add(icon);
-            }
-            span.appendChild(i);
-            a.appendChild(span);
-        }
-        a.appendChild(document.createTextNode(menuItem.label));
-        li.appendChild(a);
-        return li;
-    }
-    Utilities.Create_Menu_Element = Create_Menu_Element;
-    function Update_Menu(menuItem) {
-        Set_Text("menuTitle", menuItem.title);
-        Set_Text("menuSubTitle", menuItem.subTitle);
-        Show_Menu(menuItem.id);
-        document.getElementById(menuItem.autofocusId).focus();
-    }
-    Utilities.Update_Menu = Update_Menu;
-    function Build_Menu_Elements(target, Menus) {
-        let menu = document.getElementById(target);
-        for (let menuItem of Menus) {
-            menu.appendChild(Utilities.Create_Menu_Element(menuItem));
-        }
-    }
-    Utilities.Build_Menu_Elements = Build_Menu_Elements;
-    function CheckBrowser() {
-        let browser = "";
-        if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1) {
-            browser = 'Opera';
-        }
-        else if (navigator.userAgent.indexOf("Chrome") != -1) {
-            browser = 'Chrome';
-        }
-        else if (navigator.userAgent.indexOf("Safari") != -1) {
-            browser = 'Safari';
-        }
-        else if (navigator.userAgent.indexOf("Firefox") != -1) {
-            browser = 'Firefox';
-        }
-        else if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.DOCUMENT_NODE == true)) //IF IE > 10
-         {
-            browser = 'IE';
-        }
-        else {
-            browser = 'unknown';
-        }
-        return browser;
-    }
-    Utilities.CheckBrowser = CheckBrowser;
-    function Get_Path(appName) {
-        let path = "/";
-        let i = window.location.pathname.toLowerCase().indexOf(appName);
-        if (i == 0) {
-            path = appName + "/";
-        }
-        return path;
-    }
-    Utilities.Get_Path = Get_Path;
-    function Create_Centered_Level(level_items, left = [], right = []) {
-        let level = document.createElement("div");
-        level.classList.add("level");
-        for (let li of level_items) {
-            level.appendChild(Create_Level_Item(li));
-        }
-        if (left.length > 0) {
-            let leftcontainer = document.createElement("div");
-            leftcontainer.classList.add("level-left");
-            level.appendChild(leftcontainer);
-            for (let li of left) {
-                leftcontainer.appendChild(Create_Level_Item(li));
-            }
-        }
-        if (right.length > 0) {
-            let rightcontainer = document.createElement("div");
-            rightcontainer.classList.add("level-right");
-            level.appendChild(rightcontainer);
-            for (let li of right) {
-                rightcontainer.appendChild(Create_Level_Item(li));
-            }
-        }
-        return level;
-    }
-    Utilities.Create_Centered_Level = Create_Centered_Level;
-    function Create_Level_Item(level_item) {
-        let levelitem = document.createElement("div");
-        levelitem.classList.add("level-item", ...level_item.classes);
-        let container = document.createElement("div");
-        levelitem.appendChild(container);
-        if (level_item.heading.length > 0) {
-            let heading = document.createElement("p");
-            heading.classList.add("heading");
-            heading.appendChild(document.createTextNode(level_item.heading));
-            container.appendChild(heading);
-        }
-        if (level_item.title_text.length > 0) {
-            let title = document.createElement("p");
-            title.classList.add("title");
-            title.appendChild(document.createTextNode(level_item.title_text));
-            container.appendChild(title);
-        }
-        else {
-            if (level_item.title !== null) {
-                container.appendChild(level_item.title);
-            }
-        }
-        return levelitem;
-    }
+    //export function Create_Menu_Element(menuItem: MenuItem): HTMLLIElement
+    //{
+    //  let li = document.createElement("li");
+    //  if (menuItem.selected) li.classList.add("is-active");
+    //  let a = document.createElement("a");
+    //  a.id = menuItem.id;
+    //  a.onclick = function ()
+    //  {
+    //    Update_Menu(menuItem);
+    //  }
+    //  if (menuItem.icon.length > 0)
+    //  {
+    //    let span = document.createElement("span");
+    //    span.classList.add("icon");
+    //    span.classList.add(Transaction.app_input_size);
+    //    let i = document.createElement("i");
+    //    let icons = menuItem.icon.split(" ");
+    //    for (let icon of icons)
+    //    {
+    //      i.classList.add(icon);
+    //    }
+    //    span.appendChild(i);
+    //    a.appendChild(span);
+    //  }
+    //  a.appendChild(document.createTextNode(menuItem.label))
+    //  li.appendChild(a);
+    //  return li;
+    //}
+    //export function Update_Menu(menuItem: MenuItem): void
+    //{
+    //  Set_Text("menuTitle", menuItem.title);
+    //  Set_Text("menuSubTitle", menuItem.subTitle);
+    //  Show_Menu(menuItem.id);
+    //  document.getElementById(menuItem.autofocusId).focus();
+    //}
+    //export function Build_Menu_Elements(target: string, Menus: Array<MenuItem>): void
+    //{
+    //  let menu = document.getElementById(target);
+    //  for (let menuItem of Menus)
+    //  {
+    //    menu.appendChild(Utilities.Create_Menu_Element(menuItem));
+    //  }
+    //}
+    //export function CheckBrowser()
+    //{
+    //  let browser: string = "";
+    //  if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1) 
+    //  {
+    //    browser = 'Opera';
+    //  }
+    //  else if (navigator.userAgent.indexOf("Chrome") != -1)
+    //  {
+    //    browser = 'Chrome';
+    //  }
+    //  else if (navigator.userAgent.indexOf("Safari") != -1)
+    //  {
+    //    browser = 'Safari';
+    //  }
+    //  else if (navigator.userAgent.indexOf("Firefox") != -1) 
+    //  {
+    //    browser = 'Firefox';
+    //  }
+    //  else if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.DOCUMENT_NODE == true)) //IF IE > 10
+    //  {
+    //    browser = 'IE';
+    //  }
+    //  else 
+    //  {
+    //    browser = 'unknown';
+    //  }
+    //  return browser;
+    //}
+    //export function Create_Centered_Level(level_items: Array<LevelItem>, left: Array<LevelItem> = [], right: Array<LevelItem> = []): HTMLElement
+    //{
+    //  let level = document.createElement("div");
+    //  level.classList.add("level");
+    //  for (let li of level_items)
+    //  {
+    //    level.appendChild(Create_Level_Item(li));
+    //  }
+    //  if (left.length > 0)
+    //  {
+    //    let leftcontainer = document.createElement("div");
+    //    leftcontainer.classList.add("level-left");
+    //    level.appendChild(leftcontainer);
+    //    for (let li of left)
+    //    {
+    //      leftcontainer.appendChild(Create_Level_Item(li));
+    //    }
+    //  }
+    //  if (right.length > 0)
+    //  {
+    //    let rightcontainer = document.createElement("div");
+    //    rightcontainer.classList.add("level-right");
+    //    level.appendChild(rightcontainer);
+    //    for (let li of right)
+    //    {
+    //      rightcontainer.appendChild(Create_Level_Item(li));
+    //    }
+    //  }
+    //  return level;
+    //}
+    //function Create_Level_Item(level_item: LevelItem): HTMLElement
+    //{
+    //  let levelitem = document.createElement("div");
+    //  levelitem.classList.add("level-item", ...level_item.classes);
+    //  let container = document.createElement("div");
+    //  levelitem.appendChild(container);
+    //  if (level_item.heading.length > 0)
+    //  {
+    //    let heading = document.createElement("p");
+    //    heading.classList.add("heading");
+    //    heading.appendChild(document.createTextNode(level_item.heading));
+    //    container.appendChild(heading);
+    //  }
+    //  if (level_item.title_text.length > 0)
+    //  {
+    //    let title = document.createElement("p");
+    //    title.classList.add("title");
+    //    title.appendChild(document.createTextNode(level_item.title_text));
+    //    container.appendChild(title);
+    //  }
+    //  else
+    //  {
+    //    if (level_item.title !== null)
+    //    {
+    //      container.appendChild(level_item.title);
+    //    }
+    //  }
+    //  return levelitem;
+    //}
     function CreateTableCell(celltype, value, class_to_add, width = "", col_span = -1) {
         if (celltype !== "td" && celltype !== "th")
             celltype = "td";
@@ -474,4 +491,5 @@ var Utilities;
     }
     Utilities.CreateTableCell = CreateTableCell;
 })(Utilities || (Utilities = {}));
+export default Utilities;
 //# sourceMappingURL=Utilities.js.map

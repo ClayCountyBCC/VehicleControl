@@ -2,7 +2,8 @@
 
 var path = require("path");
 var WebpackNotifierPlugin = require("webpack-notifier");
-var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
+var polyfill = require("@babel/polyfill");
+//var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 
 module.exports = {
   entry: "./Scripts/app.js",
@@ -22,6 +23,6 @@ module.exports = {
     ]
   },
   devtool: "inline-source-map",
-  plugins: [new WebpackNotifierPlugin(), new BrowserSyncPlugin()]
+  plugins: [new WebpackNotifierPlugin()]
 
 };

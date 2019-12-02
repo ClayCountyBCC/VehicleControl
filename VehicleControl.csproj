@@ -18,8 +18,8 @@
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44370</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressAnonymousAuthentication>disabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
@@ -107,6 +107,10 @@
     <Content Include="Content\bundle.min.js">
       <DependentUpon>bundle.js</DependentUpon>
     </Content>
+    <Content Include="Content\react-bundle.js" />
+    <Content Include="Content\react-bundle.min.js">
+      <DependentUpon>react-bundle.js</DependentUpon>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="Web.config" />
@@ -114,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AVLController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -149,10 +154,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Scripts\Test.tsx" />
+    <TypeScriptCompile Include="Scripts\AppReducer.ts" />
+    <TypeScriptCompile Include="Scripts\AVLData.ts" />
+    <TypeScriptCompile Include="Scripts\AppContext.ts" />
     <TypeScriptCompile Include="Scripts\App.tsx" />
     <TypeScriptCompile Include="Scripts\LevelItem.ts" />
     <TypeScriptCompile Include="Scripts\MenuItem.ts" />

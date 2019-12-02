@@ -1,0 +1,1 @@
+{"version":3,"file":"AppReducer.js","sourceRoot":"","sources":["AppReducer.ts"],"names":[],"mappings":"AAeA,MAAM,CAAC,OAAO,UAAU,OAAO,CAAC,KAAa,EAAE,MAAe;IAE5D,QAAQ,MAAM,CAAC,IAAI,EACnB;QACE,KAAK,SAAS;YACZ,uCAAY,KAAK,KAAE,QAAQ,EAAE,MAAM,CAAC,OAAO,IAAE;QAE/C;YACE,OAAO,KAAK,CAAC;KAChB;AACH,CAAC"}

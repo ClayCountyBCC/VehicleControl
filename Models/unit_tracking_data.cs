@@ -25,7 +25,7 @@ namespace VehicleControl.Models
 
     public static List<unit_tracking_data> Get()
     {
-
+      return new List<unit_tracking_data>();
     }
 
 

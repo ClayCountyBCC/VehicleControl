@@ -1,3 +1,19 @@
 [
-
+  {
+    "outputFileName": "Content/bundle.js",
+    "inputFiles": [
+      "Scripts/Utilities.js",
+      "Scripts/avl_data.js",
+      "Scripts/AppContext.js",
+      "Scripts/AppReducer.js",
+      "Scripts/App.js"
+    ]
+  },
+  {
+    "outputFileName": "Content/react-bundle.js",
+    "inputFiles": [
+      "node_modules/react/umd/react.development.js",
+      "node_modules/react-dom/umd/react-dom.development.js"
+    ]
+  }
 ]

@@ -83,7 +83,7 @@ namespace VehicleControl.Models
       return data;
     }
 
-    public static int Delete(string device_id)
+    public static int Delete(string device_id, string username)
     {
       var param = new DynamicParameters();
       param.Add("@device_id", device_id);
@@ -92,6 +92,160 @@ namespace VehicleControl.Models
         FROM avl_data
         WHERE device_id = @device_id;";
 
+      return Constants.Exec_Query(query, param);
+    }
+
+    public static int Update(string device_id, string device_type, string unitcode, string username)
+    {
+      try
+      {
+        if (device_type == "Phone Number")
+        {
+          long phone_number = long.Parse(device_id);
+          return UpdatePhoneNumber(phone_number, unitcode, username);
+        }
+        else
+        {
+          long imei = long.Parse(device_id);
+          return UpdateIMEI(imei, unitcode, username);
+        }
+      }
+      catch(Exception ex)
+      {
+        new ErrorLog(ex);
+        return -1;
+      }
+
+    }
+
+    private static int UpdateIMEI(long imei, string unitcode, string username)
+    {
+      var param = new DynamicParameters();
+
+      param.Add("@imei", imei);
+      param.Add("@phone_number", 0);
+      param.Add("@username", username);
+      param.Add("@unitcode", unitcode);
+
+      string query = @"
+        SET ISOLATION LEVEL SERIALIZABLE;
+
+        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'imei' field
+          ,CAST(imei AS VARCHAR(50))
+          ,'0'
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          unitcode != @unitcode
+          AND imei != @imei;
+
+        UPDATE unit_tracking_data
+        SET 
+          imei = 0  
+        WHERE  
+          unitcode != @unitcode
+          AND imei = @imei;
+
+        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'imei' field
+          ,CAST(imei AS VARCHAR(50))
+          ,@imei
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          unitcode = @unitcode
+          AND imei != @imei;
+
+        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'phone_number' field
+          ,CAST(phone_number AS VARCHAR(50))
+          ,@phone_number
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          unitcode = @unitcode
+          AND phone_number != @phone_number;
+
+        UPDATE unit_tracking_data
+        SET 
+          imei = @imei
+          ,phone_number = @phone_number
+        WHERE
+          unitcode = @unitcode
+          AND imei != @imei;";
+      return Constants.Exec_Query(query, param);
+    }
+
+    private static int UpdatePhoneNumber(long phone_number, string unitcode, string username)
+    {
+      var param = new DynamicParameters();
+
+      param.Add("@imei", 0);
+      param.Add("@phone_number", phone_number);
+      param.Add("@username", username);
+      param.Add("@unitcode", unitcode);
+
+      string query = @"
+        SET ISOLATION LEVEL SERIALIZABLE;
+
+        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'phone_number' field
+          ,CAST(phone_number AS VARCHAR(50))
+          ,'0'
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          unitcode != @unitcode
+          AND phone_number != @phone_number;
+
+        UPDATE unit_tracking_data
+        SET 
+          phone_number = 0  
+        WHERE  
+          unitcode != @unitcode
+          AND imei = @imei;
+
+        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'phone_number' field
+          ,CAST(phone_number AS VARCHAR(50))
+          ,@phone_number
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          unitcode = @unitcode
+          AND phone_number != @phone_number;
+
+        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'imei' field
+          ,CAST(imei AS VARCHAR(50))
+          ,@phone_number
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          unitcode = @unitcode
+          AND imei != @imei;
+
+        UPDATE unit_tracking_data
+        SET 
+          imei = @imei
+          ,phone_number = @phone_number
+        WHERE
+          unitcode = @unitcode
+          AND phone_number != @phone_number;
+";
       return Constants.Exec_Query(query, param);
     }
 

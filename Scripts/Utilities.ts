@@ -1,7 +1,7 @@
-﻿/// <reference path="MenuItem.ts" />
-
-namespace Utilities
+﻿module Utilities
 {
+  const app_path = "/vehiclecontrol";
+
   export function Hide(e: string)
   export function Hide(e: HTMLElement)
   export function Hide(e: Element)
@@ -285,6 +285,19 @@ namespace Utilities
   //    });
   //}
 
+  export function Get_Path(app_name: string = ""): string
+  {
+    if (app_name.length === 0) app_name = app_path;
+    console.log('using app path ' + app_path);
+    let path = "/";
+    let i = window.location.pathname.toLowerCase().indexOf(app_name);
+    if (i == 0)
+    {
+      path = app_name + "/";
+    }
+    return path;
+  }
+
   export async function Get_Empty(url: string): Promise<string>
   {
     const response = await fetch(url,
@@ -306,7 +319,7 @@ namespace Utilities
 
   export async function Get<T>(url: string): Promise<T>
   {
-    const response = await fetch(url,
+    const response = await fetch(Get_Path() + url,
       {
         method: "GET",
         headers: {
@@ -320,12 +333,12 @@ namespace Utilities
     {
       throw new Error(response.statusText);
     }
-    return await response.json();    
+    return await response.json();
   }
 
-  export function Post<T>(url: string, data: object): Promise<T>
+  export async function Post<T>(url: string, data: object): Promise<T>
   {
-    return fetch(url,
+    const response = await fetch(Get_Path() + url,
       {
         method: "POST",
         body: JSON.stringify(data),
@@ -334,19 +347,19 @@ namespace Utilities
           "Content-Type": "application/json"
         },
         credentials: "include"
-      }).then(response =>
-      {
-        if (!response.ok)
-        {
-          throw new Error(response.statusText)
-        }
-        return response.json();
-      })
+      });
+
+    if (!response.ok)
+    {
+      throw new Error(response.statusText)
+    }
+    return response.json();
+
   }
 
-  export function Post_Empty(url: string, data: object): Promise<Response>
+  export async function Post_Empty(url: string, data: object): Promise<Response>
   {
-    return fetch(url,
+    const response = await fetch(url,
       {
         method: "POST",
         body: data !== null ? JSON.stringify(data) : "",
@@ -355,16 +368,9 @@ namespace Utilities
           "Content-Type": "application/json"
         },
         credentials: "include"
-      }).then(response =>
-      {
-        return response;
-        //console.log('Post Response', response);
-        //if (!response.ok)
-        //{
-        //  throw new Error(response.statusText)
-        //}
-        //return response;
       });
+
+    return response;
   }
 
   export function Format_Amount(amount: number): string
@@ -434,160 +440,151 @@ namespace Utilities
     b.classList.toggle("is-loading", disabled);
   }
 
-  export function Create_Menu_Element(menuItem: MenuItem): HTMLLIElement
-  {
-    let li = document.createElement("li");
-    if (menuItem.selected) li.classList.add("is-active");
+  //export function Create_Menu_Element(menuItem: MenuItem): HTMLLIElement
+  //{
+  //  let li = document.createElement("li");
+  //  if (menuItem.selected) li.classList.add("is-active");
 
 
-    let a = document.createElement("a");
-    a.id = menuItem.id;
-    a.onclick = function ()
-    {
-      Update_Menu(menuItem);
-    }
-    if (menuItem.icon.length > 0)
-    {
-      let span = document.createElement("span");
-      span.classList.add("icon");
-      //span.classList.add(Transaction.app_input_size);
-      let i = document.createElement("i");
-      let icons = menuItem.icon.split(" ");
-      for (let icon of icons)
-      {
-        i.classList.add(icon);
-      }
-      span.appendChild(i);
-      a.appendChild(span);
-    }
-    a.appendChild(document.createTextNode(menuItem.label))
-    li.appendChild(a);
-    return li;
-  }
+  //  let a = document.createElement("a");
+  //  a.id = menuItem.id;
+  //  a.onclick = function ()
+  //  {
+  //    Update_Menu(menuItem);
+  //  }
+  //  if (menuItem.icon.length > 0)
+  //  {
+  //    let span = document.createElement("span");
+  //    span.classList.add("icon");
+  //    span.classList.add(Transaction.app_input_size);
+  //    let i = document.createElement("i");
+  //    let icons = menuItem.icon.split(" ");
+  //    for (let icon of icons)
+  //    {
+  //      i.classList.add(icon);
+  //    }
+  //    span.appendChild(i);
+  //    a.appendChild(span);
+  //  }
+  //  a.appendChild(document.createTextNode(menuItem.label))
+  //  li.appendChild(a);
+  //  return li;
+  //}
 
-  export function Update_Menu(menuItem: MenuItem): void
-  {
-    Set_Text("menuTitle", menuItem.title);
-    Set_Text("menuSubTitle", menuItem.subTitle);
-    Show_Menu(menuItem.id);
-    document.getElementById(menuItem.autofocusId).focus();
-  }
+  //export function Update_Menu(menuItem: MenuItem): void
+  //{
+  //  Set_Text("menuTitle", menuItem.title);
+  //  Set_Text("menuSubTitle", menuItem.subTitle);
+  //  Show_Menu(menuItem.id);
+  //  document.getElementById(menuItem.autofocusId).focus();
+  //}
 
-  export function Build_Menu_Elements(target: string, Menus: Array<MenuItem>): void
-  {
-    let menu = document.getElementById(target);
-    for (let menuItem of Menus)
-    {
-      menu.appendChild(Utilities.Create_Menu_Element(menuItem));
-    }
-  }
+  //export function Build_Menu_Elements(target: string, Menus: Array<MenuItem>): void
+  //{
+  //  let menu = document.getElementById(target);
+  //  for (let menuItem of Menus)
+  //  {
+  //    menu.appendChild(Utilities.Create_Menu_Element(menuItem));
+  //  }
+  //}
 
 
-  export function CheckBrowser()
-  {
-    let browser: string = "";
-    if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1) 
-    {
-      browser = 'Opera';
-    }
-    else if (navigator.userAgent.indexOf("Chrome") != -1)
-    {
-      browser = 'Chrome';
-    }
-    else if (navigator.userAgent.indexOf("Safari") != -1)
-    {
-      browser = 'Safari';
-    }
-    else if (navigator.userAgent.indexOf("Firefox") != -1) 
-    {
-      browser = 'Firefox';
-    }
-    else if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.DOCUMENT_NODE == true)) //IF IE > 10
-    {
-      browser = 'IE';
-    }
-    else 
-    {
-      browser = 'unknown';
-    }
-    return browser;
-  }
+  //export function CheckBrowser()
+  //{
+  //  let browser: string = "";
+  //  if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1) 
+  //  {
+  //    browser = 'Opera';
+  //  }
+  //  else if (navigator.userAgent.indexOf("Chrome") != -1)
+  //  {
+  //    browser = 'Chrome';
+  //  }
+  //  else if (navigator.userAgent.indexOf("Safari") != -1)
+  //  {
+  //    browser = 'Safari';
+  //  }
+  //  else if (navigator.userAgent.indexOf("Firefox") != -1) 
+  //  {
+  //    browser = 'Firefox';
+  //  }
+  //  else if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.DOCUMENT_NODE == true)) //IF IE > 10
+  //  {
+  //    browser = 'IE';
+  //  }
+  //  else 
+  //  {
+  //    browser = 'unknown';
+  //  }
+  //  return browser;
+  //}
 
-  export function Get_Path(appName: string): string
-  {
-    let path = "/";
-    let i = window.location.pathname.toLowerCase().indexOf(appName);
-    if (i == 0)
-    {
-      path = appName + "/";
-    }
-    return path;
-  }
+  
 
-  export function Create_Centered_Level(level_items: Array<LevelItem>, left: Array<LevelItem> = [], right: Array<LevelItem> = []): HTMLElement
-  {
-    let level = document.createElement("div");
-    level.classList.add("level");
+  //export function Create_Centered_Level(level_items: Array<LevelItem>, left: Array<LevelItem> = [], right: Array<LevelItem> = []): HTMLElement
+  //{
+  //  let level = document.createElement("div");
+  //  level.classList.add("level");
 
-    for (let li of level_items)
-    {
-      level.appendChild(Create_Level_Item(li));
-    }
-    if (left.length > 0)
-    {
-      let leftcontainer = document.createElement("div");
-      leftcontainer.classList.add("level-left");
-      level.appendChild(leftcontainer);
+  //  for (let li of level_items)
+  //  {
+  //    level.appendChild(Create_Level_Item(li));
+  //  }
+  //  if (left.length > 0)
+  //  {
+  //    let leftcontainer = document.createElement("div");
+  //    leftcontainer.classList.add("level-left");
+  //    level.appendChild(leftcontainer);
 
-      for (let li of left)
-      {
-        leftcontainer.appendChild(Create_Level_Item(li));
-      }
-    }
-    if (right.length > 0)
-    {
-      let rightcontainer = document.createElement("div");
-      rightcontainer.classList.add("level-right");
-      level.appendChild(rightcontainer);
+  //    for (let li of left)
+  //    {
+  //      leftcontainer.appendChild(Create_Level_Item(li));
+  //    }
+  //  }
+  //  if (right.length > 0)
+  //  {
+  //    let rightcontainer = document.createElement("div");
+  //    rightcontainer.classList.add("level-right");
+  //    level.appendChild(rightcontainer);
 
-      for (let li of right)
-      {
-        rightcontainer.appendChild(Create_Level_Item(li));
-      }
-    }
+  //    for (let li of right)
+  //    {
+  //      rightcontainer.appendChild(Create_Level_Item(li));
+  //    }
+  //  }
 
-    return level;
-  }
+  //  return level;
+  //}
 
-  function Create_Level_Item(level_item: LevelItem): HTMLElement
-  {
-    let levelitem = document.createElement("div");
-    levelitem.classList.add("level-item", ...level_item.classes);
-    let container = document.createElement("div");
-    levelitem.appendChild(container);
-    if (level_item.heading.length > 0)
-    {
-      let heading = document.createElement("p");
-      heading.classList.add("heading");
-      heading.appendChild(document.createTextNode(level_item.heading));
-      container.appendChild(heading);
-    }
-    if (level_item.title_text.length > 0)
-    {
-      let title = document.createElement("p");
-      title.classList.add("title");
-      title.appendChild(document.createTextNode(level_item.title_text));
-      container.appendChild(title);
-    }
-    else
-    {
-      if (level_item.title !== null)
-      {
-        container.appendChild(level_item.title);
-      }
-    }
-    return levelitem;
-  }
+  //function Create_Level_Item(level_item: LevelItem): HTMLElement
+  //{
+  //  let levelitem = document.createElement("div");
+  //  levelitem.classList.add("level-item", ...level_item.classes);
+  //  let container = document.createElement("div");
+  //  levelitem.appendChild(container);
+  //  if (level_item.heading.length > 0)
+  //  {
+  //    let heading = document.createElement("p");
+  //    heading.classList.add("heading");
+  //    heading.appendChild(document.createTextNode(level_item.heading));
+  //    container.appendChild(heading);
+  //  }
+  //  if (level_item.title_text.length > 0)
+  //  {
+  //    let title = document.createElement("p");
+  //    title.classList.add("title");
+  //    title.appendChild(document.createTextNode(level_item.title_text));
+  //    container.appendChild(title);
+  //  }
+  //  else
+  //  {
+  //    if (level_item.title !== null)
+  //    {
+  //      container.appendChild(level_item.title);
+  //    }
+  //  }
+  //  return levelitem;
+  //}
 
   export function CreateTableCell(celltype: string, value: string, class_to_add: string, width: string = "", col_span: number = -1): HTMLTableCellElement
   {
@@ -601,3 +598,5 @@ namespace Utilities
   }
 
 }
+
+export default Utilities;
