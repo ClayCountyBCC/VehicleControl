@@ -168,15 +168,18 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Scripts\AVLData.ts" />
-    <TypeScriptCompile Include="Scripts\Utilities.ts" />
     <TypeScriptCompile Include="src\App.tsx" />
+    <TypeScriptCompile Include="src\AVLData.ts" />
     <TypeScriptCompile Include="src\index.tsx" />
+    <TypeScriptCompile Include="src\interfaces.tsx" />
     <TypeScriptCompile Include="src\Nav.tsx" />
     <TypeScriptCompile Include="src\react-app-env.d.ts" />
     <TypeScriptCompile Include="src\serviceWorker.ts" />
+    <TypeScriptCompile Include="src\Store.tsx" />
+    <TypeScriptCompile Include="src\Utilities.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
