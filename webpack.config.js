@@ -2,7 +2,7 @@
 
 var path = require("path");
 var WebpackNotifierPlugin = require("webpack-notifier");
-var polyfill = require("@babel/polyfill");
+//var polyfill = require("@babel/polyfill");
 //var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 
 module.exports = {

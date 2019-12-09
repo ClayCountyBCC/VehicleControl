@@ -2,5 +2,13 @@
   {
     "outputFile": "content/bulma.css",
     "inputFile": "node_modules/bulma/bulma.sass"
+  },
+  {
+    "outputFile": "Content/main.css",
+    "inputFile": "Content/main.scss"
+  },
+  {
+    "outputFile": "Content/Utilities.css",
+    "inputFile": "Content/Utilities.scss"
   }
 ]

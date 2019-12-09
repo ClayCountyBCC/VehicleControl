@@ -1,19 +1,11 @@
 [
   {
-    "outputFileName": "Content/bundle.js",
+    "outputFileName": "Content/my-css-bundle.css",
     "inputFiles": [
-      "Scripts/Utilities.js",
-      "Scripts/avl_data.js",
-      "Scripts/AppContext.js",
-      "Scripts/AppReducer.js",
-      "Scripts/App.js"
-    ]
-  },
-  {
-    "outputFileName": "Content/react-bundle.js",
-    "inputFiles": [
-      "node_modules/react/umd/react.development.js",
-      "node_modules/react-dom/umd/react-dom.development.js"
+      "Content/bulma.css",
+      "Content/Utilities.css",
+      "Content/main.css"
+
     ]
   }
 ]

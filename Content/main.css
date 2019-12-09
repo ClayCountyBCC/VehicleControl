@@ -1,16 +1,10 @@
-﻿body, html
-{
+﻿body, html {
   height: 100%;
   width: 100%;
   margin: 0 0 0 0;
   padding: 0 0 0 0;
   overflow-y: auto;
-  overflow-x: auto;
-}
+  overflow-x: auto; }
 
-
-.light-function
-{
-  color: white;
-}
-
+.light-function {
+  color: white; }

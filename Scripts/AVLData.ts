@@ -1,4 +1,4 @@
-﻿import Utilities from './Utilities';
+﻿import Utilities from './Utilities.js';
 
 interface IAVL_Data
 {
@@ -37,7 +37,6 @@ export class AVLData implements IAVL_Data
   {
     const data = await Utilities.Get<Array<AVLData>>('API/AVL/Get');
     return data;
-
   }
 
 }
