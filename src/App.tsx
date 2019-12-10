@@ -2,6 +2,8 @@ import React from 'react';
 import Nav from './nav';
 import { Store } from './Store';
 import AVLData from './AVLData';
+import AVLList from './AVLList';
+import { WebMapView } from './WebMapView';
 //import './App.css';
 
 const App: React.FC = () =>
@@ -23,8 +25,22 @@ const App: React.FC = () =>
   return (
     <>
       <Nav />
-      <div className="App">
+      
+      <div className="columns">
+        <div          
+          style={{paddingRight: 0}}
+          className="column is-one-half">
+          <AVLList />
+        </div>
+
+        <div
+          style={{paddingLeft: 0}}
+          className="column is-one-half">
+          <WebMapView />
+        </div>
+
       </div>
+
     </>
   );
 }

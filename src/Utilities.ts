@@ -1,5 +1,5 @@
-﻿module Utilities
-{
+﻿//namespace Utilities
+//{
   const app_path = "/vehiclecontrol";
 
   export function Hide(e: string): void
@@ -7,7 +7,7 @@
   export function Hide(e: Element): void
   export function Hide(e: any):void
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -22,7 +22,7 @@
   export function Show(e: Element): void
   export function Show(e: any): void
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -37,7 +37,7 @@
   export function Show_Inline(e: Element): void
   export function Show_Inline(e: any): void
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -52,7 +52,7 @@
   export function Show_Inline_Flex(e: Element): void
   export function Show_Inline_Flex(e: any): void
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -67,7 +67,7 @@
   export function Show_Flex(e: Element): void
   export function Show_Flex(e: any): void
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -83,7 +83,7 @@
   export function Error_Show(e: Element, errorText?: string, timeout?: boolean): void
   export function Error_Show(e: any, errorText?: any, timeout?: boolean): void
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -122,7 +122,7 @@
 
     }
     Show(e);
-    if (timeout == undefined || timeout === true)
+    if (timeout === undefined || timeout === true)
     {
       window.setTimeout(function (j)
       {
@@ -160,7 +160,7 @@
   export function Get_Value(e: HTMLInputElement): string
   export function Get_Value(e: any): string
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -172,7 +172,7 @@
   export function Set_Value(e: HTMLInputElement, value: string): void
   export function Set_Value(e: any, value: string): void
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -183,7 +183,7 @@
   export function Set_Text(e: HTMLElement, value: string): void
   export function Set_Text(e: any, value: string): void
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -288,13 +288,14 @@
   export function Get_Path(app_name: string = ""): string
   {
     if (app_name.length === 0) app_name = app_path;
-    console.log('using app path ' + app_path);
+    
     let path = "/";
     let i = window.location.pathname.toLowerCase().indexOf(app_name);
-    if (i == 0)
+    if (i === 0)
     {
       path = app_name + "/";
     }
+    console.log('using app path ' + app_path, ' returning: ' + path);
     return path;
   }
 
@@ -319,7 +320,7 @@
 
   export async function Get<T>(url: string): Promise<T>
   {
-    const response = await fetch(Get_Path() + url,
+    const response = await fetch(url,
       {
         method: "GET",
         headers: {
@@ -408,14 +409,14 @@
   export function Validate_Text(e: any, errorElementId: string, errorText: string): string
   {
     // this should only be used for required elements.
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
     let ele = (<HTMLInputElement>e);
     ele.tagName.toLowerCase() === "select" && ele.parentElement !== null ? ele.parentElement.classList.remove("is-danger") : ele.classList.remove("is-danger");
     let v = Get_Value(ele).trim();
-    if (v.length == 0)
+    if (v.length === 0)
     {
       ele.tagName.toLowerCase() === "select" && ele.parentElement !== null ? ele.parentElement.classList.add("is-danger") : ele.classList.add("is-danger");
       Error_Show(errorElementId, errorText);
@@ -431,7 +432,7 @@
   export function Toggle_Loading_Button(e: HTMLButtonElement, disabled: boolean)
   export function Toggle_Loading_Button(e: any, disabled: boolean)
   {
-    if (typeof e == "string")
+    if (typeof e === "string")
     {
       e = document.getElementById(e);
     }
@@ -597,6 +598,6 @@
     return cell;
   }
 
-}
+//}
 
-export default Utilities;
+//export default Utilities;

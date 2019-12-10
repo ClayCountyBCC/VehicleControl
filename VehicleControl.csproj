@@ -18,13 +18,13 @@
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44370</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>disabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>3.6</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -99,6 +99,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <Content Include="build\favicon.ico" />
+    <Content Include="build\index.html" />
+    <Content Include="build\logo192.png" />
+    <Content Include="build\logo512.png" />
+    <Content Include="build\precache-manifest.0665f6719f37dbee6718dd25421d23c1.js" />
+    <None Include="build\static\js\2.8106ecba.chunk.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="build\static\js\main.a188c303.chunk.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="build\static\js\runtime-main.ceca170f.js" />
     <Content Include="Content\bulma.css" />
     <Content Include="Content\bulma.min.css">
       <DependentUpon>bulma.css</DependentUpon>
@@ -120,12 +132,8 @@
       <DependentUpon>Utilities.css</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
+    <Content Include="build\static\js\runtime-main.ceca170f.js.map" />
     <Content Include="index.html" />
-    <Content Include="public\favicon.ico" />
-    <Content Include="public\index.html" />
-    <Content Include="public\logo192.png" />
-    <Content Include="public\logo512.png" />
-    <Content Include="public\robots.txt" />
     <Content Include="src\App.css" />
     <Content Include="src\index.css" />
     <Content Include="Web.config" />
@@ -149,6 +157,15 @@
     <Content Include="libman.json" />
     <Content Include="package.json" />
     <Content Include="package-lock.json" />
+    <Content Include="build\asset-manifest.json" />
+    <Content Include="build\manifest.json" />
+    <Content Include="build\static\js\2.8106ecba.chunk.js.LICENSE" />
+    <None Include="build\static\js\2.8106ecba.chunk.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="build\static\js\main.a188c303.chunk.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
@@ -158,7 +175,6 @@
     <Content Include="Content\main.scss" />
     <None Include="packages.config" />
     <Content Include="tsconfig.json" />
-    <Content Include="public\manifest.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -172,12 +188,14 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\App.tsx" />
+    <TypeScriptCompile Include="src\AVL.tsx" />
     <TypeScriptCompile Include="src\AVLData.ts" />
+    <TypeScriptCompile Include="src\AVLList.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\interfaces.tsx" />
+    <TypeScriptCompile Include="src\WebMapView.tsx" />
     <TypeScriptCompile Include="src\Nav.tsx" />
     <TypeScriptCompile Include="src\react-app-env.d.ts" />
-    <TypeScriptCompile Include="src\serviceWorker.ts" />
     <TypeScriptCompile Include="src\Store.tsx" />
     <TypeScriptCompile Include="src\Utilities.ts" />
   </ItemGroup>

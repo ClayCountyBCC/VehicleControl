@@ -10,7 +10,6 @@ const Nav: React.FC = () =>
         </div>
         <div className="navbar-menu">
           <div className="navbar-start">
-
           </div>
           <div className="navbar-end">
             <p className="navbar-item">

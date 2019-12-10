@@ -1,4 +1,4 @@
-﻿import Utilities from './Utilities.js';
+﻿import { Get } from './Utilities';
 
 interface IAVL_Data
 {
@@ -30,12 +30,10 @@ export class AVLData implements IAVL_Data
   public longitude: number = 0;
   public updated_on: Date = new Date();
   public error_information: Array<string> = [];
-
-  constructor() { }
-
+    
   public static async Get(): Promise<Array<AVLData>>
   {
-    const data = await Utilities.Get<Array<AVLData>>('API/AVL/Get');
+    const data = await Get<Array<AVLData>>('API/AVL/Get');
     return data;
   }
 
