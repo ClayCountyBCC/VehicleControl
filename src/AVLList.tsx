@@ -45,59 +45,42 @@ const AVLList: React.FC = () =>
           <div className="level-item tabs">
             <ul>
               <li className={`${state.avl_data_special_filter === '' ? 'is-active' : ''}`}>
-                <a onClick={event => { dispatch({ type: "avl_data_special_filter", payload: '' }) }}>
+                <a
+                  href="#NoFilter"
+                  onClick={event => { dispatch({ type: "avl_data_special_filter", payload: '' }) }}>
                   No Filter
                 </a>
               </li>
               <li className={`${state.avl_data_special_filter === 'error' ? 'is-active' : ''}`}>
-                <a onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'error' }) }}>
+                <a
+                  href="#AllErrors"
+                  onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'error' }) }}>
                   All Errors
                 </a>
               </li>
               <li className={`${state.avl_data_special_filter === 'unit' ? 'is-active' : ''}`}>
-                <a onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'unit' }) }}>
+                <a
+                  href="#UnitErrors"
+                  onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'unit' }) }}>
                   Unit Errors
                 </a>
               </li>
               <li className={`${state.avl_data_special_filter === 'date' ? 'is-active' : ''}`}>
-                <a onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'date' }) }}>
+                <a
+                  href="#DateErrors"
+                  onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'date' }) }}>
                   Date Errors
                 </a>
               </li>
               <li className={`${state.avl_data_special_filter === 'location' ? 'is-active' : ''}`}>
-                <a onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'location' }) }}>
+                <a
+                  href="#LocationErrors"
+                  onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'location' }) }}>
                   Location Errors
                 </a>
               </li>
             </ul>
           </div>
-          {/*
-          <button
-            type="button"
-            onClick={event =>
-            {
-              event.preventDefault();
-              dispatch({
-                type: "search_avl_data",
-                payload: ''
-              })
-            }}
-            className="level-item is-text button has-text-link no-decoration">
-            Show All
-          </button>          
-          <a className="level-item">
-            Errors
-          </a>
-          <a className="level-item">
-            No Unit
-          </a>
-          <a className="level-item">
-            Bad Date
-          </a>
-          <a className="level-item">
-            Bad Location
-          </a>
-          */}
         </div>
       </div>
 
@@ -106,35 +89,60 @@ const AVLList: React.FC = () =>
           <tr>
             <th>
               <a
-                onClick={event => dispatch({ type: 'avl_data_sort', payload: 'device_id' })}
+                href="#SortByDeviceId"
+                onClick={event =>
+                {
+                  event.preventDefault();
+                  dispatch({ type: 'avl_data_sort', payload: 'device_id' });
+                }}
                 className={`${state.avl_data_sort_field !== 'device_id' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Device Id
               </a>
             </th>
             <th>
               <a
-                onClick={event => dispatch({ type: 'avl_data_sort', payload: 'device_type' })}
+                href="#SortByDeviceType"
+                onClick={event =>
+                {
+                  event.preventDefault();
+                  dispatch({ type: 'avl_data_sort', payload: 'device_type' });
+                }}
                 className={`${state.avl_data_sort_field !== 'device_type' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Device Type
               </a>
             </th>
             <th>
               <a
-                onClick={event => dispatch({ type: 'avl_data_sort', payload: 'unitcode' })}
+                href="#SortByUnit"
+                onClick={event =>
+                {
+                  event.preventDefault();
+                  dispatch({ type: 'avl_data_sort', payload: 'unitcode' });
+                }}
                 className={`${state.avl_data_sort_field !== 'unitcode' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Unit
               </a>
             </th>
             <th>
               <a
-                onClick={event => dispatch({ type: 'avl_data_sort', payload: 'updated_on' })}
+                href="#SortByDateSavedOn"
+                onClick={event =>
+                {
+                  event.preventDefault();
+                  dispatch({ type: 'avl_data_sort', payload: 'updated_on' });
+                }}
                 className={`${state.avl_data_sort_field !== 'updated_on' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Data Saved On
               </a>
             </th>
             <th>
               <a
-                onClick={event => dispatch({ type: 'avl_data_sort', payload: 'location_timestamp' })}
+                href="#SortByLocationDate"
+                onClick={event =>
+                {
+                  event.preventDefault();
+                  dispatch({ type: 'avl_data_sort', payload: 'location_timestamp' });
+                }}
                 className={`${state.avl_data_sort_field !== 'location_timestamp' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Location On
               </a>

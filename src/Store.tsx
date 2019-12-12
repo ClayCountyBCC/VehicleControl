@@ -93,10 +93,25 @@ function reducer(state: IState, action: IAction): IState
           a.show_errors = !a.show_errors;
         }
         return a;
-      })
+      });
       return {
         ...state,
         filtered_avl_data: showError
+      };
+
+    case "avl_data_toggle_show_unit_options":
+      let showUO = state.filtered_avl_data.map(a =>
+      {
+        if (a.device_id === action.payload)
+        {
+          a.show_unit_options = !a.show_unit_options;
+        }
+        return a;
+      });
+
+      return {
+        ...state,
+        filtered_avl_data: showUO
       };
 
     default:

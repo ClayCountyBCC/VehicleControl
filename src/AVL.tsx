@@ -3,6 +3,7 @@ import AVLData from './AVLData';
 import { Store } from './Store';
 import { Format_DateTime } from './Utilities';
 import ErrorInformation from './ErrorInformation';
+import AVLUnitOptions from './AVLUnitOptions';
 
 const AVL = (props:AVLData) =>
 {
@@ -18,7 +19,15 @@ const AVL = (props:AVLData) =>
           {props.device_type}
         </td>
         <td>
-          {props.unitcode}
+          <span
+            className="cursor_pointer has-text-link"
+            onClick={event =>
+            {
+              dispatch({ type: 'avl_data_toggle_show_unit_options', payload: props.device_id });
+            }
+            }>
+            {props.unitcode.length === 0 ? 'Add' : props.unitcode}          
+            </span>
         </td>
         <td>
           {Format_DateTime(props.updated_on)}
@@ -27,14 +36,26 @@ const AVL = (props:AVLData) =>
           {Format_DateTime(props.location_timestamp)}
         </td>
         <td>
-          <a
-            onClick={event => dispatch({ type: 'avl_data_toggle_show_errors', payload: props.device_id })}>
+          {props.error_information.length > 0 ? (
+            <span
+              className="cursor_pointer has-text-link"
+              onClick={event =>
+              {
+                dispatch({ type: 'avl_data_toggle_show_errors', payload: props.device_id });
+              }
+              }>
+              Errors
+            </span>
+          ) : ''
+          }
 
-            {props.error_information.length > 0 ? 'Errors' : ''}
-          </a>
-          
+
         </td>
       </tr>
+      <AVLUnitOptions
+        colspan={6}
+        new_unitcode=""
+        {...props} />
       <ErrorInformation
         colspan={6}
         error_information={props.error_information}

@@ -103,14 +103,10 @@
     <Content Include="build\index.html" />
     <Content Include="build\logo192.png" />
     <Content Include="build\logo512.png" />
-    <Content Include="build\precache-manifest.0665f6719f37dbee6718dd25421d23c1.js" />
-    <None Include="build\static\js\2.8106ecba.chunk.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="build\static\js\main.a188c303.chunk.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Content Include="build\static\js\runtime-main.ceca170f.js" />
+    <Content Include="build\precache-manifest.d8c71fa5c452177e4bd43c575aedc87a.js" />
+    <Content Include="build\static\js\2.2837c004.chunk.js" />
+    <Content Include="build\static\js\main.3be579ce.chunk.js" />
+    <Content Include="build\static\js\runtime-main.3110bd82.js" />
     <Content Include="Content\bulma.css" />
     <Content Include="Content\bulma.min.css">
       <DependentUpon>bulma.css</DependentUpon>
@@ -132,7 +128,6 @@
       <DependentUpon>Utilities.css</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
-    <Content Include="build\static\js\runtime-main.ceca170f.js.map" />
     <Content Include="index.html" />
     <Content Include="src\App.css" />
     <Content Include="src\index.css" />
@@ -159,13 +154,10 @@
     <Content Include="package-lock.json" />
     <Content Include="build\asset-manifest.json" />
     <Content Include="build\manifest.json" />
-    <Content Include="build\static\js\2.8106ecba.chunk.js.LICENSE" />
-    <None Include="build\static\js\2.8106ecba.chunk.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="build\static\js\main.a188c303.chunk.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Include="build\static\js\2.2837c004.chunk.js.LICENSE" />
+    <Content Include="build\static\js\2.2837c004.chunk.js.map" />
+    <Content Include="build\static\js\main.3be579ce.chunk.js.map" />
+    <Content Include="build\static\js\runtime-main.3110bd82.js.map" />
     <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
@@ -175,6 +167,7 @@
     <Content Include="Content\main.scss" />
     <None Include="packages.config" />
     <Content Include="tsconfig.json" />
+    <None Include="Properties\PublishProfiles\DV10.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -194,6 +187,7 @@
     <TypeScriptCompile Include="src\ErrorInformation.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\interfaces.tsx" />
+    <TypeScriptCompile Include="src\AVLUnitOptions.tsx" />
     <TypeScriptCompile Include="src\WebMapView.tsx" />
     <TypeScriptCompile Include="src\Nav.tsx" />
     <TypeScriptCompile Include="src\react-app-env.d.ts" />

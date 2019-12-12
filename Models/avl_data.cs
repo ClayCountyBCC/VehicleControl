@@ -136,7 +136,54 @@ namespace VehicleControl.Models
       string query = @"
         SET ISOLATION LEVEL SERIALIZABLE;
 
-        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        WITH NewData AS (
+          SELECT
+            @imei imei
+            ,@phone_number phone_number
+            ,@username username
+            ,@unitcode unitcode
+          WHERE NOT EXISTS (SELECT unitcode FROM unit_tracking_data UTD2 WHERE UTD2.unitcode = @unitcode)
+        )
+
+        INSERT INTO Tracking.dbo.unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'Added New UnitCode'
+          ,''
+          ,''
+          ,username
+        FROM NewData;
+
+        WITH NewData AS (
+          SELECT
+            @imei imei
+            ,@phone_number phone_number
+            ,@username username
+            ,@unitcode unitcode
+          WHERE NOT EXISTS (SELECT unitcode FROM unit_tracking_data UTD2 WHERE UTD2.unitcode = @unitcode)
+        )
+
+        INSERT INTO Tracking.dbo.unit_tracking_data
+                   ([unitcode]
+                   ,[longitude]
+                   ,[latitude]
+                   ,[data_source]
+                   ,[imei]
+                   ,[phone_number]
+                   ,[asset_tag]
+                   ,[date_last_communicated])
+        SELECT
+          unitcode
+          ,0
+          ,0
+          ,'AVL'
+          ,0
+          ,0
+          ,''
+          ,GETDATE()
+        FROM NewData;
+
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
           unitcode
           ,'imei' field
@@ -155,7 +202,7 @@ namespace VehicleControl.Models
           unitcode != @unitcode
           AND imei = @imei;
 
-        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
           unitcode
           ,'imei' field
@@ -167,7 +214,7 @@ namespace VehicleControl.Models
           unitcode = @unitcode
           AND imei != @imei;
 
-        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
           unitcode
           ,'phone_number' field
@@ -185,7 +232,8 @@ namespace VehicleControl.Models
           ,phone_number = @phone_number
         WHERE
           unitcode = @unitcode
-          AND imei != @imei;";
+          AND imei != @imei;
+";
       return Constants.Exec_Query(query, param);
     }
 
@@ -201,7 +249,54 @@ namespace VehicleControl.Models
       string query = @"
         SET ISOLATION LEVEL SERIALIZABLE;
 
-        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        WITH NewData AS (
+          SELECT
+            @imei imei
+            ,@phone_number phone_number
+            ,@username username
+            ,@unitcode unitcode
+          WHERE NOT EXISTS (SELECT unitcode FROM unit_tracking_data UTD2 WHERE UTD2.unitcode = @unitcode)
+        )
+
+        INSERT INTO Tracking.dbo.unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'Added New UnitCode'
+          ,''
+          ,''
+          ,username
+        FROM NewData;
+
+        WITH NewData AS (
+          SELECT
+            @imei imei
+            ,@phone_number phone_number
+            ,@username username
+            ,@unitcode unitcode
+          WHERE NOT EXISTS (SELECT unitcode FROM unit_tracking_data UTD2 WHERE UTD2.unitcode = @unitcode)
+        )
+
+        INSERT INTO Tracking.dbo.unit_tracking_data
+                   ([unitcode]
+                   ,[longitude]
+                   ,[latitude]
+                   ,[data_source]
+                   ,[imei]
+                   ,[phone_number]
+                   ,[asset_tag]
+                   ,[date_last_communicated])
+        SELECT
+          unitcode
+          ,0
+          ,0
+          ,'AVL'
+          ,0
+          ,0
+          ,''
+          ,GETDATE()
+        FROM NewData;
+
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
           unitcode
           ,'phone_number' field
@@ -220,7 +315,7 @@ namespace VehicleControl.Models
           unitcode != @unitcode
           AND imei = @imei;
 
-        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
           unitcode
           ,'phone_number' field
@@ -232,7 +327,7 @@ namespace VehicleControl.Models
           unitcode = @unitcode
           AND phone_number != @phone_number;
 
-        INSERT INTO maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
           unitcode
           ,'imei' field

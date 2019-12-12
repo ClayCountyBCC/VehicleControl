@@ -41,3 +41,13 @@ export interface IErrorInformation
   error_information: Array<string>
   show_errors: boolean
 }
+
+export interface IAVLUnitOptions
+{
+  show_unit_options: boolean
+  colspan: number
+  unitcode: string
+  device_id: string
+  device_type: string
+  new_unitcode: string
+}

@@ -14,6 +14,7 @@ interface IAVL_Data
   updated_on: Date;
   error_information: Array<string>;
   show_errors: boolean;
+  show_unit_options: boolean;
   has_date_error: boolean;
   has_location_error: boolean;
   has_unit_error: boolean;
@@ -32,6 +33,7 @@ export class AVLData implements IAVL_Data
   public longitude: number = 0;
   public updated_on: Date = new Date();
   public error_information: Array<string> = [];
+  public show_unit_options: boolean = false;
   public show_errors: boolean = false;
   public has_date_error: boolean = false;
   public has_location_error: boolean = false;
