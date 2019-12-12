@@ -191,6 +191,7 @@
     <TypeScriptCompile Include="src\AVL.tsx" />
     <TypeScriptCompile Include="src\AVLData.ts" />
     <TypeScriptCompile Include="src\AVLList.tsx" />
+    <TypeScriptCompile Include="src\ErrorInformation.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\interfaces.tsx" />
     <TypeScriptCompile Include="src\WebMapView.tsx" />

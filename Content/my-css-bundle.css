@@ -7162,7 +7162,7 @@ label.panel-block {
     page-break-inside: avoid !important;
     break-inside: avoid !important; } }
 
-body, html {
+body, html, #root {
   height: 100%;
   width: 100%;
   margin: 0 0 0 0;
@@ -7172,3 +7172,35 @@ body, html {
 
 .light-function {
   color: white; }
+
+.webmap {
+  height: 100%; }
+
+.main-container {
+  height: calc(100% - 64px); }
+
+.left-side, .right-side {
+  height: 100%; }
+
+.left-side {
+  overflow-x: auto;
+  overflow-y: auto; }
+
+.columns, .column {
+  margin: 0;
+  padding: 0; }
+
+.sort_ascending {
+  text-decoration: solid overline; }
+
+.sort_descending {
+  text-decoration: solid underline; }
+
+.cursor_pointer {
+  cursor: pointer; }
+
+.cursor_normal {
+  cursor: auto; }
+
+button.level-item.no-decoration {
+  text-decoration: none; }

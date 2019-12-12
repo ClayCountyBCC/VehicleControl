@@ -9,11 +9,14 @@ interface IAVL_Data
   location_timestamp: Date;
   satellite_count: number;
   velocity: number;
-  ip_address: string;
   latitude: number;
   longitude: number;
   updated_on: Date;
   error_information: Array<string>;
+  show_errors: boolean;
+  has_date_error: boolean;
+  has_location_error: boolean;
+  has_unit_error: boolean;
 }
 
 export class AVLData implements IAVL_Data
@@ -25,11 +28,14 @@ export class AVLData implements IAVL_Data
   public location_timestamp: Date = new Date();
   public satellite_count: number = 0;
   public velocity: number = 0;
-  public ip_address: string = "";
   public latitude: number = 0;
   public longitude: number = 0;
   public updated_on: Date = new Date();
   public error_information: Array<string> = [];
+  public show_errors: boolean = false;
+  public has_date_error: boolean = false;
+  public has_location_error: boolean = false;
+  public has_unit_error: boolean = false;
     
   public static async Get(): Promise<Array<AVLData>>
   {

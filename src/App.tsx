@@ -13,30 +13,29 @@ const App: React.FC = () =>
   React.useEffect(() =>
   {
     state.avl_data.length === 0 && fetchAVLData()
-  })
+  });
 
   const fetchAVLData = async () =>
   {
     const data = await AVLData.Get();
     return dispatch({ type: 'get_avl_data', payload: data });
   }
-  console.log('state: ', state);
-
+  
   return (
     <>
       <Nav />
       
-      <div className="columns">
+      <div className="columns main-container">
         <div          
           style={{paddingRight: 0}}
-          className="column is-one-half">
+          className="column is-one-half left-side">
           <AVLList />
         </div>
 
         <div
           style={{paddingLeft: 0}}
-          className="column is-one-half">
-          <WebMapView />
+          className="column is-one-half right-side">
+          
         </div>
 
       </div>

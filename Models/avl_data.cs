@@ -18,11 +18,13 @@ namespace VehicleControl.Models
     public DateTime location_timestamp { get; set; }
     public int satellite_count { get; set; } = 0;
     public int velocity { get; set; } = 0;
-    public string ip_address { get; set; } = "";
     public decimal latitude { get; set; } = 0;
     public decimal longitude { get; set; } = 0;
     public DateTime updated_on { get; set; }
     public List<string> error_information { get; set; } = new List<string>();
+    public bool has_date_error { get; set; } = false;
+    public bool has_location_error { get; set; } = false;
+    public bool has_unit_error { get; set; } = false;
 
     public avl_data() { }
 
@@ -37,7 +39,6 @@ namespace VehicleControl.Models
           ,A.[location_timestamp]
           ,A.[satellite_count]
           ,A.[velocity]
-          ,A.[ip_address]
           ,A.[latitude]
           ,A.[longitude]
           ,A.[updated_on] 
@@ -60,23 +61,28 @@ namespace VehicleControl.Models
         if (a.unitcode.Length == 0)
         {
           a.error_information.Add("Device is not tied to a unit that is on one of the county maps like Minicad or the Inspector View.");
+          a.has_unit_error = true;
         }
         if (a.location_timestamp > DateTime.Now.AddMinutes(5))
         {
           a.error_information.Add("Location is set in the future.");
+          a.has_date_error = true;
         }
         var yesterday = DateTime.Now.AddDays(-1);
         if (a.location_timestamp < yesterday)
         {
           a.error_information.Add("Location has not been updated in the last 24 hours.");
+          a.has_date_error = true;
         }
         if (a.updated_on < yesterday)
         {
           a.error_information.Add("Device has not been seen in the last 24 hours.");
+          a.has_date_error = true;
         }
         if (a.longitude == 0 || a.latitude == 0)
         {
           a.error_information.Add("Lat/Long is invalid.");
+          a.has_location_error = true;
         }
       }
 
