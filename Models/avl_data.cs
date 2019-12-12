@@ -193,7 +193,7 @@ namespace VehicleControl.Models
         FROM unit_tracking_data
         WHERE 
           unitcode != @unitcode
-          AND imei != @imei;
+          AND imei = @imei;
 
         UPDATE unit_tracking_data
         SET 
@@ -306,7 +306,7 @@ namespace VehicleControl.Models
         FROM unit_tracking_data
         WHERE 
           unitcode != @unitcode
-          AND phone_number != @phone_number;
+          AND phone_number = @phone_number;
 
         UPDATE unit_tracking_data
         SET 
