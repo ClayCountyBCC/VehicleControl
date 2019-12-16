@@ -69,6 +69,22 @@ function reducer(state: IState, action: IAction): IState
         avl_data_filter: action.payload
       };
 
+    case "avl_device_history":
+      let showHistory = state.filtered_avl_data.map(a =>
+      {
+        if (a.device_id === action.payload.device_id)
+        {
+          a.device_history = action.payload.device_history;
+        }
+        return a;
+      });
+
+      return {
+        ...state,
+        filtered_avl_data: showHistory
+      };
+
+
     case "avl_data_special_filter":
       return {
         ...state,
@@ -190,3 +206,4 @@ export function StoreProvider(props: any): JSX.Element
   const [state, dispatch] = useReducer(reducer, initialState);
   return (<Store.Provider value={{ state, dispatch }}>{props.children}</Store.Provider>);
 }
+

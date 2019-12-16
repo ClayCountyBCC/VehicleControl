@@ -1,8 +1,19 @@
 ﻿import React from 'react';
 import { IAVLUnitOptions } from './interfaces';
+import AVLData from './AVLData';
+import { Store } from './Store';
 
 const AVLUnitOptions = (props: IAVLUnitOptions) =>
 {
+  const { dispatch } = React.useContext(Store);
+
+  //const fetchAVLData = async () =>
+  //{
+  //  const data = await AVLData.Get();
+  //  return dispatch({ type: 'get_avl_data', payload: data });
+  //}
+
+
   if (!props.show_unit_options) return null;
 
   return (
@@ -29,6 +40,19 @@ const AVLUnitOptions = (props: IAVLUnitOptions) =>
           <div className="control">
             <button
               type="button"
+              onClick={async event =>
+              {
+                event.preventDefault();
+                const response = await AVLData.Delete(props.device_id);
+                if (response.ok)
+                {
+                  props.fetch_avl_data();
+                }
+                else
+                {
+                  alert("There was a problem with deleting this record. Please contact MIS Development for more information.");
+                }
+              }}
               className="button is-success is-small">
               Save
             </button>

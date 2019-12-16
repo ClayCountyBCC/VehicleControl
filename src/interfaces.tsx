@@ -1,4 +1,5 @@
-﻿import AVLData from './AVLData';
+﻿import UnitHistory from './UnitHistory';
+import AVLData from './AVLData';
 
 export interface IState
 {
@@ -50,4 +51,12 @@ export interface IAVLUnitOptions
   device_id: string
   device_type: string
   new_unitcode: string
+  fetch_avl_data: Function
+}
+
+export interface IUnitHistoryList
+{
+  colspan: number
+  title: string
+  history: Array<UnitHistory>
 }

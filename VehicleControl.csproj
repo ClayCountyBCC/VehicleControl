@@ -136,6 +136,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AVLController.cs" />
+    <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -144,6 +145,7 @@
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\ErrorLog.cs" />
     <Compile Include="Models\fleetcomplete_data.cs" />
+    <Compile Include="Models\unit_history.cs" />
     <Compile Include="Models\unit_tracking_data.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -188,6 +190,8 @@
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\interfaces.tsx" />
     <TypeScriptCompile Include="src\AVLUnitOptions.tsx" />
+    <TypeScriptCompile Include="src\UnitHistory.ts" />
+    <TypeScriptCompile Include="src\UnitHistoryList.tsx" />
     <TypeScriptCompile Include="src\WebMapView.tsx" />
     <TypeScriptCompile Include="src\Nav.tsx" />
     <TypeScriptCompile Include="src\react-app-env.d.ts" />

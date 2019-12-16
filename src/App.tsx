@@ -28,13 +28,13 @@ const App: React.FC = () =>
       <div className="columns main-container">
         <div          
           style={{paddingRight: 0}}
-          className="column is-one-half left-side">
+          className="column is-half left-side">
           <AVLList />
         </div>
 
         <div
           style={{paddingLeft: 0}}
-          className="column is-one-half right-side">
+          className="column is-half right-side">
           
         </div>
 

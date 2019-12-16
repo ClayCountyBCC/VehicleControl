@@ -1,6 +1,6 @@
-﻿import { Get } from './Utilities';
+﻿import { Get, Post_Empty } from './Utilities';
 
-interface IAVL_Data
+interface IAVLData
 {
   device_id: string;
   device_type: string;
@@ -18,9 +18,10 @@ interface IAVL_Data
   has_date_error: boolean;
   has_location_error: boolean;
   has_unit_error: boolean;
+  device_history: Array<any>;
 }
 
-export class AVLData implements IAVL_Data
+export class AVLData implements IAVLData
 {
   public device_id: string = "";
   public device_type: string = "";
@@ -38,11 +39,25 @@ export class AVLData implements IAVL_Data
   public has_date_error: boolean = false;
   public has_location_error: boolean = false;
   public has_unit_error: boolean = false;
-    
+  public device_history: Array<any> = [];
+  
   public static async Get(): Promise<Array<AVLData>>
   {
     const data = await Get<Array<AVLData>>('API/AVL/Get');
     return data;
+  }
+
+  public static async Delete(device_id: string): Promise<Response>
+  {
+    console.log("deleting device_id: " + device_id);
+    const response = await Post_Empty("API/AVL/Delete?device_id=" + device_id, {});
+    return response;
+  }
+
+  public static async Update(device_id: string, device_type: string, unitcode: string): Promise<Response>
+  {
+    const response = await Post_Empty(`API/AVL/Update?device_id=${device_id}&device_type=${device_type}&unitcode=${unitcode}`, {});
+    return response;
   }
 
 }

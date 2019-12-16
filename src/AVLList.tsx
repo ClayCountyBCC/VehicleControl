@@ -6,7 +6,12 @@ import AVL from './AVL';
 const AVLList: React.FC = () =>
 {
   const { state, dispatch } = React.useContext(Store);
-  
+
+  const fetchAVLData = async () =>
+  {
+    const data = await AVLData.Get();
+    return dispatch({ type: 'get_avl_data', payload: data });
+  }
 
   return (
     <section>
@@ -21,6 +26,7 @@ const AVLList: React.FC = () =>
             <div className="field">
               <div className="control">
                 <input
+                  title="Search for text in the Device Id and Unit fields.  Hit Enter to Search."
                   type="text"
                   placeholder="Search"
                   onKeyDown={event =>
@@ -39,44 +45,59 @@ const AVLList: React.FC = () =>
               </div>
             </div>
           </div>
+          <div>
+            <button
+              onClick={event =>
+              {
+                event.preventDefault();
+                fetchAVLData();
+              }}
+              title="Refresh the AVL Data"
+              type="button"
+              className="button is-success is-small">
+              <span className="icon is-small">
+                <i className="fas fa-sync-alt"></i>
+              </span>
+            </button>
+            </div>
         </div>
         <div className="level-right">
-          <p className="level-item has-text-weight-bold">Quick Filters</p>
+          <p className="level-item has-text-weight-bold">Error Filters</p>
           <div className="level-item tabs">
             <ul>
               <li className={`${state.avl_data_special_filter === '' ? 'is-active' : ''}`}>
                 <a
                   href="#NoFilter"
                   onClick={event => { dispatch({ type: "avl_data_special_filter", payload: '' }) }}>
-                  No Filter
+                  Show All
                 </a>
               </li>
               <li className={`${state.avl_data_special_filter === 'error' ? 'is-active' : ''}`}>
                 <a
                   href="#AllErrors"
                   onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'error' }) }}>
-                  All Errors
+                  Errors Only
                 </a>
               </li>
               <li className={`${state.avl_data_special_filter === 'unit' ? 'is-active' : ''}`}>
                 <a
                   href="#UnitErrors"
                   onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'unit' }) }}>
-                  Unit Errors
+                  Unit
                 </a>
               </li>
               <li className={`${state.avl_data_special_filter === 'date' ? 'is-active' : ''}`}>
                 <a
                   href="#DateErrors"
                   onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'date' }) }}>
-                  Date Errors
+                  Date
                 </a>
               </li>
               <li className={`${state.avl_data_special_filter === 'location' ? 'is-active' : ''}`}>
                 <a
                   href="#LocationErrors"
                   onClick={event => { dispatch({ type: "avl_data_special_filter", payload: 'location' }) }}>
-                  Location Errors
+                  Location
                 </a>
               </li>
             </ul>
@@ -147,8 +168,8 @@ const AVLList: React.FC = () =>
                 Location On
               </a>
             </th>
-            <th>
-              Errors
+            <th className="has-text-centered">
+              Options
             </th>
           </tr>
         </thead>
