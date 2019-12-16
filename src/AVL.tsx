@@ -6,8 +6,9 @@ import ErrorInformation from './ErrorInformation';
 import AVLUnitOptions from './AVLUnitOptions';
 import UnitHistory from './UnitHistory';
 import UnitHistoryList from './UnitHistoryList';
+import { IAVLDataWithIndex } from './interfaces';
 
-const AVL = (props:AVLData) =>
+const AVL = (props:IAVLDataWithIndex) =>
 {
   const { dispatch } = React.useContext(Store);
 
@@ -22,10 +23,16 @@ const AVL = (props:AVLData) =>
     <>
       <tr>
         <td>
+          {props.index + 1}
+        </td>
+        <td>
           {props.device_id}
         </td>
         <td>
-          {props.device_type}
+          <span className="icon">
+            <i className={`fas ${props.device_type === "Phone Number" ? "fa-phone" : "fa-mobile-alt"}`}></i>
+          </span>
+          
         </td>
         <td>
           <span
@@ -34,8 +41,7 @@ const AVL = (props:AVLData) =>
             onClick={event =>
             {
               dispatch({ type: 'avl_data_toggle_show_unit_options', payload: props.device_id });
-            }
-            }>
+            }}>
             {props.unitcode.length === 0 ? 'Add' : props.unitcode}
           </span>
         </td>

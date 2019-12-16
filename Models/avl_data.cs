@@ -133,8 +133,34 @@ namespace VehicleControl.Models
       param.Add("@username", username);
       param.Add("@unitcode", unitcode);
 
-      string query = @"
-        SET ISOLATION LEVEL SERIALIZABLE;
+      string query;
+
+      if (unitcode.Length == 0)
+      {
+        query = @"
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'imei' field
+          ,CAST(imei AS VARCHAR(50))
+          ,'0'
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          imei = @imei;
+
+        UPDATE unit_tracking_data
+        SET 
+          imei = 0  
+        WHERE            
+          imei = @imei;";
+      }
+      else
+      {
+        query = @"
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         WITH NewData AS (
           SELECT
@@ -193,6 +219,7 @@ namespace VehicleControl.Models
         FROM unit_tracking_data
         WHERE 
           unitcode != @unitcode
+          AND @unitcode != ''
           AND imei = @imei;
 
         UPDATE unit_tracking_data
@@ -200,6 +227,7 @@ namespace VehicleControl.Models
           imei = 0  
         WHERE  
           unitcode != @unitcode
+          AND @unitcode != ''
           AND imei = @imei;
 
         INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
@@ -232,8 +260,8 @@ namespace VehicleControl.Models
           ,phone_number = @phone_number
         WHERE
           unitcode = @unitcode
-          AND imei != @imei;
-";
+          AND imei != @imei;";
+      }
       return Constants.Exec_Query(query, param);
     }
 
@@ -246,8 +274,35 @@ namespace VehicleControl.Models
       param.Add("@username", username);
       param.Add("@unitcode", unitcode);
 
-      string query = @"
-        SET ISOLATION LEVEL SERIALIZABLE;
+      string query;
+
+      if (unitcode.Length == 0)
+      {
+        query = @"
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'phone_number' field
+          ,CAST(phone_number AS VARCHAR(50))
+          ,'0'
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          phone_number = @phone_number;
+
+        UPDATE unit_tracking_data
+        SET 
+          phone_number = 0  
+        WHERE  
+          phone_number = @phone_number;";
+
+      }
+      else
+      {
+        query = @"
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         WITH NewData AS (
           SELECT
@@ -345,8 +400,9 @@ namespace VehicleControl.Models
           ,phone_number = @phone_number
         WHERE
           unitcode = @unitcode
-          AND phone_number != @phone_number;
-";
+          AND phone_number != @phone_number;";
+      }
+
       return Constants.Exec_Query(query, param);
     }
 

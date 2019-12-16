@@ -49,7 +49,6 @@ export class AVLData implements IAVLData
 
   public static async Delete(device_id: string): Promise<Response>
   {
-    console.log("deleting device_id: " + device_id);
     const response = await Post_Empty("API/AVL/Delete?device_id=" + device_id, {});
     return response;
   }

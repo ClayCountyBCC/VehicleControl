@@ -30,6 +30,11 @@ export interface IState
   unit_data_special_filter: string
 }
 
+export interface IAVLDataWithIndex extends AVLData
+{
+  index: number  
+}
+
 export interface IAction
 {
   type: string

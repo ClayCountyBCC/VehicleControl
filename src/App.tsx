@@ -13,7 +13,7 @@ const App: React.FC = () =>
   React.useEffect(() =>
   {
     state.avl_data.length === 0 && fetchAVLData()
-  });
+  }, []);
 
   const fetchAVLData = async () =>
   {
@@ -35,7 +35,7 @@ const App: React.FC = () =>
         <div
           style={{paddingLeft: 0}}
           className="column is-half right-side">
-          
+          <WebMapView />
         </div>
 
       </div>

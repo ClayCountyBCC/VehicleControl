@@ -109,6 +109,9 @@ const AVLList: React.FC = () =>
         <thead>
           <tr>
             <th>
+              #
+            </th>
+            <th>
               <a
                 href="#SortByDeviceId"
                 onClick={event =>
@@ -129,7 +132,7 @@ const AVLList: React.FC = () =>
                   dispatch({ type: 'avl_data_sort', payload: 'device_type' });
                 }}
                 className={`${state.avl_data_sort_field !== 'device_type' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
-                Device Type
+                Type
               </a>
             </th>
             <th>
@@ -174,9 +177,9 @@ const AVLList: React.FC = () =>
           </tr>
         </thead>
         <tbody>
-          {state.filtered_avl_data.map(avl =>
+          {state.filtered_avl_data.map((avl, index) =>
           {
-            return (<AVL key={avl.device_id} {...avl} />);
+            return (<AVL key={avl.device_id} index={index} {...avl} />);
           })}
         </tbody>
       </table>
