@@ -1,6 +1,6 @@
 ﻿import React, { useContext, useReducer } from 'react';
 import { IState, IAction } from './interfaces';
-import AVLData from './AVLData';
+import AVLData from './AVL/AVLData';
 
 
 

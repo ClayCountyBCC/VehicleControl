@@ -103,14 +103,18 @@
     <Content Include="build\index.html" />
     <Content Include="build\logo192.png" />
     <Content Include="build\logo512.png" />
-    <Content Include="build\precache-manifest.d8c71fa5c452177e4bd43c575aedc87a.js" />
-    <Content Include="build\static\js\2.2837c004.chunk.js" />
-    <Content Include="build\static\js\main.3be579ce.chunk.js" />
+    <Content Include="build\precache-manifest.094977205e6c6e2accbae990bcc7c1b7.js" />
+    <Content Include="build\static\js\2.90f8df5d.chunk.js" />
+    <Content Include="build\static\js\main.409c4a34.chunk.js" />
     <Content Include="build\static\js\runtime-main.3110bd82.js" />
     <Content Include="Content\bulma.css" />
     <Content Include="Content\bulma.min.css">
       <DependentUpon>bulma.css</DependentUpon>
     </Content>
+    <Content Include="Content\fontawesome-free\css\all.css" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-brands-400.svg" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-regular-400.svg" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-solid-900.svg" />
     <Content Include="Content\main.css">
       <DependentUpon>main.scss</DependentUpon>
     </Content>
@@ -156,10 +160,10 @@
     <Content Include="package-lock.json" />
     <Content Include="build\asset-manifest.json" />
     <Content Include="build\manifest.json" />
-    <Content Include="build\static\js\2.2837c004.chunk.js.LICENSE" />
-    <Content Include="build\static\js\2.2837c004.chunk.js.map" />
-    <Content Include="build\static\js\main.3be579ce.chunk.js.map" />
     <Content Include="build\static\js\runtime-main.3110bd82.js.map" />
+    <Content Include="build\static\js\2.90f8df5d.chunk.js.LICENSE" />
+    <Content Include="build\static\js\2.90f8df5d.chunk.js.map" />
+    <Content Include="build\static\js\main.409c4a34.chunk.js.map" />
     <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
@@ -167,6 +171,18 @@
     </None>
     <Content Include="Content\Utilities.scss" />
     <Content Include="Content\main.scss" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-brands-400.eot" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-brands-400.ttf" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-brands-400.woff" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-brands-400.woff2" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-regular-400.eot" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-regular-400.ttf" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-regular-400.woff" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-regular-400.woff2" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-solid-900.eot" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-solid-900.ttf" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-solid-900.woff" />
+    <Content Include="Content\fontawesome-free\webfonts\fa-solid-900.woff2" />
     <None Include="packages.config" />
     <Content Include="tsconfig.json" />
     <None Include="Properties\PublishProfiles\DV10.pubxml" />
@@ -180,16 +196,19 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
+    <Folder Include="src\Cad\" />
+    <Folder Include="src\FleetComplete\" />
+    <Folder Include="src\Unit\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\App.tsx" />
-    <TypeScriptCompile Include="src\AVL.tsx" />
-    <TypeScriptCompile Include="src\AVLData.ts" />
-    <TypeScriptCompile Include="src\AVLList.tsx" />
+    <TypeScriptCompile Include="src\AVL\AVL.tsx" />
+    <TypeScriptCompile Include="src\AVL\AVLData.ts" />
+    <TypeScriptCompile Include="src\AVL\AVLList.tsx" />
     <TypeScriptCompile Include="src\ErrorInformation.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\interfaces.tsx" />
-    <TypeScriptCompile Include="src\AVLUnitOptions.tsx" />
+    <TypeScriptCompile Include="src\AVL\AVLUnitOptions.tsx" />
     <TypeScriptCompile Include="src\UnitHistory.ts" />
     <TypeScriptCompile Include="src\UnitHistoryList.tsx" />
     <TypeScriptCompile Include="src\WebMapView.tsx" />

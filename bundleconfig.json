@@ -5,7 +5,7 @@
       "Content/bulma.css",
       "Content/Utilities.css",
       "Content/main.css",
-      "node_modules/@fortawesome/fontawesome-free/css/all.css"
+      "Content/fontawesome-free/css/all.css"
     ]
   }
 ]

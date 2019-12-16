@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/vehiclecontrol/precache-manifest.d8c71fa5c452177e4bd43c575aedc87a.js"
+  "/vehiclecontrol/precache-manifest.094977205e6c6e2accbae990bcc7c1b7.js"
 );
 
 self.addEventListener('message', (event) => {

@@ -1,8 +1,8 @@
 import React from 'react';
 import Nav from './nav';
 import { Store } from './Store';
-import AVLData from './AVLData';
-import AVLList from './AVLList';
+import AVLData from './AVL/AVLData';
+import AVLList from './AVL/AVLList';
 import { WebMapView } from './WebMapView';
 //import './App.css';
 
