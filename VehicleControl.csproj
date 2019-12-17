@@ -140,6 +140,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AVLController.cs" />
+    <Compile Include="Controllers\FCController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -197,7 +198,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
     <Folder Include="src\Cad\" />
-    <Folder Include="src\FleetComplete\" />
     <Folder Include="src\Unit\" />
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +206,9 @@
     <TypeScriptCompile Include="src\AVL\AVLData.ts" />
     <TypeScriptCompile Include="src\AVL\AVLList.tsx" />
     <TypeScriptCompile Include="src\ErrorInformation.tsx" />
+    <TypeScriptCompile Include="src\FleetComplete\FC.tsx" />
+    <TypeScriptCompile Include="src\FleetComplete\FCList.tsx" />
+    <TypeScriptCompile Include="src\FleetComplete\FleetCompleteData.ts" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\interfaces.tsx" />
     <TypeScriptCompile Include="src\AVL\AVLUnitOptions.tsx" />

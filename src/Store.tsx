@@ -1,38 +1,41 @@
 ﻿import React, { useContext, useReducer } from 'react';
 import { IState, IAction } from './interfaces';
 import AVLData from './AVL/AVLData';
+import FleetCompleteData from './FleetComplete/FleetCompleteData';
 
 
 
 const initialState: IState =
 {
+  current_view: "avl",
+
   avl_data: [],
-  fleetcomplete_data: [],
+  fc_data: [],
   cad_data: [],
   unit_data: [],
 
   filtered_avl_data: [],
-  filtered_fleetcomplete_data: [],
+  filtered_fc_data: [],
   filtered_cad_data: [],
   filtered_unit_data: [],
 
   avl_data_filter: "",
-  fleetcomplete_data_filter: "",
+  fc_data_filter: "",
   cad_data_filter: "",
   unit_data_filter: "",
 
   avl_data_sort_field: "device_id",
-  fleetcomplete_data_sort_field: "",
+  fc_data_sort_field: "",
   cad_data_sort_field: "",
   unit_data_sort_field: "",
 
   avl_data_sort_ascending: true,
-  fleetcomplete_data_sort_ascending: true,
+  fc_data_sort_ascending: true,
   cad_data_sort_ascending: true,
   unit_data_sort_ascending: true,
 
   avl_data_special_filter: "",
-  fleetcomplete_data_special_filter: "",
+  fc_data_special_filter: "",
   cad_data_special_filter: "",
   unit_data_special_filter: ""
 }
@@ -43,6 +46,12 @@ function reducer(state: IState, action: IAction): IState
 {
   switch (action.type)
   {
+    case "set_current_view":
+      return {
+        ...state,
+        current_view: action.payload
+      }
+
     case "get_avl_data":
       return {
         ...state,
@@ -54,6 +63,19 @@ function reducer(state: IState, action: IAction): IState
             state.avl_data_sort_field,
             state.avl_data_sort_ascending,
             state.avl_data_special_filter)
+      };
+
+    case "get_fc_data":
+      return {
+        ...state,
+        fc_data: action.payload,
+        filtered_fc_data:
+          process_fc(
+            action.payload,
+            state.fc_data_filter,
+            state.fc_data_sort_field,
+            state.fc_data_sort_ascending,
+            state.fc_data_special_filter)
       };
 
     case "search_avl_data":
@@ -69,8 +91,21 @@ function reducer(state: IState, action: IAction): IState
         avl_data_filter: action.payload
       };
 
+    case "search_fc_data":
+      return {
+        ...state,
+        filtered_fc_data:
+          process_fc(
+            state.fc_data,
+            action.payload,
+            state.fc_data_sort_field,
+            state.fc_data_sort_ascending,
+            state.fc_data_special_filter),
+        fc_data_filter: action.payload
+      };
+
     case "avl_device_history":
-      let showHistory = state.filtered_avl_data.map(a =>
+      let showAVLHistory = state.filtered_avl_data.map(a =>
       {
         if (a.device_id === action.payload.device_id)
         {
@@ -81,7 +116,22 @@ function reducer(state: IState, action: IAction): IState
 
       return {
         ...state,
-        filtered_avl_data: showHistory
+        filtered_avl_data: showAVLHistory
+      };
+
+    case "fc_device_history":
+      let showFCHistory = state.filtered_fc_data.map(a =>
+      {
+        if (a.asset_tag === action.payload.asset_tag)
+        {
+          a.device_history = action.payload.device_history;
+        }
+        return a;
+      });
+
+      return {
+        ...state,
+        filtered_fc_data: showFCHistory
       };
 
 
@@ -90,6 +140,13 @@ function reducer(state: IState, action: IAction): IState
         ...state,
         filtered_avl_data: process_avl(state.avl_data, state.avl_data_filter, state.avl_data_sort_field, state.avl_data_sort_ascending, action.payload),
         avl_data_special_filter: action.payload
+      };
+
+    case "fc_data_special_filter":
+      return {
+        ...state,
+        filtered_fc_data: process_fc(state.fc_data, state.fc_data_filter, state.fc_data_sort_field, state.fc_data_sort_ascending, action.payload),
+        fc_data_special_filter: action.payload
       };
 
     case "avl_data_sort":
@@ -101,8 +158,17 @@ function reducer(state: IState, action: IAction): IState
         avl_data_sort_ascending: !state.avl_data_sort_ascending
       };
 
+    case "fc_data_sort":
+      let filterFC = sort(state.filtered_fc_data, action.payload, !state.fc_data_sort_ascending);
+      return {
+        ...state,
+        filtered_fc_data: filterFC,
+        fc_data_sort_field: action.payload,
+        fc_data_sort_ascending: !state.fc_data_sort_ascending
+      };
+
     case "avl_data_toggle_show_errors":
-      let showError = state.filtered_avl_data.map(a =>
+      let showAVLError = state.filtered_avl_data.map(a =>
       {
         if (a.device_id === action.payload)
         {
@@ -112,11 +178,25 @@ function reducer(state: IState, action: IAction): IState
       });
       return {
         ...state,
-        filtered_avl_data: showError
+        filtered_avl_data: showAVLError
+      };
+
+    case "fc_data_toggle_show_errors":
+      let showFCError = state.filtered_fc_data.map(a =>
+      {
+        if (a.device_id === action.payload)
+        {
+          a.show_errors = !a.show_errors;
+        }
+        return a;
+      });
+      return {
+        ...state,
+        filtered_fc_data: showFCError
       };
 
     case "avl_data_toggle_show_unit_options":
-      let showUO = state.filtered_avl_data.map(a =>
+      let showAVLUO = state.filtered_avl_data.map(a =>
       {
         if (a.device_id === action.payload)
         {
@@ -127,7 +207,22 @@ function reducer(state: IState, action: IAction): IState
 
       return {
         ...state,
-        filtered_avl_data: showUO
+        filtered_avl_data: showAVLUO
+      };
+
+    case "fc_data_toggle_show_unit_options":
+      let showFCUO = state.filtered_fc_data.map(a =>
+      {
+        if (a.device_id === action.payload)
+        {
+          a.show_unit_options = !a.show_unit_options;
+        }
+        return a;
+      });
+
+      return {
+        ...state,
+        filtered_fc_data: showFCUO
       };
 
     default:
@@ -143,6 +238,19 @@ function filter_avl(arrayToFilter:Array<AVLData>, filterUsing:string): Array<AVL
   {
     return j.device_id.toLowerCase().indexOf(f) > -1 ||
       j.unitcode.toLowerCase().indexOf(f) > -1;
+  });
+  return filtered;
+}
+
+function filter_fc(arrayToFilter: Array<FleetCompleteData>, filterUsing: string): Array<FleetCompleteData>
+{
+  if (filterUsing.length === 0) return arrayToFilter;
+  let f = filterUsing.toLowerCase();
+  let filtered = arrayToFilter.filter(j =>
+  {
+    return j.device_id.toLowerCase().indexOf(f) > -1 ||
+      j.unitcode.toLowerCase().indexOf(f) > -1 || 
+      j.asset_tag.toLowerCase().indexOf(f) > -1;
   });
   return filtered;
 }
@@ -197,6 +305,13 @@ function sort_dates(array: Array<any>, field: string, ascending: boolean): Array
 function process_avl(array: Array<any>, filter: string, field: string, ascending: boolean, specialFilter: string)
 {
   let filtered = filter_avl(array, filter);
+  let special_filtered = special_filter(filtered, specialFilter);
+  return sort(special_filtered, field, ascending);
+}
+
+function process_fc(array: Array<any>, filter: string, field: string, ascending: boolean, specialFilter: string)
+{
+  let filtered = filter_fc(array, filter);
   let special_filtered = special_filter(filtered, specialFilter);
   return sort(special_filtered, field, ascending);
 }

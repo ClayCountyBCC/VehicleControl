@@ -16,7 +16,7 @@ namespace VehicleControl.Models
     public string model { get; set; }
     public string vehicle_year { get; set; }
     public DateTime location_timestamp { get; set; }
-    public DateTime date_updated { get; set; }
+    public DateTime updated_on { get; set; }
     public decimal latitude { get; set; }
     public decimal longitude { get; set; }
     public int direction { get; set; }
@@ -41,7 +41,7 @@ namespace VehicleControl.Models
           ,F.[model]
           ,F.[year]
           ,F.[timestamp] location_timestamp
-          ,F.[date_updated]
+          ,F.[date_updated] updated_on
           ,F.[latitude]
           ,F.[longitude]
           ,F.[direction]
@@ -81,7 +81,7 @@ namespace VehicleControl.Models
           a.error_information.Add("Location has not been updated in the last 24 hours.");
           a.has_date_error = true;
         }
-        if (a.date_updated < yesterday)
+        if (a.updated_on < yesterday)
         {
           a.error_information.Add("Device has not been seen in the last 24 hours.");
           a.has_date_error = true;
@@ -108,6 +108,129 @@ namespace VehicleControl.Models
       return Constants.Exec_Query(query, param);
     }
 
+    public static int UpdateUnit(string asset_tag, string unitcode, string username)
+    {
+      // This function is going to associate a given asset tag with a unitcode.
+      var param = new DynamicParameters();
+
+      param.Add("@asset_tag", asset_tag);      
+      param.Add("@username", username);
+      param.Add("@unitcode", unitcode);
+
+      string query;
+
+      if (unitcode.Length == 0)
+      {
+        query = @"
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'asset_tag' field
+          ,asset_tag
+          ,''
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          asset_tag = @asset_tag;
+
+        UPDATE unit_tracking_data
+        SET 
+          asset_tag = ''  
+        WHERE            
+          asset_tag=@asset_tag;";
+      }
+      else
+      {
+        query = @"
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+        WITH NewData AS (
+          SELECT
+            @asset_tag asset_tag
+            ,@username username
+            ,@unitcode unitcode
+          WHERE NOT EXISTS (SELECT unitcode FROM unit_tracking_data UTD2 WHERE UTD2.unitcode = @unitcode)
+        )
+
+        INSERT INTO Tracking.dbo.unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'Added New UnitCode'
+          ,''
+          ,''
+          ,username
+        FROM NewData;
+
+        WITH NewData AS (
+          SELECT
+            @asset_tag asset_tag
+            ,@username username
+            ,@unitcode unitcode
+          WHERE NOT EXISTS (SELECT unitcode FROM unit_tracking_data UTD2 WHERE UTD2.unitcode = @unitcode)
+        )
+
+        INSERT INTO Tracking.dbo.unit_tracking_data
+                   ([unitcode]
+                   ,[longitude]
+                   ,[latitude]
+                   ,[data_source]
+                   ,[imei]
+                   ,[phone_number]
+                   ,[asset_tag]
+                   ,[date_last_communicated])
+        SELECT
+          unitcode
+          ,0
+          ,0
+          ,'FC'
+          ,0
+          ,0
+          ,@asset_tag
+          ,GETDATE()
+        FROM NewData;
+
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'asset_tag' field
+          ,asset_tag
+          ,''
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          unitcode != @unitcode
+          AND asset_tag = @asset_tag;
+
+        UPDATE unit_tracking_data
+        SET 
+          asset_tag = ''
+        WHERE  
+          unitcode != @unitcode
+          AND asset_tag = @asset_tag;
+
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        SELECT
+          unitcode
+          ,'asset_tag' field
+          ,asset_tag
+          ,@asset_tag
+          ,@username
+        FROM unit_tracking_data
+        WHERE 
+          unitcode = @unitcode
+          AND asset_tag != @asset_tag;
+
+        UPDATE unit_tracking_data
+        SET 
+          asset_tag=@asset_tag          
+        WHERE
+          unitcode = @unitcode
+          AND asset_tag != @asset_tag;";
+      }
+      return Constants.Exec_Query(query, param);
+    }
 
   }
 }
