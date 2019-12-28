@@ -50,7 +50,7 @@ const UnitHistoryList = (props: IUnitHistoryList) =>
                 if (h.error_message.length > 0)
                 {
                   return (
-                    <tr>
+                    <tr key={h.id}>
                       <td colSpan={6}>{h.error_message}</td>
                     </tr>
                   )

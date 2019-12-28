@@ -8,7 +8,7 @@ namespace VehicleControl.Models
 {
   public class unit_history
   {
-    public int id { get; set; } = -1;
+    public int id { get; set; } = 0;
     public string unitcode { get; set; } = "";
     public string field { get; set; } = "";
     public string changed_from { get; set; } = "";

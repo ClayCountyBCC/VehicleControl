@@ -20,7 +20,7 @@ const CADList: React.FC = () =>
         className="level">
         <div className="level-left">
           <div className="level-item is-size-3 has-text-weight-bold">
-            AVL
+            CAD
           </div>
           <div className="level-item">
             <div className="field">
@@ -137,7 +137,7 @@ const CADList: React.FC = () =>
                   dispatch({ type: 'cad_data_sort', payload: 'status' });
                 }}
                 className={`${state.cad_data_sort_field !== 'status' ? '' : state.cad_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
-                Unit
+                Status
               </a>
             </th>
             <th>
@@ -149,7 +149,7 @@ const CADList: React.FC = () =>
                   dispatch({ type: 'cad_data_sort', payload: 'avstatus' });
                 }}
                 className={`${state.cad_data_sort_field !== 'avstatus' ? '' : state.cad_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
-                Unit
+                AV Status
               </a>
             </th>
             <th>

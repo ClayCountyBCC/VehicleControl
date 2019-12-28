@@ -28,7 +28,7 @@ const CAD = (props:ICADDataWithIndex) =>
           {props.unitcode}
         </td>
         <td>
-          {props.inci_id.length > 0 ? 'On A Call' : ''}
+          {props.inci_id.trim().length > 0 ? 'On A Call' : ''}
         </td>
         <td>
           {props.status}
@@ -113,11 +113,11 @@ const CAD = (props:ICADDataWithIndex) =>
         </td>
       </tr>      
       <ErrorInformation
-        colspan={7}
+        colspan={8}
         error_information={props.error_information}
         show_errors={props.show_errors} />
       <UnitHistoryList
-        colspan={7}
+        colspan={8}
         title="History By Device Id"
         history={props.device_history}
       />
