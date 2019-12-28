@@ -40,3 +40,9 @@
 
 button.level-item.no-decoration {
   text-decoration: none; }
+
+td.icon-options {
+  padding-right: 1em; }
+
+TD.icon-options span:not(:first-child) {
+  margin-left: .5em; }

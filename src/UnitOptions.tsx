@@ -1,9 +1,9 @@
 ﻿import React, { useState } from 'react';
-import { IAVLUnitOptions } from '../interfaces';
-import AVLData from './AVLData';
+import { IUnitOptions } from './interfaces';
+//import AVLData from './AVLData';
 //import { Store } from './Store';
 
-const AVLUnitOptions = (props: IAVLUnitOptions) =>
+const UnitOptions = (props: IUnitOptions) =>
 {
   //const { dispatch } = React.useContext(Store);
   const [currentUnit, setCurrentUnit] = useState("");
@@ -19,7 +19,8 @@ const AVLUnitOptions = (props: IAVLUnitOptions) =>
     <tr>
       <td>
       </td>
-      <td className="has-text-right">
+      <td colSpan={2}
+        className="has-text-right">
         Current Unit:
       </td>
       <td>
@@ -44,14 +45,14 @@ const AVLUnitOptions = (props: IAVLUnitOptions) =>
               onClick={async event =>
               {
                 event.preventDefault();
-                const response = await AVLData.Update(props.device_id, props.device_type, currentUnit.trim());
-                if (response.ok)
+                console.log('props asset_tag', props.asset_tag);
+                if (props.asset_tag)
                 {
-                  props.fetch_avl_data();
+                  props.update_data(props.asset_tag, currentUnit.trim());
                 }
                 else
                 {
-                  alert("There was a problem with deleting this record. Please contact MIS Development for more information.");
+                  props.update_data(props.device_id, props.device_type, currentUnit.trim());
                 }
               }}
               className="button is-success is-small">
@@ -64,4 +65,4 @@ const AVLUnitOptions = (props: IAVLUnitOptions) =>
   );
 }
 
-export default AVLUnitOptions;
+export default UnitOptions;

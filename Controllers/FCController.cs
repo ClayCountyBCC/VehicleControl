@@ -58,7 +58,8 @@ namespace VehicleControl.Controllers
       {
         return BadRequest($"Error deleting device_id: { device_id }.");
       }
-
     }
+
+
   }
 }

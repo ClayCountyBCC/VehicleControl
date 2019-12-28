@@ -24,7 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>3.7</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -140,6 +140,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AVLController.cs" />
+    <Compile Include="Controllers\CADController.cs" />
     <Compile Include="Controllers\FCController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Global.asax.cs">
@@ -197,7 +198,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
-    <Folder Include="src\Cad\" />
     <Folder Include="src\Unit\" />
   </ItemGroup>
   <ItemGroup>
@@ -205,13 +205,16 @@
     <TypeScriptCompile Include="src\AVL\AVL.tsx" />
     <TypeScriptCompile Include="src\AVL\AVLData.ts" />
     <TypeScriptCompile Include="src\AVL\AVLList.tsx" />
+    <TypeScriptCompile Include="src\Cad\CAD.tsx" />
+    <TypeScriptCompile Include="src\Cad\CADData.ts" />
+    <TypeScriptCompile Include="src\Cad\CADList.tsx" />
     <TypeScriptCompile Include="src\ErrorInformation.tsx" />
     <TypeScriptCompile Include="src\FleetComplete\FC.tsx" />
     <TypeScriptCompile Include="src\FleetComplete\FCList.tsx" />
     <TypeScriptCompile Include="src\FleetComplete\FleetCompleteData.ts" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\interfaces.tsx" />
-    <TypeScriptCompile Include="src\AVL\AVLUnitOptions.tsx" />
+    <TypeScriptCompile Include="src\UnitOptions.tsx" />
     <TypeScriptCompile Include="src\UnitHistory.ts" />
     <TypeScriptCompile Include="src\UnitHistoryList.tsx" />
     <TypeScriptCompile Include="src\WebMapView.tsx" />

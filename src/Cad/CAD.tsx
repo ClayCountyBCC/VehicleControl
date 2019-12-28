@@ -1,34 +1,20 @@
 ﻿import React from 'react';
-import FleetCompleteData from './FleetCompleteData';
+import CADData from './CADData';
 import { Store } from '../Store';
 import { Format_DateTime } from '../Utilities';
 import ErrorInformation from '../ErrorInformation';
-import UnitOptions from '../UnitOptions';
 import UnitHistory from '../UnitHistory';
 import UnitHistoryList from '../UnitHistoryList';
-import { IFCDataWithIndex } from '../interfaces';
+import { ICADDataWithIndex } from '../interfaces';
 
-const FC = (props: IFCDataWithIndex) =>
+const CAD = (props:ICADDataWithIndex) =>
 {
   const { dispatch } = React.useContext(Store);
 
-  const updateFCData = async (asset_tag: string, current_unit: string) =>
+  const fetchCADData = async () =>
   {
-    const response = await FleetCompleteData.Update(asset_tag, current_unit);
-    if (response.ok)
-    {
-      fetchFCData();
-    }
-    else
-    {
-      alert("There was a problem with deleting this record. Please contact MIS Development for more information.");
-    }
-  }
-
-  const fetchFCData = async () =>
-  {
-    const data = await FleetCompleteData.Get();
-    return dispatch({ type: 'get_fc_data', payload: data });
+    const data = await CADData.Get();
+    return dispatch({ type: 'get_cad_data', payload: data });
   }
 
 
@@ -39,40 +25,32 @@ const FC = (props: IFCDataWithIndex) =>
           {props.index + 1}
         </td>
         <td>
-          {props.device_id.replace(/^0+/, '')}
+          {props.unitcode}
         </td>
         <td>
-          {props.asset_tag === props.device_id ? '' : props.asset_tag}
+          {props.inci_id.length > 0 ? 'On A Call' : ''}
         </td>
         <td>
-          <span
-            title="Change this Device's unit"
-            className="cursor_pointer has-text-link"
-            onClick={event =>
-            {
-              dispatch({ type: 'fc_data_toggle_show_unit_options', payload: props.device_id });
-            }}>
-            {props.unitcode.length === 0 ? 'Add' : props.unitcode}
-          </span>
+          {props.status}
         </td>
+        <td>
+          {props.avstatus}
+        </td>
+
         <td>
           {Format_DateTime(props.updated_on)}
         </td>
         <td>
           {Format_DateTime(props.location_timestamp)}
         </td>
-        <td
-          className="has-text-right icon-options">
-          {
-            // show errors, history, delete
-          }
+        <td className="has-text-right icon-options">
           {props.error_information.length > 0 ? (
             <span
               title="View Errors"
               className="icon cursor_pointer has-text-warning"
               onClick={event =>
               {
-                dispatch({ type: 'fc_data_toggle_show_errors', payload: props.device_id });
+                dispatch({ type: 'cad_data_toggle_show_errors', payload: props.unitcode });
               }
               }>
               <i className="fas fa-exclamation-circle"></i>
@@ -81,18 +59,18 @@ const FC = (props: IFCDataWithIndex) =>
 
           <span
             title="View History"
-            className="icon cursor_pointer has-text-link"
+            className="icon cursor_pointer has-text-link"            
             onClick={async event =>
             {
               event.preventDefault();
 
               if (!props.device_history || props.device_history.length === 0)
               {
-                let deviceHistory = await UnitHistory.GetByDeviceId(props.asset_tag);
+                let deviceHistory = await UnitHistory.GetByDeviceId(props.unitcode);
                 dispatch({
-                  type: 'fc_device_history',
+                  type: 'cad_device_history',
                   payload: {
-                    device_id: props.device_id,
+                    unitcode: props.unitcode,
                     device_history: deviceHistory
                   }
                 });
@@ -100,9 +78,9 @@ const FC = (props: IFCDataWithIndex) =>
               else
               {
                 dispatch({
-                  type: 'fc_device_history',
+                  type: 'cad_device_history',
                   payload: {
-                    device_id: props.device_id,
+                    unitcode: props.unitcode,
                     device_history: []
                   }
                 });
@@ -113,14 +91,14 @@ const FC = (props: IFCDataWithIndex) =>
 
           <span
             title="Delete This Device"
-            className="icon cursor_pointer has-text-danger"
+            className="icon cursor_pointer has-text-danger"            
             onClick={async event =>
             {
               event.preventDefault();
-              const response = await FleetCompleteData.Delete(props.device_id);
+              const response = await CADData.Delete(props.unitcode);
               if (response.ok)
               {
-                fetchFCData();
+                fetchCADData();
               }
               else
               {
@@ -133,14 +111,7 @@ const FC = (props: IFCDataWithIndex) =>
 
 
         </td>
-      </tr>
-
-      <UnitOptions
-        colspan={7}
-        new_unitcode=""
-        update_data={updateFCData}
-        {...props} />
-
+      </tr>      
       <ErrorInformation
         colspan={7}
         error_information={props.error_information}
@@ -155,4 +126,4 @@ const FC = (props: IFCDataWithIndex) =>
 
 }
 
-export default FC;
+export default CAD;

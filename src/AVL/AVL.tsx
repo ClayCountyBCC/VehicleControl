@@ -2,8 +2,8 @@
 import AVLData from './AVLData';
 import { Store } from '../Store';
 import { Format_DateTime } from '../Utilities';
-import AVLErrorInformation from '../ErrorInformation';
-import AVLUnitOptions from './AVLUnitOptions';
+import ErrorInformation from '../ErrorInformation';
+import UnitOptions from '../UnitOptions';
 import UnitHistory from '../UnitHistory';
 import UnitHistoryList from '../UnitHistoryList';
 import { IAVLDataWithIndex } from '../interfaces';
@@ -11,6 +11,20 @@ import { IAVLDataWithIndex } from '../interfaces';
 const AVL = (props:IAVLDataWithIndex) =>
 {
   const { dispatch } = React.useContext(Store);
+
+  const UpdateAVLData = async (device_id:string, device_type: string, current_unit: string) =>
+  {
+    const response = await AVLData.Update(device_id, device_type, current_unit);
+    if (response.ok)
+    {
+      fetchAVLData();
+    }
+    else
+    {
+      alert("There was a problem with deleting this record. Please contact MIS Development for more information.");
+    }
+  }
+
 
   const fetchAVLData = async () =>
   {
@@ -51,9 +65,7 @@ const AVL = (props:IAVLDataWithIndex) =>
         <td>
           {Format_DateTime(props.location_timestamp)}
         </td>
-        <td
-          style={{ paddingRight: "1em" }}
-          className="has-text-right">
+        <td className="has-text-right icon-options">
           {
             // show errors, history, delete
           }
@@ -72,8 +84,7 @@ const AVL = (props:IAVLDataWithIndex) =>
 
           <span
             title="View History"
-            className="icon cursor_pointer has-text-link"
-            style={{ marginLeft: "1em" }}
+            className="icon cursor_pointer has-text-link"            
             onClick={async event =>
             {
               event.preventDefault();
@@ -105,8 +116,7 @@ const AVL = (props:IAVLDataWithIndex) =>
 
           <span
             title="Delete This Device"
-            className="icon cursor_pointer has-text-danger"
-            style={{ marginLeft: "1em" }}
+            className="icon cursor_pointer has-text-danger"            
             onClick={async event =>
             {
               event.preventDefault();
@@ -127,12 +137,12 @@ const AVL = (props:IAVLDataWithIndex) =>
 
         </td>
       </tr>
-      <AVLUnitOptions
+      <UnitOptions
         colspan={7}
         new_unitcode=""
-        fetch_avl_data = {fetchAVLData}
+        update_data = {UpdateAVLData}
         {...props} />
-      <AVLErrorInformation
+      <ErrorInformation
         colspan={7}
         error_information={props.error_information}
         show_errors={props.show_errors} />

@@ -1,4 +1,4 @@
-﻿import React, { useContext, useReducer } from 'react';
+﻿import React, { useReducer } from 'react';
 import { IState, IAction } from './interfaces';
 import AVLData from './AVL/AVLData';
 import FleetCompleteData from './FleetComplete/FleetCompleteData';
@@ -78,6 +78,19 @@ function reducer(state: IState, action: IAction): IState
             state.fc_data_special_filter)
       };
 
+    case "get_cad_data":
+      return {
+        ...state,
+        cad_data: action.payload,
+        filtered_cad_data:
+          process_fc(
+            action.payload,
+            state.cad_data_filter,
+            state.cad_data_sort_field,
+            state.cad_data_sort_ascending,
+            state.cad_data_special_filter)
+      };
+
     case "search_avl_data":
       return {
         ...state,
@@ -104,6 +117,19 @@ function reducer(state: IState, action: IAction): IState
         fc_data_filter: action.payload
       };
 
+    case "search_cad_data":
+      return {
+        ...state,
+        filtered_cad_data:
+          process_cad(
+            state.cad_data,
+            action.payload,
+            state.cad_data_sort_field,
+            state.cad_data_sort_ascending,
+            state.cad_data_special_filter),
+        cad_data_filter: action.payload
+      };
+
     case "avl_device_history":
       let showAVLHistory = state.filtered_avl_data.map(a =>
       {
@@ -122,7 +148,7 @@ function reducer(state: IState, action: IAction): IState
     case "fc_device_history":
       let showFCHistory = state.filtered_fc_data.map(a =>
       {
-        if (a.asset_tag === action.payload.asset_tag)
+        if (a.device_id === action.payload.device_id)
         {
           a.device_history = action.payload.device_history;
         }
@@ -132,6 +158,21 @@ function reducer(state: IState, action: IAction): IState
       return {
         ...state,
         filtered_fc_data: showFCHistory
+      };
+
+    case "cad_device_history":
+      let showCADHistory = state.filtered_cad_data.map(a =>
+      {
+        if (a.unitcode === action.payload.unitcode)
+        {
+          a.device_history = action.payload.device_history;
+        }
+        return a;
+      });
+
+      return {
+        ...state,
+        filtered_cad_data: showCADHistory
       };
 
 
@@ -147,6 +188,13 @@ function reducer(state: IState, action: IAction): IState
         ...state,
         filtered_fc_data: process_fc(state.fc_data, state.fc_data_filter, state.fc_data_sort_field, state.fc_data_sort_ascending, action.payload),
         fc_data_special_filter: action.payload
+      };
+
+    case "cad_data_special_filter":
+      return {
+        ...state,
+        filtered_cad_data: process_cad(state.cad_data, state.cad_data_filter, state.cad_data_sort_field, state.cad_data_sort_ascending, action.payload),
+        cad_data_special_filter: action.payload
       };
 
     case "avl_data_sort":
@@ -165,6 +213,15 @@ function reducer(state: IState, action: IAction): IState
         filtered_fc_data: filterFC,
         fc_data_sort_field: action.payload,
         fc_data_sort_ascending: !state.fc_data_sort_ascending
+      };
+
+    case "cad_data_sort":
+      let filterCAD = sort(state.filtered_cad_data, action.payload, !state.cad_data_sort_ascending);
+      return {
+        ...state,
+        filtered_cad_data: filterCAD,
+        cad_data_sort_field: action.payload,
+        cad_data_sort_ascending: !state.cad_data_sort_ascending
       };
 
     case "avl_data_toggle_show_errors":
@@ -193,6 +250,20 @@ function reducer(state: IState, action: IAction): IState
       return {
         ...state,
         filtered_fc_data: showFCError
+      };
+
+    case "cad_data_toggle_show_errors":
+      let showCADError = state.filtered_cad_data.map(a =>
+      {
+        if (a.unitcode === action.payload)
+        {
+          a.show_errors = !a.show_errors;
+        }
+        return a;
+      });
+      return {
+        ...state,
+        filtered_cad_data: showCADError
       };
 
     case "avl_data_toggle_show_unit_options":
@@ -255,6 +326,17 @@ function filter_fc(arrayToFilter: Array<FleetCompleteData>, filterUsing: string)
   return filtered;
 }
 
+function filter_cad(arrayToFilter: Array<FleetCompleteData>, filterUsing: string): Array<FleetCompleteData>
+{
+  if (filterUsing.length === 0) return arrayToFilter;
+  let f = filterUsing.toLowerCase();
+  let filtered = arrayToFilter.filter(j =>
+  {
+    return j.unitcode.toLowerCase().indexOf(f) > -1;
+  });
+  return filtered;
+}
+
 function special_filter(array: Array<any>, specialFilter: string): Array<any>
 {
   if (specialFilter.length === 0) return array;
@@ -263,6 +345,9 @@ function special_filter(array: Array<any>, specialFilter: string): Array<any>
     case "error":
       let filtered = array.filter(d => d.error_information.length > 0);
       return filtered;
+
+    case "asset_tag":
+      return array.filter(d => d.has_asset_tag_error);
 
     case "date":
       return array.filter(d => d.has_date_error);
@@ -312,6 +397,13 @@ function process_avl(array: Array<any>, filter: string, field: string, ascending
 function process_fc(array: Array<any>, filter: string, field: string, ascending: boolean, specialFilter: string)
 {
   let filtered = filter_fc(array, filter);
+  let special_filtered = special_filter(filtered, specialFilter);
+  return sort(special_filtered, field, ascending);
+}
+
+function process_cad(array: Array<any>, filter: string, field: string, ascending: boolean, specialFilter: string)
+{
+  let filtered = filter_cad(array, filter);
   let special_filtered = special_filter(filtered, specialFilter);
   return sort(special_filtered, field, ascending);
 }

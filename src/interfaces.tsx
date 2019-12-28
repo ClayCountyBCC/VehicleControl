@@ -1,6 +1,7 @@
 ﻿import UnitHistory from './UnitHistory';
 import AVLData from './AVL/AVLData';
 import FleetCompleteData from './FleetComplete/FleetCompleteData';
+import CADData from './Cad/CADData';
 
 export interface IState
 {
@@ -41,6 +42,11 @@ export interface IFCDataWithIndex extends FleetCompleteData
   index: number
 }
 
+export interface ICADDataWithIndex extends CADData
+{
+  index: number
+}
+
 export interface IAction
 {
   type: string
@@ -54,15 +60,16 @@ export interface IErrorInformation
   show_errors: boolean
 }
 
-export interface IAVLUnitOptions
+export interface IUnitOptions
 {
   show_unit_options: boolean
   colspan: number
   unitcode: string
   device_id: string
-  device_type: string
+  device_type?: string
+  asset_tag?: string
   new_unitcode: string
-  fetch_avl_data: Function
+  update_data: Function
 }
 
 export interface IUnitHistoryList

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Nav from './nav';
 import { Store } from './Store';
 import AVLData from './AVL/AVLData';
 import AVLList from './AVL/AVLList';
+import CADList from './Cad/CADList';
 import FleetCompleteData from './FleetComplete/FleetCompleteData';
 import FCList from './FleetComplete/FCList';
 import { WebMapView } from './WebMapView';
@@ -42,13 +43,16 @@ const App: React.FC = () =>
           {state.current_view === "avl" ? <AVLList /> : null}
           {state.current_view === "unit" ? null : null}
           {state.current_view === "fc" ? <FCList /> : null}
-          {state.current_view === "cad" ? null : null}
+          {state.current_view === "cad" ? <CADList /> : null}
         </div>
 
         <div
           style={{paddingLeft: 0}}
           className="column is-half right-side">
-          <WebMapView />
+          {
+            //<WebMapView />
+          }
+          
         </div>
 
       </div>
