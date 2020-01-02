@@ -9,15 +9,28 @@ namespace VehicleControl.Models
   {
     public string unitcode { get; set; } = "";
     public string using_unit { get; set; } = "";
-    public string data_source { get; set; } = "";
-    public long imei { get; set; } = 0;
-    public long phone_number { get; set; } = 0;    
-    public string asset_tag { get; set; } = "";
-    public DateTime date_last_saved { get; set; }
+
+    public string group_label { get; set; } = "";
+    public bool show_in_minicad { get; set; } = false;
+
+    public decimal avl_longitude { get; set; } = 0;
+    public decimal avl_latitude { get; set; } = 0;
+    public DateTime avl_location_timestamp { get; set; }
+    public bool has_avl_device { get; set; } = false;
+
+    public decimal fc_longitude { get; set; } = 0;
+    public decimal fc_latitude { get; set; } = 0;
+    public DateTime fc_location_timestamp { get; set; }
+    public bool has_fc_device { get; set; } = false;
+
+    public decimal cad_longitude { get; set; } = 0;
+    public decimal cad_latitude { get; set; } = 0;
+    public DateTime cad_location_timestamp { get; set; }
+    public bool should_have_cad_location { get; set; } = false;
+
+
     public List<string> error_information { get; set; } = new List<string>();
-    public Dictionary<long, avl_data> avl_devices = new Dictionary<long, avl_data>();
-    public cad_data cad_location_data { get; set; } = null;
-    public fleetcomplete_data fleetcomplete_location_data { get; set; } = null;
+
 
     unit_tracking_data()
     {
@@ -25,8 +38,58 @@ namespace VehicleControl.Models
 
     public static List<unit_tracking_data> Get()
     {
-      return new List<unit_tracking_data>();
+      string query = @"
+        SELECT
+          UTD.unitcode
+          ,ISNULL(UTD.using_unit
+                  ,'') using_unit
+          ,ISNULL(G.label
+                  ,'') group_label
+          ,ISNULL(UG.show_in_minicad -- this property should be in the unit_tracking_data table
+                  ,0) show_in_minicad
+          ,COALESCE(AI.longitude
+                    ,AP.longitude
+                    ,0) avl_longitude
+          ,COALESCE(AI.latitude
+                    ,AP.latitude
+                    ,0) avl_latitude
+          ,COALESCE(AI.location_timestamp
+                    ,AP.location_timestamp
+                    ,'1/1/1995') avl_location_timestamp
+          ,UTD.has_avl_device
+          ,COALESCE(F.longitude
+                    ,0) fc_longitude
+          ,COALESCE(F.latitude
+                    ,0) fc_latitude
+          ,COALESCE(F.timestamp
+                    ,'1/1/1995') fc_location_timestamp
+          ,UTD.has_fc_device
+          ,COALESCE(C.longitude
+                    ,0) cad_longitude
+          ,COALESCE(C.latitude
+                    ,0) cad_latitude
+          ,COALESCE(C.location_timestamp
+                    ,'1/1/1995') cad_location_timestamp
+          ,UTD.should_have_cad_location
+        FROM
+          unit_tracking_data UTD
+          LEFT OUTER JOIN unit_group UG ON UTD.unitcode = UG.unitcode
+          LEFT OUTER JOIN groups G ON UG.group_name = G.value
+          LEFT OUTER JOIN avl_data AI ON CAST(UTD.imei AS VARCHAR(50)) = AI.device_id
+                                         AND AI.device_type = 'ESN/IMSI'
+                                         AND UTD.imei != 0
+          LEFT OUTER JOIN avl_data AP ON CAST(UTD.phone_number AS VARCHAR(50)) = AP.device_id
+                                         AND AP.device_type = 'Phone Number'
+                                         AND UTD.phone_number != 0
+          LEFT OUTER JOIN fleetcomplete_data F ON UTD.asset_tag = F.asset_tag
+          LEFT OUTER JOIN cad_unit_location_data C ON UTD.unitcode = C.unitcode
+        ORDER  BY
+          UTD.unitcode;";
+      var data = Constants.Get_Data<unit_tracking_data>(query);
+      return data;
     }
+
+
 
 
 

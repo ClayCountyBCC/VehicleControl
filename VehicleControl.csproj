@@ -151,6 +151,7 @@
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\ErrorLog.cs" />
     <Compile Include="Models\fleetcomplete_data.cs" />
+    <Compile Include="Models\SimpleValue.cs" />
     <Compile Include="Models\unit_history.cs" />
     <Compile Include="Models\unit_tracking_data.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
