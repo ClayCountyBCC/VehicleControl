@@ -17,8 +17,6 @@ namespace VehicleControl.Controllers
     [Route("Get")]
     public IHttpActionResult Get()
     {
-      string username = User.Identity.Name;
-      if (System.Diagnostics.Debugger.IsAttached && username.Length == 0) username = WindowsIdentity.GetCurrent().Name;
       return Ok(avl_data.Get());
     }
 

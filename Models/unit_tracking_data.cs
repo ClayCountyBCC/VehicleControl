@@ -17,21 +17,22 @@ namespace VehicleControl.Models
     public decimal avl_latitude { get; set; } = 0;
     public DateTime avl_location_timestamp { get; set; }
     public bool has_avl_device { get; set; } = false;
+    public bool has_avl_error { get; set; } = false;
 
     public decimal fc_longitude { get; set; } = 0;
     public decimal fc_latitude { get; set; } = 0;
     public DateTime fc_location_timestamp { get; set; }
     public bool has_fc_device { get; set; } = false;
+    public bool has_fc_error { get; set; } = false;
 
     public decimal cad_longitude { get; set; } = 0;
     public decimal cad_latitude { get; set; } = 0;
     public DateTime cad_location_timestamp { get; set; }
     public bool should_have_cad_location { get; set; } = false;
-
-
+    public bool has_cad_error { get; set; } = false;
+    
     public List<string> error_information { get; set; } = new List<string>();
-
-
+    
     unit_tracking_data()
     {
     }
@@ -86,11 +87,101 @@ namespace VehicleControl.Models
         ORDER  BY
           UTD.unitcode;";
       var data = Constants.Get_Data<unit_tracking_data>(query);
+      return CheckForErrors(data);
+    }
+
+    private static List<unit_tracking_data> CheckForErrors(List<unit_tracking_data> data)
+    {
+
+      if (data == null) return data; // null is our error condition
+      var yesterday = DateTime.Now.AddDays(-1);
+
+      foreach (unit_tracking_data a in data)
+      {
+        if (a.has_avl_device)
+        {
+          // check for AVL errors here
+          // if there are any, a.has_avl_error = true
+          var l = CheckForLocationErrors("AVL", a.cad_longitude, a.cad_latitude);
+          if (l.Count() > 0)
+          {
+            a.error_information.AddRange(l);
+            a.has_avl_error = true;
+          }
+
+          var d = CheckForDateErrors("AVL", a.cad_location_timestamp, yesterday);
+          if (d.Count() > 0)
+          {
+            a.error_information.AddRange(d);
+            a.has_avl_error = true;
+          }
+        }
+
+        if (a.has_fc_device)
+        {
+          // check for FC errors here
+          // if there are any, a.has_fc_error = true
+          var l = CheckForLocationErrors("Fleet Complete", a.cad_longitude, a.cad_latitude);
+          if (l.Count() > 0)
+          {
+            a.error_information.AddRange(l);
+            a.has_fc_error = true;
+          }
+
+          var d = CheckForDateErrors("Fleet Complete", a.cad_location_timestamp, yesterday);
+          if (d.Count() > 0)
+          {
+            a.error_information.AddRange(d);
+            a.has_fc_error = true;
+          }
+        }
+
+        if (a.should_have_cad_location)
+        {
+          // check for cad location erorrs here
+          // if there are any, a.has_cad_errors = true
+          var l = CheckForLocationErrors("CAD", a.cad_longitude, a.cad_latitude);
+          if(l.Count() > 0)
+          {
+            a.error_information.AddRange(l);
+            a.has_cad_error = true;
+          }
+
+          var d = CheckForDateErrors("CAD", a.cad_location_timestamp, yesterday);
+          if(d.Count() > 0)
+          {
+            a.error_information.AddRange(d);
+            a.has_cad_error = true;
+          }
+        }
+      }
+
       return data;
     }
 
+    private static List<string> CheckForLocationErrors(string location_type, decimal longitude, decimal latitude)
+    {
+      var l = new List<string>();
+      if (latitude == 0 || longitude == 0)
+      {
+        l.Add($"This unit should have a {location_type} location but does not.");
+      }
+      return l;
+    }
 
-
+    private static List<string> CheckForDateErrors(string location_type, DateTime location_timestamp, DateTime yesterday)
+    {
+      var l = new List<string>();
+      if (location_timestamp > DateTime.Now.AddMinutes(5))
+      {
+        l.Add($"{location_type} location is set in the future.");
+      }
+      if (location_timestamp < yesterday)
+      {
+        l.Add($"{location_type} location has not been updated in the last 24 hours.");
+      }
+      return l;
+    }
 
 
   }

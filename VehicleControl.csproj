@@ -142,6 +142,7 @@
     <Compile Include="Controllers\AVLController.cs" />
     <Compile Include="Controllers\CADController.cs" />
     <Compile Include="Controllers\FCController.cs" />
+    <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

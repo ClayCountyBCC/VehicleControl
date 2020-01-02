@@ -12,7 +12,7 @@ namespace VehicleControl.Models
 
     SimpleValue() { }
 
-    public static List<SimpleValue> Get_Unit_Groups()
+    public static List<SimpleValue> GetUnitGroups()
     {
       string query = @"
         SELECT
