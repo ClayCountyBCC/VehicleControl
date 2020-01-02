@@ -200,7 +200,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\" />
-    <Folder Include="src\Unit\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\App.tsx" />
@@ -219,6 +218,7 @@
     <TypeScriptCompile Include="src\UnitOptions.tsx" />
     <TypeScriptCompile Include="src\UnitHistory.ts" />
     <TypeScriptCompile Include="src\UnitHistoryList.tsx" />
+    <TypeScriptCompile Include="src\Unit\UnitData.ts" />
     <TypeScriptCompile Include="src\WebMapView.tsx" />
     <TypeScriptCompile Include="src\Nav.tsx" />
     <TypeScriptCompile Include="src\react-app-env.d.ts" />
