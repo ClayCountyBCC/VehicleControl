@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Dapper;
 
 namespace VehicleControl.Models
 {
@@ -102,7 +103,7 @@ namespace VehicleControl.Models
         {
           // check for AVL errors here
           // if there are any, a.has_avl_error = true
-          var l = CheckForLocationErrors("AVL", a.cad_longitude, a.cad_latitude);
+          var l = CheckForLocationErrors("AVL", a.has_avl_device, a.cad_longitude, a.cad_latitude);
           if (l.Count() > 0)
           {
             a.error_information.AddRange(l);
@@ -121,7 +122,7 @@ namespace VehicleControl.Models
         {
           // check for FC errors here
           // if there are any, a.has_fc_error = true
-          var l = CheckForLocationErrors("Fleet Complete", a.cad_longitude, a.cad_latitude);
+          var l = CheckForLocationErrors("Fleet Complete", a.has_fc_device, a.cad_longitude, a.cad_latitude);
           if (l.Count() > 0)
           {
             a.error_information.AddRange(l);
@@ -140,7 +141,7 @@ namespace VehicleControl.Models
         {
           // check for cad location erorrs here
           // if there are any, a.has_cad_errors = true
-          var l = CheckForLocationErrors("CAD", a.cad_longitude, a.cad_latitude);
+          var l = CheckForLocationErrors("CAD", a.should_have_cad_location, a.cad_longitude, a.cad_latitude);
           if(l.Count() > 0)
           {
             a.error_information.AddRange(l);
@@ -159,10 +160,14 @@ namespace VehicleControl.Models
       return data;
     }
 
-    private static List<string> CheckForLocationErrors(string location_type, decimal longitude, decimal latitude)
+    private static List<string> CheckForLocationErrors(string location_type, bool expected_location, decimal longitude, decimal latitude)
     {
       var l = new List<string>();
-      if (latitude == 0 || longitude == 0)
+      if(!expected_location && latitude != 0 && longitude != 0)
+      {
+        l.Add($"This unit has an unexpected {location_type} location.  The 'has {location_type} location' flag is false.");
+      }
+      if (expected_location && (latitude == 0 || longitude == 0))
       {
         l.Add($"This unit should have a {location_type} location but does not.");
       }
@@ -183,6 +188,202 @@ namespace VehicleControl.Models
       return l;
     }
 
+    public static int Delete(string unitcode, string username)
+    {
+      var param = new DynamicParameters();
+      param.Add("@username", username);
+      param.Add("@unitcode", unitcode);
+      string query = @"
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        VALUES (@unitcode, 'Deleted from unit_tracking_data', @unitcode, '', @username);
+
+        DELETE
+        FROM Tracking.dbo.unit_tracking_data
+        WHERE 
+          unitcode = @unitcode;";
+
+      return Constants.Exec_Query(query, param);
+    }
+
+    public static int Add(string unitcode, string username, bool has_avl, bool has_fc, bool should_have_cad, string group)
+    {
+      if (unitcode.Trim().Length == 0) return -1;
+
+      var param = new DynamicParameters();
+      param.Add("@username", username);
+      param.Add("@unitcode", unitcode);
+      param.Add("@has_avl", has_avl);
+      param.Add("@has_fc", has_fc);
+      param.Add("@should_have_cad", should_have_cad);
+      param.Add("@group", group);
+      string query = @"
+        DECLARE @Now DATETIME = GETDATE();
+
+        INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
+        VALUES (@unitcode, 'Added unit to unit_tracking_data', @unitcode, '', @username);
+
+        INSERT INTO Tracking.[dbo].[unit_tracking_data]
+        (
+          [unitcode]
+          ,[date_updated]
+          ,[longitude]
+          ,[latitude]
+          ,[data_source]
+          ,[imei]
+          ,[phone_number]
+          ,[asset_tag]
+          ,[date_last_communicated]
+          ,[tracking_data_updated]
+          ,[has_avl_device]
+          ,[has_fc_device]
+          ,[should_have_cad_location]
+        )
+        VALUES
+        (
+          @unitcode
+          ,@Now
+          ,0
+          ,0
+          ,'VC'
+          ,0
+          ,0
+          ,''
+          ,@Now
+          ,@Now
+          ,@has_avl
+          ,@has_fc
+          ,@should_have_cad
+        );
+
+        DELETE FROM unit_group WHERE unitcode=@unitcode;
+
+        INSERT INTO unit_group (unitcode, group_name, show_in_minicad)
+        SELECT
+          @unitcode
+          ,@group
+          ,default_show_in_minicad_value
+        FROM groups
+        WHERE value=@group";
+
+      return Constants.Exec_Query(query, param);
+    }
+
+    public static int Update(string unitcode, string username, bool has_avl, bool has_fc, bool should_have_cad, string group)
+    {
+      if (unitcode.Trim().Length == 0) return -1;
+
+      var param = new DynamicParameters();
+      param.Add("@username", username);
+      param.Add("@unitcode", unitcode);
+      param.Add("@has_avl", has_avl);
+      param.Add("@has_fc", has_fc);
+      param.Add("@should_have_cad", should_have_cad);
+      param.Add("@group", group);
+      string query = @"
+        DECLARE @Now DATETIME = GETDATE();
+
+        INSERT INTO unit_maintenance_history
+        (
+          unitcode
+          ,field
+          ,changed_from
+          ,changed_to
+          ,changed_by
+        )
+          SELECT
+            @unitcode
+            ,'Has AVL Device'
+            ,has_avl_device
+            ,@has_avl
+            ,@username
+          FROM
+            Tracking.dbo.unit_tracking_data
+          WHERE
+            unitcode = @unitcode
+            AND has_avl_device != @has_avl;
+
+        INSERT INTO unit_maintenance_history
+        (
+          unitcode
+          ,field
+          ,changed_from
+          ,changed_to
+          ,changed_by
+        )
+          SELECT
+            @unitcode
+            ,'Has Fleet Complete Device'
+            ,has_fc_device
+            ,@has_fc
+            ,@username
+          FROM
+            Tracking.dbo.unit_tracking_data
+          WHERE
+            unitcode = @unitcode
+            AND has_fc_device != @has_fc;
+
+        INSERT INTO unit_maintenance_history
+        (
+          unitcode
+          ,field
+          ,changed_from
+          ,changed_to
+          ,changed_by
+        )
+          SELECT
+            @unitcode
+            ,'Should Have CAD Location'
+            ,should_have_cad_location
+            ,@should_have_cad
+            ,@username
+          FROM
+            Tracking.dbo.unit_tracking_data
+          WHERE
+            unitcode = @unitcode
+            AND should_have_cad_location != @should_have_cad; 
+
+
+        UPDATE Tracking.dbo.unit_tracking_data
+        SET
+          has_avl_device = @has_avl
+          ,has_fc_device = @has_fc
+          ,should_have_cad_location = @should_have_cad
+        WHERE
+          unitcode = @unitcode;
+
+        DELETE FROM unit_group
+        WHERE  unitcode = @unitcode;
+
+        INSERT INTO unit_group
+        (
+          unitcode
+          ,group_name
+          ,show_in_minicad
+        )
+          SELECT
+            @unitcode
+            ,@group 
+            ,default_show_in_minicad_value
+          FROM
+            groups
+          WHERE
+            value = @group;";
+
+      return Constants.Exec_Query(query, param);
+    }
+
+    public static bool UnitCodeExists(string unitcode)
+    {
+      var param = new DynamicParameters();
+      param.Add("@unitcode", unitcode);
+      string query = @"
+        SELECT
+          COUNT(*) CNT
+        FROM Tracking.dbo.unit_tracking_data
+        WHERE 
+          unitcode = @unitcode;";
+      return Constants.Exec_Scalar<int>(query, param) > 0;
+    }
 
   }
 }

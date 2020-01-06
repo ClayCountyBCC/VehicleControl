@@ -74,6 +74,18 @@ export class UnitData implements IUnitData
     return response;
   }
 
+  public static async Update(unitcode: string, group: string, has_avl: boolean, has_fc: boolean, should_have_cad: boolean): Promise<Response>
+  {
+    const response = await Post_Empty(`API/Unit/Update?unitcode=${unitcode}&group=${group}&has_avl=${has_avl}&has_fc=${has_fc}&should_have_cad=${should_have_cad}`, {});
+    return response;
+  }
+
+  public static async Add(unitcode: string, group: string, has_avl: boolean, has_fc: boolean, should_have_cad: boolean): Promise<Response>
+  {
+    const response = await Post_Empty(`API/Unit/Add?unitcode=${unitcode}&group=${group}&has_avl=${has_avl}&has_fc=${has_fc}&should_have_cad=${should_have_cad}`, {});
+    return response;
+  }
+
 }
 
 export default UnitData;

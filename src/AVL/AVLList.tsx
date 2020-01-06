@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState } from 'react';
 import { Store } from '../Store';
 import AVLData from './AVLData';
 import AVL from './AVL';
@@ -6,6 +6,8 @@ import AVL from './AVL';
 const AVLList: React.FC = () =>
 {
   const { state, dispatch } = React.useContext(Store);
+
+  const [currentSearch, setCurrentSearch] = useState(state.avl_data_filter || "");
 
   const fetchAVLData = async () =>
   {
@@ -29,6 +31,8 @@ const AVLList: React.FC = () =>
                   title="Search for text in the Device Id and Unit fields.  Hit Enter to Search."
                   type="text"
                   placeholder="Search"
+                  onChange={event => setCurrentSearch(event.target.value)}
+                  value={currentSearch}
                   onKeyDown={event =>
                   {
                     if (event.key === 'Enter')
@@ -37,7 +41,7 @@ const AVLList: React.FC = () =>
                       event.stopPropagation();
                       dispatch({
                         type: "search_avl_data",
-                        payload: (event.target as HTMLInputElement).value
+                        payload: currentSearch
                       })
                     }
 
@@ -59,7 +63,26 @@ const AVLList: React.FC = () =>
                 <i className="fas fa-sync-alt"></i>
               </span>
             </button>
-            </div>
+            <button
+              style={{marginLeft: ".5em"}}
+              onClick={event =>
+              {
+                event.preventDefault();
+                event.stopPropagation();
+                setCurrentSearch("");
+                dispatch({
+                  type: "search_avl_data",
+                  payload: ''
+                })
+              }}
+              title="Reset the Search"
+              type="button"
+              className="button is-warning is-small">              
+              <span className="icon is-small">
+                <i className="fas fa-undo-alt"></i>
+              </span>
+            </button>
+          </div>
         </div>
         <div className="level-right">
           <p className="level-item has-text-weight-bold">Error Filters</p>

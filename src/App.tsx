@@ -7,7 +7,10 @@ import FleetCompleteData from './FleetComplete/FleetCompleteData';
 import FCList from './FleetComplete/FCList';
 import CADData from './Cad/CADData';
 import CADList from './Cad/CADList';
+import UnitData from './Unit/UnitData';
+import UnitList from './Unit/UnitList';
 import { WebMapView } from './WebMapView';
+import SimpleValue from './SimpleValue';
 //import './App.css';
 
 const App: React.FC = () =>
@@ -16,10 +19,23 @@ const App: React.FC = () =>
 
   React.useEffect(() =>
   {
-    state.avl_data.length === 0 && fetchAVLData();
-    state.fc_data.length === 0 && fetchFCData();
-    state.cad_data.length === 0 && fetchCADData();
+    fetchUnitData();
+    fetchAVLData();
+    fetchFCData();
+    fetchCADData();
+    fetchUnitGroups();
+    //state.unit_data.length === 0 && fetchUnitData();
+    //state.avl_data.length === 0 && fetchAVLData();
+    //state.fc_data.length === 0 && fetchFCData();
+    //state.cad_data.length === 0 && fetchCADData();
+    //state.unit_groups.length === 0 && fetchUnitGroups();
   }, []);
+
+  const fetchUnitGroups = async () =>
+  {
+    const data = await SimpleValue.GetUnitGroups();
+    return dispatch({ type: 'get_unit_groups_data', payload: data });
+  }
 
   const fetchAVLData = async () =>
   {
@@ -41,25 +57,32 @@ const App: React.FC = () =>
     return dispatch({ type: 'get_cad_data', payload: data });
   }
 
+  const fetchUnitData = async () =>
+  {
+    const data = await UnitData.Get();
+    console.log('Unit data', data);
+    return dispatch({ type: 'get_unit_data', payload: data });
+  }
+
   return (
     <>
       <Nav />
       
-      <div className="columns main-container">
+      <div className="columns main-container is-mobile">
         <div          
-          style={{paddingRight: 0}}
-          className="column is-half left-side">
+          style={{ paddingRight: 0 }}
+          className={`column left-side ${state.current_view !== 'map' ? 'is-full-mobile is-full-tablet is-full-desktop is-half-widescreen is-half-fullhd' : 'hide'}`}>          
           {state.current_view === "avl" ? <AVLList /> : null}
-          {state.current_view === "unit" ? null : null}
+          {state.current_view === "unit" ? <UnitList /> : null}
           {state.current_view === "fc" ? <FCList /> : null}
           {state.current_view === "cad" ? <CADList /> : null}
         </div>
 
         <div
           style={{paddingLeft: 0}}
-          className="column is-half right-side">
+          className={`column right-side ${state.current_view !== 'map' ? 'is-half-widescreen is-half-fullhd' : ''}`}>
           {
-            //<WebMapView />
+            <WebMapView />
           }
           
         </div>

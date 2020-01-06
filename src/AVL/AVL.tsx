@@ -44,7 +44,7 @@ const AVL = (props:IAVLDataWithIndex) =>
         </td>
         <td>
           <span className="icon">
-            <i className={`fas ${props.device_type === "Phone Number" ? "fa-phone" : "fa-mobile-alt"}`}></i>
+            <i className={`fas ${props.device_type === "Phone Number" ? "fa-phone" : "fa-sim-card"}`}></i>
           </span>
           
         </td>

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState } from 'react';
 import { Store } from '../Store';
 import FleetCompleteData from './FleetCompleteData';
 import FC from './FC';
@@ -6,6 +6,8 @@ import FC from './FC';
 const FCList: React.FC = () =>
 {
   const { state, dispatch } = React.useContext(Store);
+
+  const [currentSearch, setCurrentSearch] = useState(state.fc_data_filter || "");
 
   const fetchFCData = async () =>
   {
@@ -29,6 +31,8 @@ const FCList: React.FC = () =>
                   title="Search for text in the Device Id, Unit, and Asset Tag fields.  Hit Enter to Search."
                   type="text"
                   placeholder="Search"
+                  onChange={event => setCurrentSearch(event.target.value)}
+                  value={currentSearch}
                   onKeyDown={event =>
                   {
                     if (event.key === 'Enter')
@@ -59,6 +63,25 @@ const FCList: React.FC = () =>
                 <i className="fas fa-sync-alt"></i>
               </span>
             </button>
+            <button
+              style={{ marginLeft: ".5em" }}
+              onClick={event =>
+              {
+                event.preventDefault();
+                event.stopPropagation();
+                setCurrentSearch("");
+                dispatch({
+                  type: "search_fc_data",
+                  payload: ''
+                })
+              }}
+              title="Reset the Search"
+              type="button"
+              className="button is-warning is-small">
+              <span className="icon is-small">
+                <i className="fas fa-undo-alt"></i>
+              </span>
+            </button>
           </div>
         </div>
         <div className="level-right">
@@ -76,7 +99,7 @@ const FCList: React.FC = () =>
                 <a
                   href="#AllErrors"
                   onClick={event => { dispatch({ type: "fc_data_special_filter", payload: 'error' }) }}>
-                  All Errors
+                  Errors
                 </a>
               </li>
               <li className={`${state.fc_data_special_filter === 'unit' ? 'is-active' : ''}`}>

@@ -2,9 +2,12 @@
 import AVLData from './AVL/AVLData';
 import FleetCompleteData from './FleetComplete/FleetCompleteData';
 import CADData from './Cad/CADData';
+import UnitData from './Unit/UnitData';
+import SimpleValue from './SimpleValue';
 
 export interface IState
 {
+  unit_groups: Array<SimpleValue>;
   current_view: string;
   avl_data: Array<AVLData>
   fc_data: Array<any>  
@@ -45,6 +48,28 @@ export interface IFCDataWithIndex extends FleetCompleteData
 export interface ICADDataWithIndex extends CADData
 {
   index: number
+}
+
+export interface IUnitDataWithIndex extends UnitData
+{
+  index: number
+}
+
+export interface IUnitControls extends IUnitDataWithIndex
+{
+  colspan: number
+  refresh_data: Function
+}
+
+export interface IAddUnit
+{
+  unitcode: string
+  show_add_unit: boolean
+  has_avl_device: boolean
+  has_fc_device: boolean
+  should_have_cad_location: boolean
+  group_label: string
+  cancel: Function
 }
 
 export interface IAction

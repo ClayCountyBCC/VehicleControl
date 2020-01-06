@@ -25,7 +25,7 @@ export class UnitHistory implements IUnitHistory
 
   public static async GetByUnit(unitcode: string): Promise<Array<UnitHistory>>
   {
-    const data = await Get<Array<UnitHistory>>('API/History/Unit?unitcode=' + unitcode);
+    const data = await Get<Array<UnitHistory>>('API/History/Unit?unit=' + unitcode);
     return data;
   }
 

@@ -44,6 +44,14 @@ const Nav = () =>
             className={`navbar-item is-tab cursor_pointer ${state.current_view === "cad" ? 'is-active' : ''} `}>
             CAD
           </p>
+          <p
+            onClick={event =>
+            {
+              dispatch({ type: "set_current_view", payload: "map" });
+            }}
+            className={`navbar-item is-tab cursor_pointer ${state.current_view === "map" ? 'is-active' : ''} `}>
+            Map
+          </p>
         </div>
 
         <div className="navbar-end">

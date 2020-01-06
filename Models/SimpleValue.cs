@@ -16,8 +16,8 @@ namespace VehicleControl.Models
     {
       string query = @"
         SELECT
-          value
-          ,label
+          LTRIM(RTRIM(value)) value
+          ,LTRIM(RTRIM(label)) label
         FROM
           groups
         WHERE
