@@ -368,7 +368,7 @@ namespace VehicleControl.Models
           phone_number = 0  
         WHERE  
           unitcode != @unitcode
-          AND imei = @imei;
+          AND phone_number = @phone_number;
 
         INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
@@ -387,7 +387,7 @@ namespace VehicleControl.Models
           unitcode
           ,'imei' field
           ,CAST(imei AS VARCHAR(50))
-          ,@phone_number
+          ,@imei
           ,@username
         FROM unit_tracking_data
         WHERE 
@@ -399,8 +399,7 @@ namespace VehicleControl.Models
           imei = @imei
           ,phone_number = @phone_number
         WHERE
-          unitcode = @unitcode
-          AND phone_number != @phone_number;";
+          unitcode = @unitcode;";
       }
 
       return Constants.Exec_Query(query, param);

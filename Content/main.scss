@@ -8,6 +8,33 @@
   overflow-x: auto;
 }
 
+.navbar-dropdown
+{
+  max-height: 400px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  width: inherit;
+}
+.navbar-dropdown > .navbar-item 
+{
+  padding: 0;
+  width: inherit;
+}
+
+.esri-basemap-gallery__item-container
+{
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 0;
+}
+
+.esri-basemap-gallery__item-container > .esri-basemap-gallery__item
+{
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  border-left: 0 !important;
+  border-right: none !important;
+}
 
 .light-function
 {

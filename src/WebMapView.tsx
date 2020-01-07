@@ -5,12 +5,14 @@ export const WebMapView = () =>
 {
   const mapRef = useRef(null);
 
+
+
   useEffect(
     () =>
     {
       // lazy load the required ArcGIS API for JavaScript modules and CSS
-      loadModules(['esri/Map', 'esri/views/MapView'], { css: true })
-        .then(([ArcGISMap, MapView]) =>
+      loadModules(['esri/Map', 'esri/views/MapView', 'esri/widgets/BasemapGallery'], { css: true })
+        .then(([ArcGISMap, MapView, BasemapGallery]) =>
         {
           const map = new ArcGISMap({
             basemap: 'osm'
@@ -24,6 +26,26 @@ export const WebMapView = () =>
             zoom: 11
           });
 
+          var basemapGallery = new BasemapGallery({
+            view: view,
+            container: document.getElementById("basemap_selector_container"),
+            source: {
+              portal: {
+                url: "http://www.arcgis.com",
+                useVectorBasemaps: false, // Load vector tile basemap group
+              },
+            }
+          });
+
+          view.when(() =>
+          {
+            console.log('view.then running');
+
+
+
+          });
+          //view.ui.add(basemapGallery, "top-right");
+
           return () =>
           {
             if (view)
@@ -33,7 +55,7 @@ export const WebMapView = () =>
             }
           };
         });
-    }
+    }, []
   );
 
   return <div className="webmap" ref={mapRef} />;

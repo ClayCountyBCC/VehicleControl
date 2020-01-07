@@ -5,6 +5,13 @@ const Nav = () =>
 {
   const { state, dispatch } = React.useContext(Store);
 
+  const closeBaseMapDropdown = () =>
+  {
+    let e = document.getElementById("nav_basemap_dropdown");
+    if (e === null) return;
+    e.classList.remove("is-active");
+  }
+
   return (
     <nav className="navbar is-primary" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
@@ -55,13 +62,44 @@ const Nav = () =>
         </div>
 
         <div className="navbar-end">
-          <p className="navbar-item">
-            BaseMap
-          </p>
+          <div
+            id="nav_basemap_dropdown"
+            className="navbar-item has-dropdown">
+            <a className="navbar-link"
+              onClick={event =>
+              {
+                let e = document.getElementById("nav_basemap_dropdown");
+                if (e === null) return;
+                let isActive = e.classList.contains("is-active");
+                let basemaps = document.querySelectorAll(".esri-basemap-gallery__item");
+                basemaps.forEach(b =>
+                {
+                  if (!isActive)
+                  {
+                    b.addEventListener("click", closeBaseMapDropdown);
+                  }
+                  else
+                  {
+                    b.removeEventListener("click", closeBaseMapDropdown);
+                  }
+                });
+                e.classList.toggle("is-active");
+              }}
+            >
+              Select Base Map
+            </a>
+            <div className="navbar-dropdown">
+              <div
+                className="navbar-item">
+                <div id="basemap_selector_container"></div>
+
+              </div>
+            </div>
+          </div>
           <p className="navbar-item">
             Layers
           </p>
-
+          <p className="navbar-item"></p>
         </div>
       </div>
     </nav>

@@ -103,9 +103,9 @@
     <Content Include="build\index.html" />
     <Content Include="build\logo192.png" />
     <Content Include="build\logo512.png" />
-    <Content Include="build\precache-manifest.f7eae5ed697dfa851eaac953ba57b06f.js" />
+    <Content Include="build\precache-manifest.1a304751b02f6dcd6dad0adfa40d3ede.js" />
     <Content Include="build\static\js\2.90f8df5d.chunk.js" />
-    <Content Include="build\static\js\main.12bebd79.chunk.js" />
+    <Content Include="build\static\js\main.4bf6a2d2.chunk.js" />
     <Content Include="build\static\js\runtime-main.3110bd82.js" />
     <Content Include="Content\bulma.css" />
     <Content Include="Content\bulma.min.css">
@@ -168,7 +168,7 @@
     <Content Include="build\static\js\runtime-main.3110bd82.js.map" />
     <Content Include="build\static\js\2.90f8df5d.chunk.js.LICENSE" />
     <Content Include="build\static\js\2.90f8df5d.chunk.js.map" />
-    <Content Include="build\static\js\main.12bebd79.chunk.js.map" />
+    <Content Include="build\static\js\main.4bf6a2d2.chunk.js.map" />
     <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
