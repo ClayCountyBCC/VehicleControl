@@ -2,22 +2,26 @@
 import { IState, IAction } from './interfaces';
 import AVLData from './AVL/AVLData';
 import FleetCompleteData from './FleetComplete/FleetCompleteData';
+import CADData from './Cad/CADData';
 import UnitData from './Unit/UnitData';
 
 const initialState: IState =
 {
+  map: null,
+  map_view: null,
+
   unit_groups: [],
   current_view: "unit",
 
-  avl_data: [],
-  fc_data: [],
-  cad_data: [],
-  unit_data: [],
+  avl_data: new Array<AVLData>(),
+  fc_data: new Array<FleetCompleteData>(),
+  cad_data: new Array<CADData>(),
+  unit_data: new Array<UnitData>(),
 
-  filtered_avl_data: [],
-  filtered_fc_data: [],
-  filtered_cad_data: [],
-  filtered_unit_data: [],
+  filtered_avl_data: new Array<AVLData>(),
+  filtered_fc_data: new Array<FleetCompleteData>(),
+  filtered_cad_data: new Array<CADData>(),
+  filtered_unit_data: new Array<UnitData>(),
 
   avl_data_filter: "",
   fc_data_filter: "",
@@ -46,6 +50,19 @@ function reducer(state: IState, action: IAction): IState
 {
   switch (action.type)
   {
+
+    case "save_map":
+      return {
+        ...state,
+        map: action.payload
+      }
+
+    case "save_map_view":
+      return {
+        ...state,
+        map_view: action.payload
+      }
+
     case "get_unit_groups_data":
       return {
         ...state,

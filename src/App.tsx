@@ -9,7 +9,7 @@ import CADData from './Cad/CADData';
 import CADList from './Cad/CADList';
 import UnitData from './Unit/UnitData';
 import UnitList from './Unit/UnitList';
-import { WebMapView } from './WebMapView';
+import { WebMapView } from './Map/WebMapView';
 import SimpleValue from './SimpleValue';
 //import './App.css';
 
@@ -67,11 +67,11 @@ const App: React.FC = () =>
   return (
     <>
       <Nav />
-      
+
       <div className="columns main-container is-mobile">
-        <div          
+        <div
           style={{ paddingRight: 0 }}
-          className={`column left-side ${state.current_view !== 'map' ? 'is-full-mobile is-full-tablet is-full-desktop is-half-widescreen is-half-fullhd' : 'hide'}`}>          
+          className={`column left-side ${state.current_view !== 'map' ? 'is-full-mobile is-full-tablet is-full-desktop is-half-widescreen is-half-fullhd' : 'hide'}`}>
           {state.current_view === "avl" ? <AVLList /> : null}
           {state.current_view === "unit" ? <UnitList /> : null}
           {state.current_view === "fc" ? <FCList /> : null}
@@ -79,12 +79,9 @@ const App: React.FC = () =>
         </div>
 
         <div
-          style={{paddingLeft: 0}}
+          style={{ paddingLeft: 0 }}
           className={`column right-side ${state.current_view !== 'map' ? 'is-half-widescreen is-half-fullhd' : ''}`}>
-          {
-            <WebMapView />
-          }
-          
+          <WebMapView />
         </div>
 
       </div>

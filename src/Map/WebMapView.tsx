@@ -1,18 +1,28 @@
 ﻿import React, { useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
+import { Store } from '../Store';
+import AVLLayer from './AVLLayer';
+import FCLayer from './FCLayer';
+import CADLayer from './CADLayer';
 
 export const WebMapView = () =>
 {
   const mapRef = useRef(null);
 
-
+  const { state, dispatch } = React.useContext(Store);
 
   useEffect(
     () =>
     {
       // lazy load the required ArcGIS API for JavaScript modules and CSS
-      loadModules(['esri/Map', 'esri/views/MapView', 'esri/widgets/BasemapGallery'], { css: true })
-        .then(([ArcGISMap, MapView, BasemapGallery]) =>
+      loadModules([
+        'esri/Map',
+        'esri/views/MapView',
+        'esri/widgets/BasemapGallery',
+        'esri/widgets/LayerList',
+        'esri/widgets/Home'
+      ], { css: true })
+        .then(([ArcGISMap, MapView, BasemapGallery, LayerList, Home]) =>
         {
           const map = new ArcGISMap({
             basemap: 'osm'
@@ -37,14 +47,29 @@ export const WebMapView = () =>
             }
           });
 
+          var layerlist = new LayerList({
+            view: view,
+            //container: document.getElementById("basemap_selector_container"),
+            source: {
+              portal: {
+                url: "http://www.arcgis.com",
+                useVectorBasemaps: false, // Load vector tile basemap group
+              },
+            }
+          });
+
+          var homeWidget = new Home({ view: view });
+          view.ui.add(homeWidget, { position: "top-left" });
+
+          view.ui.add(layerlist, { position: "top-right" });
+
           view.when(() =>
           {
             console.log('view.then running');
-
-
+            dispatch({ type: 'save_map', payload: map });
+            dispatch({ type: 'save_map_view', payload: view });
 
           });
-          //view.ui.add(basemapGallery, "top-right");
 
           return () =>
           {
@@ -58,5 +83,10 @@ export const WebMapView = () =>
     }, []
   );
 
-  return <div className="webmap" ref={mapRef} />;
+  return (
+    <div className="webmap" ref={mapRef}>
+      <AVLLayer />
+      <FCLayer />
+      <CADLayer />
+    </div>);
 };
