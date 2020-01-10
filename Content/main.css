@@ -6,7 +6,7 @@
   overflow-y: auto;
   overflow-x: auto; }
 
-.navbar-dropdown {
+#basemap-navbar-dropdown.navbar-dropdown {
   max-height: 400px;
   overflow-x: hidden;
   overflow-y: scroll;

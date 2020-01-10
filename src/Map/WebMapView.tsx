@@ -49,19 +49,13 @@ export const WebMapView = () =>
 
           var layerlist = new LayerList({
             view: view,
-            //container: document.getElementById("basemap_selector_container"),
-            source: {
-              portal: {
-                url: "http://www.arcgis.com",
-                useVectorBasemaps: false, // Load vector tile basemap group
-              },
-            }
+            container: document.getElementById("layerlist_selector_container")
           });
 
           var homeWidget = new Home({ view: view });
           view.ui.add(homeWidget, { position: "top-left" });
 
-          view.ui.add(layerlist, { position: "top-right" });
+          //view.ui.add(layerlist, { position: "top-right" });
 
           view.when(() =>
           {

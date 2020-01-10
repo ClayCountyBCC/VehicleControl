@@ -61,7 +61,9 @@ const Nav = () =>
           </p>
         </div>
 
-        <div className="navbar-end">
+        <div
+          style={{paddingRight: "4em"}}
+          className="navbar-end">
           <div
             id="nav_basemap_dropdown"
             className="navbar-item has-dropdown">
@@ -88,7 +90,8 @@ const Nav = () =>
             >
               Select Base Map
             </a>
-            <div className="navbar-dropdown">
+            <div id="basemap-navbar-dropdown"
+              className="navbar-dropdown">
               <div
                 className="navbar-item">
                 <div id="basemap_selector_container"></div>
@@ -96,9 +99,43 @@ const Nav = () =>
               </div>
             </div>
           </div>
-          <p className="navbar-item">
-            Layers
-          </p>
+          <div id="nav_layerlist_dropdown"
+            className="navbar-item has-dropdown">
+            <a className="navbar-link"
+              onClick={event =>
+              {
+                let e = document.getElementById("nav_layerlist_dropdown");
+                if (e === null) return;
+                let isActive = e.classList.contains("is-active");
+                //let container = document.getElementById("layerlist_selector_container");                
+                //let basemaps = document.querySelectorAll(".esri-basemap-gallery__item");
+                //basemaps.forEach(b =>
+                //{
+                //  if (!isActive)
+                //  {
+                //    b.addEventListener("click", closeBaseMapDropdown);
+                //  }
+                //  else
+                //  {
+                //    b.removeEventListener("click", closeBaseMapDropdown);
+                //  }
+                //});
+                e.classList.toggle("is-active");
+              }}
+            >
+
+
+              View Layers
+            </a>
+            <div className="navbar-dropdown">
+              <div
+                className="navbar-item">
+                <div id="layerlist_selector_container"></div>
+
+              </div>
+            </div>
+
+          </div>
           <p className="navbar-item"></p>
         </div>
       </div>
