@@ -21,8 +21,6 @@ const FCLayer = () =>
         , Graphic
       ]) =>
       {
-        console.log('FC looping');
-
         let layer = fcLayer === null ? new GraphicsLayer() : fcLayer;
         if (layer.graphics.length > 0) layer.removeAll();
         layer.title = "FleetComplete Units";
@@ -50,7 +48,7 @@ const FCLayer = () =>
             , haloSize: "3px"
             , xoffset: 9
             , yoffset: -2
-            , text: "FC - " + (d.unitcode.length > 0 ? d.unitcode : d.device_id)
+            , text: (d.unitcode.length > 0 ? d.unitcode : d.device_id)
             , horizontalAlignment: "left"
             , font: {
               size: 10

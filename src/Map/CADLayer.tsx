@@ -21,8 +21,6 @@ const CADLayer = () =>
         , Graphic
       ]) =>
       {
-        console.log('FC looping');
-
         let layer = cadLayer === null ? new GraphicsLayer() : cadLayer;
         if (layer.graphics.length > 0) layer.removeAll();
         layer.title = "CAD Units";
@@ -50,7 +48,7 @@ const CADLayer = () =>
             , haloSize: "3px"
             , xoffset: 9
             , yoffset: -2
-            , text: "CAD - " + (d.unitcode.length > 0 ? d.unitcode : d.device_id)
+            , text: (d.unitcode.length > 0 ? d.unitcode : d.device_id)
             , horizontalAlignment: "left"
             , font: {
               size: 10

@@ -21,8 +21,6 @@ const AVLLayer = () =>
         , Graphic
       ]) =>
       {
-        console.log('looping');
-
         let layer = avlLayer === null ? new GraphicsLayer() : avlLayer;
         if (layer.graphics.length > 0) layer.removeAll();
         layer.title = "AVL Units";
@@ -50,7 +48,7 @@ const AVLLayer = () =>
             , haloSize: "3px"
             , xoffset: 9
             , yoffset: -2
-            , text: "AVL - " + (d.unitcode.length > 0 ? d.unitcode : d.device_id)
+            , text: (d.unitcode.length > 0 ? d.unitcode : d.device_id)
             , horizontalAlignment: "left"
             , font: {
               size: 10
