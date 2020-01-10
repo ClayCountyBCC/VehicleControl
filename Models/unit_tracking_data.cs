@@ -103,14 +103,14 @@ namespace VehicleControl.Models
         {
           // check for AVL errors here
           // if there are any, a.has_avl_error = true
-          var l = CheckForLocationErrors("AVL", a.has_avl_device, a.cad_longitude, a.cad_latitude);
+          var l = CheckForLocationErrors("AVL", a.has_avl_device, a.avl_longitude, a.avl_latitude);
           if (l.Count() > 0)
           {
             a.error_information.AddRange(l);
             a.has_avl_error = true;
           }
 
-          var d = CheckForDateErrors("AVL", a.cad_location_timestamp, yesterday);
+          var d = CheckForDateErrors("AVL", a.avl_location_timestamp, yesterday);
           if (d.Count() > 0)
           {
             a.error_information.AddRange(d);
@@ -122,14 +122,14 @@ namespace VehicleControl.Models
         {
           // check for FC errors here
           // if there are any, a.has_fc_error = true
-          var l = CheckForLocationErrors("Fleet Complete", a.has_fc_device, a.cad_longitude, a.cad_latitude);
+          var l = CheckForLocationErrors("Fleet Complete", a.has_fc_device, a.fc_longitude, a.fc_latitude);
           if (l.Count() > 0)
           {
             a.error_information.AddRange(l);
             a.has_fc_error = true;
           }
 
-          var d = CheckForDateErrors("Fleet Complete", a.cad_location_timestamp, yesterday);
+          var d = CheckForDateErrors("Fleet Complete", a.fc_location_timestamp, yesterday);
           if (d.Count() > 0)
           {
             a.error_information.AddRange(d);

@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "0f39570658be1c669b5ad777ab41e4ab",
+    "revision": "6087760dd5766e0b8c1c3d918483d558",
     "url": "/vehiclecontrol/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/vehiclecontrol/static/js/2.3ee2d93c.chunk.js.LICENSE"
   },
   {
-    "revision": "a8f6e5f0b41fe1957bed",
-    "url": "/vehiclecontrol/static/js/main.77b68ff0.chunk.js"
+    "revision": "017faa18e1f50a2a0fcb",
+    "url": "/vehiclecontrol/static/js/main.87312fe0.chunk.js"
   },
   {
     "revision": "80499ca7cf09af46c1ce",
