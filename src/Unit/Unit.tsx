@@ -1,31 +1,15 @@
 ﻿import React from 'react';
 import UnitData from './UnitData';
 import { Store } from '../Store';
-//import { Format_DateTime } from '../Utilities';
 import ErrorInformation from '../ErrorInformation';
-//import UnitOptions from '../UnitOptions';
 import UnitHistory from '../UnitHistory';
 import UnitHistoryList from '../UnitHistoryList';
 import UnitControls from './UnitControls';
-import { IUnitDataWithIndex, IUnitControls } from '../interfaces';
-
+import { IUnitDataWithIndex } from '../interfaces';
 
 const Unit = (props: IUnitDataWithIndex) =>
 {
-  const { dispatch } = React.useContext(Store);
-
-  //const updateUnitData = async (asset_tag: string, current_unit: string) =>
-  //{
-  //  const response = await UnitData.Update(asset_tag, current_unit);
-  //  if (response.ok)
-  //  {
-  //    fetchFCData();
-  //  }
-  //  else
-  //  {
-  //    alert("There was a problem with deleting this record. Please contact MIS Development for more information.");
-  //  }
-  //}
+  const { state, dispatch } = React.useContext(Store);
 
   const fetchUnitData = async () =>
   {
@@ -33,6 +17,18 @@ const Unit = (props: IUnitDataWithIndex) =>
     return dispatch({ type: 'get_unit_data', payload: data });
   }
 
+  const viewOnMap = (longitude, latitude) =>
+  {
+    console.log('lat/long', latitude, longitude);
+    if (!state.map_view) return;
+    let point = {
+      type: "point"
+      , longitude: longitude
+      , latitude: latitude
+    };
+    state.map_view.center = point;
+    if (state.map_view.zoom < 18) state.map_view.zoom = 18;
+  }
 
   return (
     <>
@@ -62,13 +58,18 @@ const Unit = (props: IUnitDataWithIndex) =>
           {props.avl_latitude !== 0 ? (
             <span
               title="View this on the Map"
-              className="icon">
+              style={{ color: "rgb(225,0,0)" }}
+              className="icon cursor_pointer"
+              onClick={event =>
+              {
+                viewOnMap(props.avl_longitude, props.avl_latitude);
+              }}>
               <i className="fas fa-eye"></i>
             </span>
           ): ''}
           {new Date(props.avl_location_timestamp).getFullYear() > 1995 ? (
             <span
-              style={{ marginLeft: ".5em" }}
+              style={{ marginLeft: ".5em", color: "rgb(225, 0, 0)" }}
               title="View this on the AVL Menu"
               className="icon cursor_pointer"
               onClick={event =>
@@ -84,13 +85,18 @@ const Unit = (props: IUnitDataWithIndex) =>
           {props.fc_latitude !== 0 ? (
             <span
               title="View this on the Map"
-              className="icon">
+              className="icon cursor_pointer"
+              style={{ color: "rgb(0,225,0)" }}
+              onClick={event =>
+              {
+                viewOnMap(props.fc_longitude, props.fc_latitude);
+              }}>
               <i className="fas fa-eye"></i>
             </span>
           ) : ''}
           {new Date(props.fc_location_timestamp).getFullYear() > 1995 ? (
             <span
-              style={{ marginLeft: ".5em" }}
+              style={{ marginLeft: ".5em", color: "rgb(0, 225, 0)" }}
               title="View this on the Fleet Complete Menu"
               className="icon cursor_pointer"
               onClick={event =>
@@ -106,13 +112,18 @@ const Unit = (props: IUnitDataWithIndex) =>
           {props.cad_latitude !== 0 ? (
             <span
               title="View this on the Map"
-              className="icon">
+              style={{ color: "rgb(0,0,225)" }}
+              className="icon cursor_pointer"
+              onClick={event =>
+              {
+                viewOnMap(props.cad_longitude, props.cad_latitude);
+              }}>
               <i className="fas fa-eye"></i>
             </span>
           ) : ''}          
           {new Date(props.cad_location_timestamp).getFullYear() > 1995 ? (
             <span
-              style={{marginLeft: ".5em"}}
+              style={{ marginLeft: ".5em", color: "rgb(0,0,225)"}}
               title="View this on the CAD Menu"
               className="icon cursor_pointer"
               onClick={event =>

@@ -1,125 +1,35 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Store } from '../Store';
 import CADData from './CADData';
 import CAD from './CAD';
+import { useFetchData } from '../useFetchData';
+import { ListHeaderView } from '../ListHeaderView';
+import { CADHeader } from '../ListHeaders';
 
 const CADList: React.FC = () =>
 {
   const { state, dispatch } = React.useContext(Store);
 
-  const [currentSearch, setCurrentSearch] = useState(state.cad_data_filter || "");
+  const { isLoading, isError, fetchData } = useFetchData(CADData.Get, "get_cad_data", false);
 
-  const fetchCADData = async () =>
+  const Header = CADHeader(isLoading, fetchData, state.cad_data_filter);
+
+  useEffect(() =>
   {
-    const data = await CADData.Get();
-    return dispatch({ type: 'get_cad_data', payload: data });
-  }
+
+  }, [
+    isLoading,
+    isError,
+    state.filtered_cad_data,
+    state.cad_data_filter,
+    state.cad_data_sort_field,
+    state.cad_data_sort_ascending,
+    state.cad_data_special_filter]);
 
   return (
     <section>
-      <div
-        style={{ padding: "1em", marginBottom: 0 }}
-        className="level">
-        <div className="level-left">
-          <div className="level-item is-size-3 has-text-weight-bold">
-            CAD
-          </div>
-          <div className="level-item">
-            <div className="field">
-              <div className="control">
-                <input
-                  title="Search for text in the UnitCode field.  Hit Enter to Search."
-                  type="text"
-                  placeholder="Search"
-                  onChange={event => setCurrentSearch(event.target.value)}
-                  value={currentSearch}
-                  onKeyDown={event =>
-                  {
-                    if (event.key === 'Enter')
-                    {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      dispatch({
-                        type: "search_cad_data",
-                        payload: (event.target as HTMLInputElement).value
-                      })
-                    }
 
-                  }} />
-              </div>
-            </div>
-          </div>
-          <div>
-            <button
-              onClick={event =>
-              {
-                event.preventDefault();
-                fetchCADData();
-              }}
-              title="Refresh the CAD Data"
-              type="button"
-              className="button is-success is-small">
-              <span className="icon is-small">
-                <i className="fas fa-sync-alt"></i>
-              </span>
-            </button>
-            <button
-              style={{ marginLeft: ".5em" }}
-              onClick={event =>
-              {
-                event.preventDefault();
-                event.stopPropagation();
-                setCurrentSearch("");
-                dispatch({
-                  type: "search_cad_data",
-                  payload: ''
-                })
-              }}
-              title="Reset the Search"
-              type="button"
-              className="button is-warning is-small">
-              <span className="icon is-small">
-                <i className="fas fa-undo-alt"></i>
-              </span>
-            </button>
-            </div>
-        </div>
-        <div className="level-right">
-          <p className="level-item has-text-weight-bold">Error Filters</p>
-          <div className="level-item tabs">
-            <ul>
-              <li className={`${state.cad_data_special_filter === '' ? 'is-active' : ''}`}>
-                <a
-                  href="#NoFilter"
-                  onClick={event => { dispatch({ type: "cad_data_special_filter", payload: '' }) }}>
-                  Show All
-                </a>
-              </li>
-              <li className={`${state.cad_data_special_filter === 'error' ? 'is-active' : ''}`}>
-                <a
-                  href="#AllErrors"
-                  onClick={event => { dispatch({ type: "cad_data_special_filter", payload: 'error' }) }}>
-                  Errors
-                </a>
-              </li>
-              <li className={`${state.cad_data_special_filter === 'date' ? 'is-active' : ''}`}>
-                <a
-                  href="#DateErrors"
-                  onClick={event => { dispatch({ type: "cad_data_special_filter", payload: 'date' }) }}>
-                  Date
-                </a>
-              </li>
-              <li className={`${state.cad_data_special_filter === 'location' ? 'is-active' : ''}`}>
-                <a
-                  href="#LocationErrors"
-                  onClick={event => { dispatch({ type: "cad_data_special_filter", payload: 'location' }) }}>
-                  Location
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <ListHeaderView loading={isLoading} {...Header} />
 
       <table className="table is-fullwidth">
         <thead>

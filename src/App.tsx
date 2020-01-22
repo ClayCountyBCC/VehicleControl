@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Nav from './nav';
 import { Store } from './Store';
 import AVLData from './AVL/AVLData';
@@ -11,11 +11,17 @@ import UnitData from './Unit/UnitData';
 import UnitList from './Unit/UnitList';
 import { WebMapView } from './Map/WebMapView';
 import SimpleValue from './SimpleValue';
-//import './App.css';
+import { useFetchData } from './useFetchData';
+import { useInterval } from './useInterval';
 
 const App: React.FC = () =>
 {
   const { state, dispatch } = React.useContext(Store);
+
+  const { isLoading: isAVLLoading, isError: isAVLError, fetchData: fetchAVLData } = useFetchData(AVLData.Get, "get_avl_data", false);
+  const { isLoading: isFCLoading, isError: isFCError, fetchData: fetchFCData } = useFetchData(FleetCompleteData.Get, "get_fc_data", false);
+  const { isLoading: isCADLoading, isError: isCADError, fetchData: fetchCADData } = useFetchData(CADData.Get, "get_cad_data", false);
+  const { isLoading: isUnitLoading, isError: isUnitError, fetchData: fetchUnitData } = useFetchData(UnitData.Get, "get_unit_data", false);
 
   React.useEffect(() =>
   {
@@ -24,44 +30,22 @@ const App: React.FC = () =>
     fetchFCData();
     fetchCADData();
     fetchUnitGroups();
-    //state.unit_data.length === 0 && fetchUnitData();
-    //state.avl_data.length === 0 && fetchAVLData();
-    //state.fc_data.length === 0 && fetchFCData();
-    //state.cad_data.length === 0 && fetchCADData();
-    //state.unit_groups.length === 0 && fetchUnitGroups();
   }, []);
+
+  useInterval(() =>
+  {
+    console.log("automatically refreshing all");
+    fetchUnitData();
+    fetchAVLData();
+    fetchFCData();
+    fetchCADData();
+    fetchUnitGroups();
+  }, 60000);
 
   const fetchUnitGroups = async () =>
   {
     const data = await SimpleValue.GetUnitGroups();
     return dispatch({ type: 'get_unit_groups_data', payload: data });
-  }
-
-  const fetchAVLData = async () =>
-  {
-    const data = await AVLData.Get();
-    return dispatch({ type: 'get_avl_data', payload: data });
-  }
-
-  const fetchFCData = async () =>
-  {
-    const data = await FleetCompleteData.Get();
-    console.log('fleet complete data', data);
-    return dispatch({ type: 'get_fc_data', payload: data });
-  }
-
-  const fetchCADData = async () =>
-  {
-    const data = await CADData.Get();
-    console.log('CAD data', data);
-    return dispatch({ type: 'get_cad_data', payload: data });
-  }
-
-  const fetchUnitData = async () =>
-  {
-    const data = await UnitData.Get();
-    console.log('Unit data', data);
-    return dispatch({ type: 'get_unit_data', payload: data });
   }
 
   return (

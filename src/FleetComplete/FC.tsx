@@ -10,7 +10,7 @@ import { IFCDataWithIndex } from '../interfaces';
 
 const FC = (props: IFCDataWithIndex) =>
 {
-  const { dispatch } = React.useContext(Store);
+  const { state, dispatch } = React.useContext(Store);
 
   const updateFCData = async (asset_tag: string, current_unit: string) =>
   {
@@ -23,6 +23,18 @@ const FC = (props: IFCDataWithIndex) =>
     {
       alert("There was a problem with deleting this record. Please contact MIS Development for more information.");
     }
+  }
+
+  const viewOnMap = (longitude, latitude) =>
+  {
+    if (!state.map_view) return;
+    let point = {
+      type: "point"
+      , longitude: longitude
+      , latitude: latitude
+    };
+    state.map_view.center = point;
+    if (state.map_view.zoom < 18) state.map_view.zoom = 18;
   }
 
   const fetchFCData = async () =>
@@ -40,6 +52,18 @@ const FC = (props: IFCDataWithIndex) =>
         </td>
         <td>
           {props.device_id.replace(/^0+/, '')}
+          {props.latitude !== 0 ? (
+            <span
+              title="View this on the Map"
+              className="icon cursor_pointer"
+              style={{ color: "rgb(0,225,0)" }}
+              onClick={event =>
+              {
+                viewOnMap(props.longitude, props.latitude);
+              }}>
+              <i className="fas fa-eye"></i>
+            </span>
+          ) : ''}
         </td>
         <td>
           {props.asset_tag === props.device_id ? '' : props.asset_tag}

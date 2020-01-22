@@ -103,9 +103,9 @@
     <Content Include="build\index.html" />
     <Content Include="build\logo192.png" />
     <Content Include="build\logo512.png" />
-    <Content Include="build\precache-manifest.caa7efda0f49725762188f0d4d8957db.js" />
+    <Content Include="build\precache-manifest.2809623966dc89a5c746cd215e33cdfd.js" />
     <Content Include="build\static\js\2.3ee2d93c.chunk.js" />
-    <Content Include="build\static\js\main.87312fe0.chunk.js" />
+    <Content Include="build\static\js\main.f92067af.chunk.js" />
     <Content Include="build\static\js\runtime-main.3110bd82.js" />
     <Content Include="Content\bulma.css" />
     <Content Include="Content\bulma.min.css">
@@ -168,7 +168,7 @@
     <Content Include="build\static\js\runtime-main.3110bd82.js.map" />
     <Content Include="build\static\js\2.3ee2d93c.chunk.js.LICENSE" />
     <Content Include="build\static\js\2.3ee2d93c.chunk.js.map" />
-    <Content Include="build\static\js\main.87312fe0.chunk.js.map" />
+    <Content Include="build\static\js\main.f92067af.chunk.js.map" />
     <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
@@ -216,9 +216,9 @@
     <TypeScriptCompile Include="src\FleetComplete\FleetCompleteData.ts" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\interfaces.tsx" />
-    <TypeScriptCompile Include="src\Map\AVLLayer.tsx" />
-    <TypeScriptCompile Include="src\Map\CADLayer.tsx" />
-    <TypeScriptCompile Include="src\Map\FCLayer.tsx" />
+    <TypeScriptCompile Include="src\ListHeaderView.tsx" />
+    <TypeScriptCompile Include="src\ListHeaders.ts" />
+    <TypeScriptCompile Include="src\Map\LocationLayer.tsx" />
     <TypeScriptCompile Include="src\SimpleValue.ts" />
     <TypeScriptCompile Include="src\UnitOptions.tsx" />
     <TypeScriptCompile Include="src\UnitHistory.ts" />
@@ -232,6 +232,8 @@
     <TypeScriptCompile Include="src\Nav.tsx" />
     <TypeScriptCompile Include="src\react-app-env.d.ts" />
     <TypeScriptCompile Include="src\Store.tsx" />
+    <TypeScriptCompile Include="src\useFetchData.ts" />
+    <TypeScriptCompile Include="src\useInterval.tsx" />
     <TypeScriptCompile Include="src\Utilities.ts" />
   </ItemGroup>
   <ItemGroup>

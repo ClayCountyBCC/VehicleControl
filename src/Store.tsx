@@ -458,11 +458,20 @@ function reducer(state: IState, action: IAction): IState
 function filter_avl(arrayToFilter:Array<AVLData>, filterUsing:string): Array<AVLData>
 {
   if (filterUsing.length === 0) return arrayToFilter;
-  let f = filterUsing.toLowerCase();
+  let split = filterUsing.toLowerCase().split(",");
+  //let f = filterUsing.toLowerCase();
   let filtered = arrayToFilter.filter(j =>
   {
-    return j.device_id.toLowerCase().indexOf(f) > -1 ||
-      j.unitcode.toLowerCase().indexOf(f) > -1;
+    let check = false;
+    for (let s of split)
+    {
+      s = s.trim();
+      check = (j.unitcode.toLowerCase().indexOf(s) > -1 || j.device_id.toLowerCase().indexOf(s) > -1);
+      if (check) break;
+    }
+    return check;
+    //return j.device_id.toLowerCase().indexOf(f) > -1 ||
+    //  j.unitcode.toLowerCase().indexOf(f) > -1;
   });
   return filtered;
 }
@@ -470,12 +479,21 @@ function filter_avl(arrayToFilter:Array<AVLData>, filterUsing:string): Array<AVL
 function filter_fc(arrayToFilter: Array<FleetCompleteData>, filterUsing: string): Array<FleetCompleteData>
 {
   if (filterUsing.length === 0) return arrayToFilter;
-  let f = filterUsing.toLowerCase();
+  let split = filterUsing.toLowerCase().split(",");
+  //let f = filterUsing.toLowerCase();
   let filtered = arrayToFilter.filter(j =>
   {
-    return j.device_id.toLowerCase().indexOf(f) > -1 ||
-      j.unitcode.toLowerCase().indexOf(f) > -1 || 
-      j.asset_tag.toLowerCase().indexOf(f) > -1;
+    let check = false;
+    for (let s of split)
+    {
+      s = s.trim();
+      check = (j.unitcode.toLowerCase().indexOf(s) > -1 || j.device_id.toLowerCase().indexOf(s) > -1 || j.asset_tag.toLowerCase().indexOf(s) > -1);
+      if (check) break;
+    }
+    return check;
+    //return j.device_id.toLowerCase().indexOf(f) > -1 ||
+    //  j.unitcode.toLowerCase().indexOf(f) > -1 || 
+    //  j.asset_tag.toLowerCase().indexOf(f) > -1;
   });
   return filtered;
 }
@@ -483,10 +501,19 @@ function filter_fc(arrayToFilter: Array<FleetCompleteData>, filterUsing: string)
 function filter_cad(arrayToFilter: Array<FleetCompleteData>, filterUsing: string): Array<FleetCompleteData>
 {
   if (filterUsing.length === 0) return arrayToFilter;
-  let f = filterUsing.toLowerCase();
+  let split = filterUsing.toLowerCase().split(",");
+  //let f = filterUsing.toLowerCase();
   let filtered = arrayToFilter.filter(j =>
   {
-    return j.unitcode.toLowerCase().indexOf(f) > -1;
+    let check = false;
+    for (let s of split)
+    {
+      s = s.trim();
+      check = (j.unitcode.toLowerCase().indexOf(s) > -1);
+      if (check) break;
+    }
+    return check;
+    //return j.unitcode.toLowerCase().indexOf(f) > -1;
   });
   return filtered;
 }
@@ -494,12 +521,18 @@ function filter_cad(arrayToFilter: Array<FleetCompleteData>, filterUsing: string
 function filter_unit(arrayToFilter: Array<UnitData>, filterUsing: string): Array<UnitData>
 {
   if (filterUsing.length === 0) return arrayToFilter;
+  let split = filterUsing.toLowerCase().split(",");
   let f = filterUsing.toLowerCase();
   let filtered = arrayToFilter.filter(j =>
   {
-    return j.unitcode.toLowerCase().indexOf(f) > -1 ||
-      j.group_label.toLowerCase().indexOf(f) > -1 ||
-      j.using_unit.toLowerCase().indexOf(f) > -1;
+    let check = false;
+    for (let s of split)
+    {
+      s = s.trim();
+      check = (j.unitcode.toLowerCase().indexOf(s) > -1 || j.group_label.toLowerCase().indexOf(s) > -1 || j.using_unit.toLowerCase().indexOf(f) > -1);
+      if (check) break;
+    }
+    return check;
   });
   return filtered;
 }

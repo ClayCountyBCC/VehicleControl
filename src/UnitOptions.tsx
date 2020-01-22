@@ -5,13 +5,7 @@ import { IUnitOptions } from './interfaces';
 
 const UnitOptions = (props: IUnitOptions) =>
 {
-  //const { dispatch } = React.useContext(Store);
   const [currentUnit, setCurrentUnit] = useState("");
-  //const fetchAVLData = async () =>
-  //{
-  //  const data = await AVLData.Get();
-  //  return dispatch({ type: 'get_avl_data', payload: data });
-  //}
 
   if (!props.show_unit_options) return null;
 

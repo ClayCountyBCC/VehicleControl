@@ -9,12 +9,24 @@ import { ICADDataWithIndex } from '../interfaces';
 
 const CAD = (props:ICADDataWithIndex) =>
 {
-  const { dispatch } = React.useContext(Store);
+  const { state, dispatch } = React.useContext(Store);
 
   const fetchCADData = async () =>
   {
     const data = await CADData.Get();
     return dispatch({ type: 'get_cad_data', payload: data });
+  }
+
+  const viewOnMap = (longitude, latitude) =>
+  {
+    if (!state.map_view) return;
+    let point = {
+      type: "point"
+      , longitude: longitude
+      , latitude: latitude
+    };
+    state.map_view.center = point;
+    if (state.map_view.zoom < 18) state.map_view.zoom = 18;
   }
 
 
@@ -26,6 +38,18 @@ const CAD = (props:ICADDataWithIndex) =>
         </td>
         <td>
           {props.unitcode}
+          {props.latitude !== 0 ? (
+            <span
+              title="View this on the Map"
+              style={{ color: "rgb(0,0,225)" }}
+              className="icon cursor_pointer"
+              onClick={event =>
+              {
+                viewOnMap(props.longitude, props.latitude);
+              }}>
+              <i className="fas fa-eye"></i>
+            </span>
+          ) : ''}
         </td>
         <td>
           {props.inci_id.trim().length > 0 ? 'On A Call' : ''}

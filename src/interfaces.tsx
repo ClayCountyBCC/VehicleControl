@@ -75,6 +75,31 @@ export interface IAddUnit
   cancel: Function
 }
 
+export interface IFetchData
+{
+  fetchData: Function;
+  dispatch_type: string;
+}
+
+export interface IListHeader
+{
+  title: string;
+  title_description: string;
+  search_type: string;
+  loading: boolean;
+  fetchData: Function;
+  data_filter: string;
+  special_filter: string;
+  header_filters: Array<IHeaderFilter>;
+}
+
+export interface IHeaderFilter
+{
+  id: number;
+  label: string;
+  value: string;
+}
+
 export interface IAction
 {
   type: string

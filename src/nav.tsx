@@ -19,7 +19,7 @@ const Nav = () =>
       </div>
       <div className="navbar-menu">
         <div className="navbar-start">
-          <p
+          <p            
             onClick={event =>
             {
               dispatch({ type: "set_current_view", payload: "unit" });
@@ -57,7 +57,7 @@ const Nav = () =>
               dispatch({ type: "set_current_view", payload: "map" });
             }}
             className={`navbar-item is-tab cursor_pointer ${state.current_view === "map" ? 'is-active' : ''} `}>
-            Map
+            Map            
           </p>
         </div>
 
@@ -106,25 +106,10 @@ const Nav = () =>
               {
                 let e = document.getElementById("nav_layerlist_dropdown");
                 if (e === null) return;
-                let isActive = e.classList.contains("is-active");
-                //let container = document.getElementById("layerlist_selector_container");                
-                //let basemaps = document.querySelectorAll(".esri-basemap-gallery__item");
-                //basemaps.forEach(b =>
-                //{
-                //  if (!isActive)
-                //  {
-                //    b.addEventListener("click", closeBaseMapDropdown);
-                //  }
-                //  else
-                //  {
-                //    b.removeEventListener("click", closeBaseMapDropdown);
-                //  }
-                //});
+                //let isActive = e.classList.contains("is-active");
                 e.classList.toggle("is-active");
               }}
             >
-
-
               View Layers
             </a>
             <div className="navbar-dropdown">

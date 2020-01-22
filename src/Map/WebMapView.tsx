@@ -1,15 +1,13 @@
 ﻿import React, { useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
 import { Store } from '../Store';
-import AVLLayer from './AVLLayer';
-import FCLayer from './FCLayer';
-import CADLayer from './CADLayer';
+import LocationLayer from './LocationLayer';
 
 export const WebMapView = () =>
 {
   const mapRef = useRef(null);
 
-  const { state, dispatch } = React.useContext(Store);
+  const { dispatch } = React.useContext(Store);
 
   useEffect(
     () =>
@@ -20,12 +18,13 @@ export const WebMapView = () =>
         'esri/views/MapView',
         'esri/widgets/BasemapGallery',
         'esri/widgets/LayerList',
-        'esri/widgets/Home'
+        'esri/widgets/Home',
+        'esri/layers/MapImageLayer'
       ], { css: true })
-        .then(([ArcGISMap, MapView, BasemapGallery, LayerList, Home]) =>
+        .then(([ArcGISMap, MapView, BasemapGallery, LayerList, Home, MapImageLayer]) =>
         {
           const map = new ArcGISMap({
-            basemap: 'osm'
+            basemap: 'streets-navigation-vector'
           });
 
           // load the map view at the ref's DOM node
@@ -33,21 +32,34 @@ export const WebMapView = () =>
             container: mapRef.current,
             map: map,
             center: [-81.80, 29.950],
-            zoom: 11
+            zoom: 10
           });
 
-          var basemapGallery = new BasemapGallery({
+          new BasemapGallery({
             view: view,
             container: document.getElementById("basemap_selector_container"),
             source: {
               portal: {
                 url: "http://www.arcgis.com",
-                useVectorBasemaps: false, // Load vector tile basemap group
+                useVectorBasemaps: true, // Load vector tile basemap group
               },
             }
           });
 
-          var layerlist = new LayerList({
+          let fireServiceLayer = new MapImageLayer({
+            url: 'https://maps.claycountygov.com:6443/arcgis/rest/services/Fire_Response/MapServer'
+            , title: 'Fire Services'
+          });
+          map.add(fireServiceLayer);
+
+          let siteAddressLayer = new MapImageLayer({
+            url: 'https://maps.claycountygov.com:6443/arcgis/rest/services/SiteAddresses/MapServer'
+            , title: 'Site Addresses'
+          });
+          map.add(siteAddressLayer);
+
+
+          new LayerList({
             view: view,
             container: document.getElementById("layerlist_selector_container")
           });
@@ -79,8 +91,9 @@ export const WebMapView = () =>
 
   return (
     <div className="webmap" ref={mapRef}>
-      <AVLLayer />
-      <FCLayer />
-      <CADLayer />
+      <LocationLayer state_array="filtered_avl_data" title="AVL Units" r="255" g="0" b="0" />
+      <LocationLayer state_array="filtered_fc_data" title="Fleet Complete Units" r="0" g="255" b="0" />
+      <LocationLayer state_array="filtered_cad_data" title="CAD Units" r="0" g="0" b="255" />
+      
     </div>);
 };

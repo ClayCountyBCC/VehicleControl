@@ -10,7 +10,7 @@ import { IAVLDataWithIndex } from '../interfaces';
 
 const AVL = (props:IAVLDataWithIndex) =>
 {
-  const { dispatch } = React.useContext(Store);
+  const { state, dispatch } = React.useContext(Store);
 
   const UpdateAVLData = async (device_id:string, device_type: string, current_unit: string) =>
   {
@@ -25,6 +25,17 @@ const AVL = (props:IAVLDataWithIndex) =>
     }
   }
 
+  const viewOnMap = (longitude, latitude) =>
+  {
+    if (!state.map_view) return;
+    let point = {
+      type: "point"
+      , longitude: longitude
+      , latitude: latitude
+    };
+    state.map_view.center = point;
+    if (state.map_view.zoom < 18) state.map_view.zoom = 18;
+  }
 
   const fetchAVLData = async () =>
   {
@@ -41,6 +52,18 @@ const AVL = (props:IAVLDataWithIndex) =>
         </td>
         <td>
           {props.device_id}
+          {props.latitude !== 0 ? (
+            <span
+              title="View this on the Map"
+              style={{ color: "rgb(225,0,0)" }}
+              className="icon cursor_pointer"
+              onClick={event =>
+              {
+                viewOnMap(props.longitude, props.latitude);
+              }}>
+              <i className="fas fa-eye"></i>
+            </span>
+          ) : ''}
         </td>
         <td>
           <span className="icon">
