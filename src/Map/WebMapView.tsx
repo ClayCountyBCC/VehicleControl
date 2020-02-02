@@ -21,9 +21,9 @@ export const WebMapView = () =>
         'esri/widgets/Home',
         'esri/layers/MapImageLayer'
       ], { css: true })
-        .then(([ArcGISMap, MapView, BasemapGallery, LayerList, Home, MapImageLayer]) =>
+        .then(([Map, MapView, BasemapGallery, LayerList, Home, MapImageLayer]) =>
         {
-          const map = new ArcGISMap({
+          const map = new Map({
             basemap: 'streets-navigation-vector'
           });
 
@@ -32,8 +32,9 @@ export const WebMapView = () =>
             container: mapRef.current,
             map: map,
             center: [-81.80, 29.950],
-            zoom: 10
-          });
+            zoom: 10,
+            logo: false
+          }, { logo: false });
 
           new BasemapGallery({
             view: view,
@@ -91,9 +92,9 @@ export const WebMapView = () =>
 
   return (
     <div className="webmap" ref={mapRef}>
-      <LocationLayer state_array="filtered_avl_data" title="AVL Units" r="255" g="0" b="0" />
-      <LocationLayer state_array="filtered_fc_data" title="Fleet Complete Units" r="0" g="255" b="0" />
-      <LocationLayer state_array="filtered_cad_data" title="CAD Units" r="0" g="0" b="255" />
+      <LocationLayer state_array="filtered_avl_data" title="AVL Units" r="255" g="0" b="0" view_type="avl" />
+      <LocationLayer state_array="filtered_fc_data" title="Fleet Complete Units" r="0" g="255" b="0" view_type="fc" />
+      <LocationLayer state_array="filtered_cad_data" title="CAD Units" r="0" g="0" b="255" view_type="cad" />
       
     </div>);
 };

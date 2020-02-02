@@ -12,7 +12,7 @@ const FCList: React.FC = () =>
 
   const { isLoading, isError, fetchData } = useFetchData(FleetCompleteData.Get, "get_fc_data", false);
 
-  const Header = FCHeader(isLoading, fetchData, state.fc_data_filter);
+  const Header = FCHeader(isLoading, fetchData);
 
   useEffect(() =>
   {
@@ -21,10 +21,7 @@ const FCList: React.FC = () =>
     isLoading,
     isError,
     state.filtered_fc_data,
-    state.fc_data_filter,
-    state.fc_data_sort_field,
-    state.fc_data_sort_ascending,
-    state.fc_data_special_filter]);
+    state.fc_view]);
 
 
   return (

@@ -11,15 +11,14 @@ const Unit = (props: IUnitDataWithIndex) =>
 {
   const { state, dispatch } = React.useContext(Store);
 
-  const fetchUnitData = async () =>
-  {
-    const data = await UnitData.Get();
-    return dispatch({ type: 'get_unit_data', payload: data });
-  }
+  //const fetchUnitData = async () =>
+  //{
+  //  const data = await UnitData.Get();
+  //  return dispatch({ type: 'get_unit_data', payload: data });
+  //}
 
   const viewOnMap = (longitude, latitude) =>
   {
-    console.log('lat/long', latitude, longitude);
     if (!state.map_view) return;
     let point = {
       type: "point"
@@ -42,7 +41,19 @@ const Unit = (props: IUnitDataWithIndex) =>
             className="cursor_pointer has-text-link"
             onClick={event =>
             {
-              dispatch({ type: 'unit_data_toggle_show_unit_options', payload: props.unitcode });
+              let options_toggle = state.unit_view.e[props.unitcode] && state.unit_view.e[props.unitcode]['options'] ? !state.unit_view.e[props.unitcode]['options'] : true;
+              dispatch(
+                {
+                  type: 'update_unit_view_unit',
+                  payload:
+                  {
+                    unitcode: props.unitcode,
+                    view:
+                    {
+                      options: options_toggle
+                    }
+                  }
+                });
             }}>
             {props.unitcode}
           </span>
@@ -146,7 +157,20 @@ const Unit = (props: IUnitDataWithIndex) =>
               className="icon cursor_pointer has-text-warning"
               onClick={event =>
               {
-                dispatch({ type: 'unit_data_toggle_show_errors', payload: props.unitcode });
+                let errors_toggle = state.unit_view.e[props.unitcode] && state.unit_view.e[props.unitcode]['errors'] ? !state.unit_view.e[props.unitcode]['errors'] : true;
+                dispatch(
+                  {
+                    type: 'update_unit_view_unit',
+                    payload:
+                    {
+                      unitcode: props.unitcode,
+                      view:
+                      {
+                        errors: errors_toggle
+                      }
+                    }
+                  });
+
               }
               }>
               <i className="fas fa-exclamation-circle"></i>
@@ -160,27 +184,25 @@ const Unit = (props: IUnitDataWithIndex) =>
             {
               event.preventDefault();
 
-              if (!props.device_history || props.device_history.length === 0)
+              let history = [];
+              if (!state.unit_view.e[props.unitcode]['history'] || state.unit_view.e[props.unitcode]['history'].length === 0)
               {
-                let deviceHistory = await UnitHistory.GetByUnit(props.unitcode);
-                dispatch({
-                  type: 'unit_device_history',
-                  payload: {
+                history = await UnitHistory.GetByUnit(props.unitcode);
+              }
+
+              dispatch(
+                {
+                  type: 'update_unit_view_unit',
+                  payload:
+                  {
                     unitcode: props.unitcode,
-                    device_history: deviceHistory
+                    view:
+                    {
+                      history: history
+                    }
                   }
                 });
-              }
-              else
-              {
-                dispatch({
-                  type: 'unit_device_history',
-                  payload: {
-                    unitcode: props.unitcode,
-                    device_history: []
-                  }
-                });
-              }
+
             }}>
             <i className="fas fa-history"></i>
           </span>
@@ -198,7 +220,7 @@ const Unit = (props: IUnitDataWithIndex) =>
                 const response = await UnitData.Delete(props.unitcode);
                 if (response.ok)
                 {
-                  fetchUnitData();
+                  props.fetchData();
                 }
                 else
                 {
@@ -215,17 +237,17 @@ const Unit = (props: IUnitDataWithIndex) =>
       </tr>
       <UnitControls 
         colspan={8}
-        refresh_data={fetchUnitData}
+        refresh_data={props.fetchData}
         {...props}
         />
       <ErrorInformation
         colspan={8}
         error_information={props.error_information}
-        show_errors={props.show_errors} />
+        show_errors={state.unit_view.e[props.unitcode] && state.unit_view.e[props.unitcode]['errors']} />
       <UnitHistoryList
         colspan={8}
         title="History By Device Id"
-        history={props.device_history}
+        history={state.unit_view.e[props.unitcode] && state.unit_view.e[props.unitcode]['history']}
       />
     </>
   );

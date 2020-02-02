@@ -2,7 +2,7 @@
 import { Store } from '../Store';
 import { loadModules } from 'esri-loader';
 
-const LocationLayer = ({ state_array, title, r, g, b }) =>
+const LocationLayer = ({ state_array, title, r, g, b, view_type }) =>
 {
   const { state } = React.useContext(Store);
 

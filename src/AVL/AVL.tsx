@@ -17,7 +17,7 @@ const AVL = (props:IAVLDataWithIndex) =>
     const response = await AVLData.Update(device_id, device_type, current_unit);
     if (response.ok)
     {
-      fetchAVLData();
+      props.fetchData();
     }
     else
     {
@@ -37,16 +37,16 @@ const AVL = (props:IAVLDataWithIndex) =>
     if (state.map_view.zoom < 18) state.map_view.zoom = 18;
   }
 
-  const fetchAVLData = async () =>
-  {
-    const data = await AVLData.Get();
-    return dispatch({ type: 'get_avl_data', payload: data });
-  }
+  //const fetchAVLData = async () =>
+  //{
+  //  const data = await AVLData.Get();
+  //  return dispatch({ type: 'get_avl_data', payload: data });
+  //}
 
 
   return (
     <>
-      <tr>
+      <tr id={'avl' + props.device_id}>
         <td>
           {props.index + 1}
         </td>
@@ -146,7 +146,7 @@ const AVL = (props:IAVLDataWithIndex) =>
               const response = await AVLData.Delete(props.device_id);
               if (response.ok)
               {
-                fetchAVLData();
+                props.fetchData();
               }
               else
               {

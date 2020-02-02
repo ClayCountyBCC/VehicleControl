@@ -12,7 +12,7 @@ const UnitList: React.FC = () =>
 {
   const { state, dispatch } = React.useContext(Store);
   const [showAddUnit, setShowAddUnit] = useState(false);
-  const [currentSearch, setCurrentSearch] = useState(state.unit_data_filter || "");
+  const [currentSearch, setCurrentSearch] = useState(state.unit_view.data_filter || "");
   
   const hideAddUnit = () =>
   {
@@ -21,7 +21,7 @@ const UnitList: React.FC = () =>
 
   const { isLoading, isError, fetchData } = useFetchData(UnitData.Get, "get_unit_data", false);
 
-  const Header = UnitHeader(isLoading, fetchData, state.unit_data_filter);
+  const Header = UnitHeader(isLoading, fetchData);
 
   useEffect(() =>
   {
@@ -30,10 +30,7 @@ const UnitList: React.FC = () =>
     isLoading,
     isError,
     state.filtered_unit_data,
-    state.unit_data_filter,
-    state.unit_data_sort_field,
-    state.unit_data_sort_ascending,
-    state.unit_data_special_filter]);
+    state.unit_view]);
 
   return (
     <section>
@@ -53,7 +50,7 @@ const UnitList: React.FC = () =>
                   event.preventDefault();
                   dispatch({ type: 'unit_data_sort', payload: 'unitcode' });
                 }}
-                className={`${state.unit_data_sort_field !== 'unitcode' ? '' : state.unit_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${state.unit_view.sort_field !== 'unitcode' ? '' : state.unit_view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Unit
               </a>
               <span
@@ -75,7 +72,7 @@ const UnitList: React.FC = () =>
                   event.preventDefault();
                   dispatch({ type: 'unit_data_sort', payload: 'using_unit' });
                 }}
-                className={`${state.unit_data_sort_field !== 'using_unit' ? '' : state.unit_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${state.unit_view.sort_field !== 'using_unit' ? '' : state.unit_view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Using Unit
               </a>
             </th>
@@ -87,7 +84,7 @@ const UnitList: React.FC = () =>
                   event.preventDefault();
                   dispatch({ type: 'unit_data_sort', payload: 'group_label' });
                 }}
-                className={`${state.unit_data_sort_field !== 'group_label' ? '' : state.unit_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${state.unit_view.sort_field !== 'group_label' ? '' : state.unit_view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 <span
                   title="View this on the Map"
                   className="icon">
@@ -150,7 +147,7 @@ const UnitList: React.FC = () =>
           />
           {state.filtered_unit_data.map((u, index) =>
           {
-            return (<Unit key={u.unitcode} index={index} {...u} />);
+            return (<Unit key={u.unitcode} index={index} {...u} fetchData={fetchData} />);
           })}
         </tbody>
       </table>

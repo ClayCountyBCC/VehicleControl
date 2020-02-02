@@ -12,7 +12,7 @@ const CADList: React.FC = () =>
 
   const { isLoading, isError, fetchData } = useFetchData(CADData.Get, "get_cad_data", false);
 
-  const Header = CADHeader(isLoading, fetchData, state.cad_data_filter);
+  const Header = CADHeader(isLoading, fetchData);
 
   useEffect(() =>
   {
@@ -21,10 +21,7 @@ const CADList: React.FC = () =>
     isLoading,
     isError,
     state.filtered_cad_data,
-    state.cad_data_filter,
-    state.cad_data_sort_field,
-    state.cad_data_sort_ascending,
-    state.cad_data_special_filter]);
+    state.cad_view]);
 
   return (
     <section>

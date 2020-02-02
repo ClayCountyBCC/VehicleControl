@@ -1,5 +1,5 @@
 ﻿import React, { useReducer } from 'react';
-import { IState, IAction } from './interfaces';
+import { IState, IAction, IDataView, IDataElementOptions } from './interfaces';
 import AVLData from './AVL/AVLData';
 import FleetCompleteData from './FleetComplete/FleetCompleteData';
 import CADData from './Cad/CADData';
@@ -13,6 +13,40 @@ const initialState: IState =
   unit_groups: [],
   current_view: "unit",
 
+  avl_view:
+  {
+    e: {},
+    data_filter: "",
+    sort_field: "device_id",
+    sort_ascending: true,
+    special_filter: ""
+  },
+  fc_view:
+  {
+    e: {},
+    data_filter: "",
+    sort_field: "device_id",
+    sort_ascending: true,
+    special_filter: ""
+  },
+
+  cad_view:
+  {
+    e: {},
+    data_filter: "",
+    sort_field: "unitcode",
+    sort_ascending: true,
+    special_filter: ""
+  },
+  unit_view:
+  {
+    e: {},
+    data_filter: "",
+    sort_field: "unitcode",
+    sort_ascending: true,
+    special_filter: ""
+  },
+
   avl_data: new Array<AVLData>(),
   fc_data: new Array<FleetCompleteData>(),
   cad_data: new Array<CADData>(),
@@ -22,26 +56,6 @@ const initialState: IState =
   filtered_fc_data: new Array<FleetCompleteData>(),
   filtered_cad_data: new Array<CADData>(),
   filtered_unit_data: new Array<UnitData>(),
-
-  avl_data_filter: "",
-  fc_data_filter: "",
-  cad_data_filter: "",
-  unit_data_filter: "",
-
-  avl_data_sort_field: "device_id",
-  fc_data_sort_field: "device_id",
-  cad_data_sort_field: "unitcode",
-  unit_data_sort_field: "unitcode",
-
-  avl_data_sort_ascending: true,
-  fc_data_sort_ascending: true,
-  cad_data_sort_ascending: true,
-  unit_data_sort_ascending: true,
-
-  avl_data_special_filter: "",
-  fc_data_special_filter: "",
-  cad_data_special_filter: "",
-  unit_data_special_filter: ""
 }
 
 export const Store = React.createContext<IState | any>(initialState);
@@ -76,48 +90,54 @@ function reducer(state: IState, action: IAction): IState
       }
 
     case "view_avl_by_unit":
+      let tmp_avl_view = {
+        ...state.avl_view,
+        data_filter: action.payload,
+        special_filter: ''
+      };
+
       return {
         ...state,
-        current_view: 'avl',        
+        current_view: 'avl',
+
         filtered_avl_data:
           process_avl(
             state.avl_data,
-            action.payload,
-            state.avl_data_sort_field,
-            state.avl_data_sort_ascending,
-            state.avl_data_special_filter),
-        avl_data_special_filter: '',
-        avl_data_filter: action.payload
+            tmp_avl_view),
+        avl_view: tmp_avl_view
       }
 
     case "view_fc_by_unit":
+      let tmp_fc_view = {
+        ...state.fc_view,
+        data_filter: action.payload,
+        special_filter: ''
+      };
+
       return {
         ...state,
         current_view: 'fc',
         filtered_fc_data:
           process_fc(
             state.fc_data,
-            action.payload,
-            state.fc_data_sort_field,
-            state.fc_data_sort_ascending,
-            state.fc_data_special_filter),
-        fc_data_special_filter: '',
-        fc_data_filter: action.payload
+            tmp_fc_view),
+        fc_view: tmp_fc_view
       }
 
     case "view_cad_by_unit":
+      let tmp_cad_view = {
+        ...state.cad_view,
+        data_filter: action.payload,
+        special_filter: ''
+      };
+
       return {
         ...state,
         current_view: 'cad',
         filtered_cad_data:
           process_cad(
-            state.cad_data,
-            action.payload,
-            state.cad_data_sort_field,
-            state.cad_data_sort_ascending,
-            state.cad_data_special_filter),
-        cad_data_special_filter: '',
-        cad_data_filter: action.payload
+            state.cad_data, tmp_cad_view),
+        cad_view: tmp_cad_view
       }
 
     case "get_avl_data":
@@ -127,10 +147,7 @@ function reducer(state: IState, action: IAction): IState
         filtered_avl_data:
           process_avl(
             action.payload,
-            state.avl_data_filter,
-            state.avl_data_sort_field,
-            state.avl_data_sort_ascending,
-            state.avl_data_special_filter)
+            state.avl_view)
       };
 
     case "get_fc_data":
@@ -140,10 +157,7 @@ function reducer(state: IState, action: IAction): IState
         filtered_fc_data:
           process_fc(
             action.payload,
-            state.fc_data_filter,
-            state.fc_data_sort_field,
-            state.fc_data_sort_ascending,
-            state.fc_data_special_filter)
+            state.fc_view)
       };
 
     case "get_cad_data":
@@ -151,12 +165,9 @@ function reducer(state: IState, action: IAction): IState
         ...state,
         cad_data: action.payload,
         filtered_cad_data:
-          process_fc(
+          process_cad(
             action.payload,
-            state.cad_data_filter,
-            state.cad_data_sort_field,
-            state.cad_data_sort_ascending,
-            state.cad_data_special_filter)
+            state.cad_view)
       };
 
     case "get_unit_data":
@@ -166,63 +177,80 @@ function reducer(state: IState, action: IAction): IState
         filtered_unit_data:
           process_unit(
             action.payload,
-            state.unit_data_filter,
-            state.unit_data_sort_field,
-            state.unit_data_sort_ascending,
-            state.unit_data_special_filter)
+            state.unit_view)
       };
 
     case "search_avl_data":
+      let tmp_avl_search_view = {
+        ...state.avl_view,
+        data_filter: action.payload
+      };
+
       return {
         ...state,
         filtered_avl_data:
           process_avl(
             state.avl_data,
-            action.payload,
-            state.avl_data_sort_field,
-            state.avl_data_sort_ascending,
-            state.avl_data_special_filter),
-        avl_data_filter: action.payload
-      };
+            tmp_avl_search_view),
+        avl_view: tmp_avl_search_view
+      }
 
     case "search_fc_data":
+      let tmp_fc_search_view = {
+        ...state.fc_view,
+        data_filter: action.payload
+      };
+
       return {
         ...state,
         filtered_fc_data:
           process_fc(
             state.fc_data,
-            action.payload,
-            state.fc_data_sort_field,
-            state.fc_data_sort_ascending,
-            state.fc_data_special_filter),
-        fc_data_filter: action.payload
-      };
+            tmp_fc_search_view),
+        fc_view: tmp_fc_search_view
+      }
 
     case "search_cad_data":
+      let tmp_cad_search_view = {
+        ...state.cad_view,
+        data_filter: action.payload
+      };
+
       return {
         ...state,
         filtered_cad_data:
           process_cad(
             state.cad_data,
-            action.payload,
-            state.cad_data_sort_field,
-            state.cad_data_sort_ascending,
-            state.cad_data_special_filter),
-        cad_data_filter: action.payload
-      };
+            tmp_cad_search_view),
+        cad_view: tmp_cad_search_view
+      }
 
     case "search_unit_data":
+      let tmp_unit_search_view = {
+        ...state.unit_view,
+        data_filter: action.payload
+      };
+
       return {
         ...state,
         filtered_unit_data:
           process_unit(
             state.unit_data,
-            action.payload,
-            state.unit_data_sort_field,
-            state.unit_data_sort_ascending,
-            state.unit_data_special_filter),
-        unit_data_filter: action.payload
+            tmp_unit_search_view),
+        unit_view: tmp_unit_search_view        
       };
+
+      //return {
+      //  ...state,
+      //  filtered_unit_data:
+      //    process_unit(
+      //      state.unit_data,
+      //      action.payload,
+      //      state.unit_data_sort_field,
+      //      state.unit_data_sort_ascending,
+      //      state.unit_data_special_filter),
+      //  unit_data_filter: action.payload
+      //};
 
     case "avl_device_history":
       let showAVLHistory = state.filtered_avl_data.map(a =>
@@ -269,84 +297,130 @@ function reducer(state: IState, action: IAction): IState
         filtered_cad_data: showCADHistory
       };
 
-    case "unit_device_history":
-      let showUnitHistory = state.filtered_unit_data.map(a =>
-      {
-        if (a.unitcode === action.payload.unitcode)
-        {
-          a.device_history = action.payload.device_history;
-        }
-        return a;
-      });
+    //case "unit_device_history":
+    //  let showUnitHistory = state.filtered_unit_data.map(a =>
+    //  {
+    //    if (a.unitcode === action.payload.unitcode)
+    //    {
+    //      a.device_history = action.payload.device_history;
+    //    }
+    //    return a;
+    //  });
 
-      return {
-        ...state,
-        filtered_unit_data: showUnitHistory
-      };
+    //  return {
+    //    ...state,
+    //    filtered_unit_data: showUnitHistory
+    //  };
 
 
     case "avl_data_special_filter":
+      let avl_view_special = {
+        ...state.avl_view,
+        special_filter: action.payload
+      }
       return {
         ...state,
-        filtered_avl_data: process_avl(state.avl_data, state.avl_data_filter, state.avl_data_sort_field, state.avl_data_sort_ascending, action.payload),
-        avl_data_special_filter: action.payload
+        filtered_avl_data: process_avl(state.avl_data, avl_view_special), avl_view: avl_view_special
       };
 
     case "fc_data_special_filter":
+      let fc_view_special = {
+        ...state.fc_view,
+        special_filter: action.payload
+      }
       return {
         ...state,
-        filtered_fc_data: process_fc(state.fc_data, state.fc_data_filter, state.fc_data_sort_field, state.fc_data_sort_ascending, action.payload),
-        fc_data_special_filter: action.payload
+        filtered_fc_data: process_fc(state.fc_data, fc_view_special), fc_view: fc_view_special
       };
 
     case "cad_data_special_filter":
+      let cad_view_special = {
+        ...state.cad_view,
+        special_filter: action.payload
+      }
       return {
         ...state,
-        filtered_cad_data: process_cad(state.cad_data, state.cad_data_filter, state.cad_data_sort_field, state.cad_data_sort_ascending, action.payload),
-        cad_data_special_filter: action.payload
+        filtered_cad_data: process_cad(state.cad_data, cad_view_special), cad_view: cad_view_special
       };
+      //return {
+      //  ...state,
+      //  filtered_cad_data: process_cad(state.cad_data, state.cad_data_filter, state.cad_data_sort_field, state.cad_data_sort_ascending, action.payload),
+      //  cad_data_special_filter: action.payload
+      //};
 
     case "unit_data_special_filter":
+      let unit_view_special = {
+        ...state.unit_view,
+        special_filter: action.payload
+      }
       return {
         ...state,
-        filtered_unit_data: process_cad(state.unit_data, state.unit_data_filter, state.unit_data_sort_field, state.unit_data_sort_ascending, action.payload),
-        unit_data_special_filter: action.payload
+        filtered_unit_data: process_unit(state.unit_data, unit_view_special), unit_view: unit_view_special
       };
+      //return {
+      //  ...state,
+      //  filtered_unit_data: process_cad(state.unit_data, state.unit_data_filter, state.unit_data_sort_field, state.unit_data_sort_ascending, action.payload),
+      //  unit_data_special_filter: action.payload
+      //};
 
     case "avl_data_sort":
-      let filtered = sort(state.filtered_avl_data, action.payload, !state.avl_data_sort_ascending);
+      let avl_sort_view = {
+        ...state.avl_view,
+        sort_field: action.payload,
+        sort_ascending: !state.avl_view.sort_ascending
+      }
+      let avl_filtered = sort(state.filtered_avl_data, avl_sort_view);
       return {
         ...state,
-        filtered_avl_data: filtered,
-        avl_data_sort_field: action.payload,
-        avl_data_sort_ascending: !state.avl_data_sort_ascending
+        filtered_avl_data: avl_filtered,
+        avl_view: avl_sort_view
       };
 
     case "fc_data_sort":
-      let filterFC = sort(state.filtered_fc_data, action.payload, !state.fc_data_sort_ascending);
+      let fc_sort_view = {
+        ...state.fc_view,
+        sort_field: action.payload,
+        sort_ascending: !state.fc_view.sort_ascending
+      }
+      let fc_filtered = sort(state.filtered_fc_data, fc_sort_view);
       return {
         ...state,
-        filtered_fc_data: filterFC,
-        fc_data_sort_field: action.payload,
-        fc_data_sort_ascending: !state.fc_data_sort_ascending
+        filtered_fc_data: fc_filtered,
+        fc_view: fc_sort_view
       };
+      //let filterFC = sort(state.filtered_fc_data, action.payload, !state.fc_data_sort_ascending);
+      //return {
+      //  ...state,
+      //  filtered_fc_data: filterFC,
+      //  fc_data_sort_field: action.payload,
+      //  fc_data_sort_ascending: !state.fc_data_sort_ascending
+      //};
 
     case "cad_data_sort":
-      let filterCAD = sort(state.filtered_cad_data, action.payload, !state.cad_data_sort_ascending);
+      let cad_sort_view = {
+        ...state.cad_view,
+        sort_field: action.payload,
+        sort_ascending: !state.cad_view.sort_ascending
+      }
+      let cad_filtered = sort(state.filtered_cad_data, cad_sort_view);
       return {
         ...state,
-        filtered_cad_data: filterCAD,
-        cad_data_sort_field: action.payload,
-        cad_data_sort_ascending: !state.cad_data_sort_ascending
+        filtered_cad_data: cad_filtered,
+        cad_view: cad_sort_view
       };
 
+
     case "unit_data_sort":
-      let filterUnit = sort(state.filtered_unit_data, action.payload, !state.unit_data_sort_ascending);
+      let unit_sort_view = {
+        ...state.unit_view,
+        sort_field: action.payload,
+        sort_ascending: !state.unit_view.sort_ascending
+      }
+      let unit_filtered = sort(state.filtered_unit_data, unit_sort_view);
       return {
         ...state,
-        filtered_unit_data: filterUnit,
-        unit_data_sort_field: action.payload,
-        unit_data_sort_ascending: !state.unit_data_sort_ascending
+        filtered_unit_data: unit_filtered,
+        unit_view: unit_sort_view
       };
 
     case "avl_data_toggle_show_errors":
@@ -391,19 +465,19 @@ function reducer(state: IState, action: IAction): IState
         filtered_cad_data: showCADError
       };
 
-    case "unit_data_toggle_show_errors":
-      let showUnitError = state.filtered_unit_data.map(a =>
-      {
-        if (a.unitcode === action.payload)
-        {
-          a.show_errors = !a.show_errors;
-        }
-        return a;
-      });
-      return {
-        ...state,
-        filtered_unit_data: showUnitError
-      };
+    //case "unit_data_toggle_show_errors":
+    //  let showUnitError = state.filtered_unit_data.map(a =>
+    //  {
+    //    if (a.unitcode === action.payload)
+    //    {
+    //      a.show_errors = !a.show_errors;
+    //    }
+    //    return a;
+    //  });
+    //  return {
+    //    ...state,
+    //    filtered_unit_data: showUnitError
+    //  };
 
     case "avl_data_toggle_show_unit_options":
       let showAVLUO = state.filtered_avl_data.map(a =>
@@ -435,23 +509,91 @@ function reducer(state: IState, action: IAction): IState
         filtered_fc_data: showFCUO
       };
 
-    case "unit_data_toggle_show_unit_options":
-      let showUnitControls = state.filtered_unit_data.map(a =>
+    case "update_avl_view_device":
+      let avle = state.avl_view.e;
+      let avl_unitcode = action.payload.unitcode;
+      if (!avle[avl_unitcode])
       {
-        if (a.unitcode === action.payload)
-        {
-          a.show_unit_options = !a.show_unit_options;
-        }
-        return a;
-      });
-
+        avle[avl_unitcode] = NewDataElementOptions();
+      }
+      avle[avl_unitcode] = {
+        ...avle[avl_unitcode],
+        ...action.payload.view
+      }
       return {
         ...state,
-        filtered_unit_data: showUnitControls
+        avl_view: {
+          ...state.avl_view,
+          e: avle
+        }
+      }
+
+    case "update_view":
+      console.log('updating view', action.payload);
+      let v = state[action.payload.view];
+      v = {
+        ...state[action.payload.view],
+        ...action.payload.option
+      }
+      return {
+        ...state,
+        [action.payload.view]: v
       };
+
+
+    case "update_unit_view":
+      let uv = state.unit_view;
+      uv = {
+        ...state.unit_view,
+        ...action.payload
+      }
+      return {
+        ...state,
+        unit_view: uv
+      };
+
+    case "update_unit_view_unit":
+      let uve = state.unit_view.e;
+      let unitcode = action.payload.unitcode;
+      if (!uve[unitcode])
+      {
+        uve[unitcode] = NewDataElementOptions();
+      }
+      uve[unitcode] = {
+        ...uve[unitcode],
+        ...action.payload.view
+      }
+      return {
+        ...state,
+        unit_view: {
+          ...state.unit_view,
+          e: uve
+        }
+      }
 
     default:
       return state;
+  }
+}
+
+function filter_data(view: string, state: IState): Array<AVLData> | Array<FleetCompleteData> | Array<UnitData> | Array<CADData>
+{
+  switch (view)
+  {
+    case 'unit_view':
+      return process_unit(state.unit_data, state.unit_view);
+      
+    case 'cad_view':
+      return process_cad(state.cad_data, state.cad_view);
+
+    case 'avl_view':
+      return process_avl(state.avl_data, state.avl_view);
+
+    case 'fc_view':
+      return process_fc(state.fc_data, state.fc_view);
+
+    default:
+      return [];      
   }
 }
 
@@ -498,7 +640,7 @@ function filter_fc(arrayToFilter: Array<FleetCompleteData>, filterUsing: string)
   return filtered;
 }
 
-function filter_cad(arrayToFilter: Array<FleetCompleteData>, filterUsing: string): Array<FleetCompleteData>
+function filter_cad(arrayToFilter: Array<CADData>, filterUsing: string): Array<CADData>
 {
   if (filterUsing.length === 0) return arrayToFilter;
   let split = filterUsing.toLowerCase().split(",");
@@ -572,14 +714,14 @@ function special_filter(array: Array<any>, specialFilter: string): Array<any>
   }  
 }
 
-function sort(array: Array<any>, field: string, ascending: boolean) : Array<any>
+function sort(array: Array<any>, view:IDataView) : Array<any>
 {
   const date_fields = ['updated_on', 'location_timestamp'];
-  if (date_fields.indexOf(field) > -1) return sort_dates(array, field, ascending);
+  if (date_fields.indexOf(view.sort_field) > -1) return sort_dates(array, view.sort_field, view.sort_ascending);
   let sorted = array.sort((a, b) =>
   {
-    if (a[field] > b[field]) return ascending ? 1 : -1;
-    if (b[field] > a[field]) return ascending ? -1 : 1;
+    if (a[view.sort_field] > b[view.sort_field]) return view.sort_ascending ? 1 : -1;
+    if (b[view.sort_field] > a[view.sort_field]) return view.sort_ascending ? -1 : 1;
     return 0;
   });
   return sorted;
@@ -596,32 +738,32 @@ function sort_dates(array: Array<any>, field: string, ascending: boolean): Array
   return sorted;
 }
 
-function process_avl(array: Array<any>, filter: string, field: string, ascending: boolean, specialFilter: string)
+function process_avl(array: Array<any>, view: IDataView): Array<AVLData>
 {
-  let filtered = filter_avl(array, filter);
-  let special_filtered = special_filter(filtered, specialFilter);
-  return sort(special_filtered, field, ascending);
+  let filtered = filter_avl(array, view.data_filter);
+  let special_filtered = special_filter(filtered, view.special_filter);
+  return sort(special_filtered, view);
 }
 
-function process_fc(array: Array<any>, filter: string, field: string, ascending: boolean, specialFilter: string)
+function process_fc(array: Array<any>, view: IDataView): Array<FleetCompleteData>
 {
-  let filtered = filter_fc(array, filter);
-  let special_filtered = special_filter(filtered, specialFilter);
-  return sort(special_filtered, field, ascending);
+  let filtered = filter_fc(array, view.data_filter);
+  let special_filtered = special_filter(filtered, view.special_filter);
+  return sort(special_filtered, view);
 }
 
-function process_cad(array: Array<any>, filter: string, field: string, ascending: boolean, specialFilter: string)
+function process_cad(array: Array<any>, view: IDataView): Array<CADData>
 {
-  let filtered = filter_cad(array, filter);
-  let special_filtered = special_filter(filtered, specialFilter);
-  return sort(special_filtered, field, ascending);
+  let filtered = filter_cad(array, view.data_filter);
+  let special_filtered = special_filter(filtered, view.special_filter);
+  return sort(special_filtered, view);
 }
 
-function process_unit(array: Array<any>, filter: string, field: string, ascending: boolean, specialFilter: string)
+function process_unit(array: Array<any>, view: IDataView): Array<UnitData>
 {
-  let filtered = filter_unit(array, filter);
-  let special_filtered = special_filter(filtered, specialFilter);
-  return sort(special_filtered, field, ascending);
+  let filtered = filter_unit(array, view.data_filter);
+  let special_filtered = special_filter(filtered, view.special_filter);
+  return sort(special_filtered, view);
 }
 
 export function StoreProvider(props: any): JSX.Element
@@ -630,3 +772,11 @@ export function StoreProvider(props: any): JSX.Element
   return (<Store.Provider value={{ state, dispatch }}>{props.children}</Store.Provider>);
 }
 
+function NewDataElementOptions(): IDataElementOptions
+{
+  return {
+    options: false,
+    errors: false,
+    history: []
+  }
+}

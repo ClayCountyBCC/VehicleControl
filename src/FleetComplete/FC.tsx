@@ -46,7 +46,7 @@ const FC = (props: IFCDataWithIndex) =>
 
   return (
     <>
-      <tr>
+      <tr id={'fc' + props.device_id}>
         <td>
           {props.index + 1}
         </td>

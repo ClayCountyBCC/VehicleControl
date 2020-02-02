@@ -32,7 +32,7 @@ const CAD = (props:ICADDataWithIndex) =>
 
   return (
     <>
-      <tr>
+      <tr id={'cad' + props.unitcode}>
         <td>
           {props.index + 1}
         </td>

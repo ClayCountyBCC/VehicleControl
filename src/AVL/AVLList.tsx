@@ -11,16 +11,9 @@ const AVLList: React.FC = () =>
 {
   const { state, dispatch } = React.useContext(Store);
 
-  //let isLoading, isError, fetchData;
   const { isLoading, isError, fetchData } = useFetchData(AVLData.Get, "get_avl_data", false);
 
-  const Header = AVLHeader(isLoading, fetchData, state.avl_data_filter);
-
-  //useInterval(() =>
-  //{
-  //  console.log("automatically refreshing avl");
-  //  fetchData();
-  //}, 60000);
+  const Header = AVLHeader(isLoading, fetchData);
 
   useEffect(() =>
   {
@@ -29,10 +22,7 @@ const AVLList: React.FC = () =>
     isLoading,
     isError,
     state.filtered_avl_data,
-    state.avl_data_filter,
-    state.avl_data_sort_field,
-    state.avl_data_sort_ascending,
-    state.avl_data_special_filter]);
+    state.avl_view]);
 
   return (
     <section>
@@ -113,7 +103,7 @@ const AVLList: React.FC = () =>
         <tbody>
           {state.filtered_avl_data.map((avl, index) =>
           {
-            return (<AVL key={avl.device_id} index={index} {...avl} />);
+            return (<AVL key={avl.device_id} index={index} {...avl} fetchData={fetchData} />);
           })}
         </tbody>
       </table>

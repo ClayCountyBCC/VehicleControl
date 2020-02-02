@@ -6,21 +6,20 @@ export const ListHeaderView = (
   {
     title,
     title_description,
-    search_type,
+    //search_type,
     loading,
     fetchData,
-    data_filter,
-    special_filter,
+    view_name,
     header_filters }: IListHeader) =>
 {
   const { state, dispatch } = React.useContext(Store);
 
-  const [currentSearch, setCurrentSearch] = useState(data_filter || "");
+  const [currentSearch, setCurrentSearch] = useState(state[view_name].data_filter || "");
 
   useEffect(() =>
   {
 
-  }, [loading, data_filter, special_filter]);
+  }, [loading, state[view_name]]);
 
   return (
     <div
@@ -48,9 +47,18 @@ export const ListHeaderView = (
                     event.preventDefault();
                     event.stopPropagation();
                     dispatch({
-                      type: search_type,
-                      payload: currentSearch
+                      type: 'update_view',
+                      payload: {
+                        view: view_name,
+                        option: {
+                          data_filter: currentSearch
+                        }
+                      }
                     })
+                    //dispatch({
+                    //  type: search_type,
+                    //  payload: currentSearch
+                    //})
                   }
 
                 }} />
@@ -79,9 +87,18 @@ export const ListHeaderView = (
               event.stopPropagation();
               setCurrentSearch("");
               dispatch({
-                type: search_type,
-                payload: ''
+                type: 'update_view',
+                payload: {
+                  view: view_name,
+                  option: {
+                    special_filter: ''
+                  }
+                }
               })
+              //dispatch({
+              //  type: search_type,
+              //  payload: ''
+              //})
             }}
             title="Reset the Search"
             type="button"
@@ -101,10 +118,22 @@ export const ListHeaderView = (
               {
                 return (
                   <li
-                    className={`${state[special_filter] === f.value ? 'is-active' : ''}`}
+                    className={`${state[view_name].special_filter === f.value ? 'is-active' : ''}`}
                     key={f.id}>
                     <a
-                      onClick={event => dispatch({ type: special_filter, payload: f.value })}>
+                      onClick={event =>
+                      {
+                        //dispatch({ type: view_name + '_special_filter', payload: f.value })
+                        dispatch({
+                          type: 'update_view',
+                          payload: {
+                            view: view_name,
+                            option: {
+                              special_filter: f.value
+                            }
+                          }
+                        })
+                      }}>
                       {f.label}
                     </a>
                   </li>

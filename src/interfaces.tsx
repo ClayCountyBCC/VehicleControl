@@ -11,51 +11,84 @@ export interface IState
   map_view: null | object;
 
   unit_groups: Array<SimpleValue>;
+
   current_view: string;
+
+  avl_view: IDataView;
+  fc_view: IDataView;
+  cad_view: IDataView;
+  unit_view: IDataView;
+
   avl_data: Array<AVLData>;
   fc_data: Array<FleetCompleteData>;
   cad_data: Array<CADData>;
   unit_data: Array<UnitData>;
+
   filtered_avl_data: Array<AVLData>;
   filtered_fc_data: Array<FleetCompleteData>;
   filtered_cad_data: Array<CADData>;
   filtered_unit_data: Array<UnitData>;
-  avl_data_filter: string;
-  fc_data_filter: string;
-  cad_data_filter: string;
-  unit_data_filter: string;
-  avl_data_sort_field: string;
-  fc_data_sort_field: string;
-  cad_data_sort_field: string;
-  unit_data_sort_field: string;
-  avl_data_sort_ascending: boolean;
-  fc_data_sort_ascending: boolean;
-  cad_data_sort_ascending: boolean;
-  unit_data_sort_ascending: boolean;
-  avl_data_special_filter: string;
-  fc_data_special_filter: string;
-  cad_data_special_filter: string;
-  unit_data_special_filter: string;
+
+  //avl_data_filter: string;
+  //fc_data_filter: string;
+  //cad_data_filter: string;
+  //unit_data_filter: string;
+
+  //avl_data_sort_field: string;
+  //fc_data_sort_field: string;
+  //cad_data_sort_field: string;
+  //unit_data_sort_field: string;
+
+  //avl_data_sort_ascending: boolean;
+  //fc_data_sort_ascending: boolean;
+  //cad_data_sort_ascending: boolean;
+  //unit_data_sort_ascending: boolean;
+
+  //avl_data_special_filter: string;
+  //fc_data_special_filter: string;
+  //cad_data_special_filter: string;
+  //unit_data_special_filter: string;
+}
+
+export interface IDataView
+{
+  e: Record<string, IDataElementOptions>; // e is short for element, ie: array element.
+  data_filter: string;
+  sort_field: string;
+  sort_ascending: boolean;
+  special_filter: string;
+}
+
+export interface IDataElementOptions
+{
+  options: boolean;
+  errors: boolean;
+  history: Array<UnitHistory>;
 }
 
 export interface IAVLDataWithIndex extends AVLData
 {
-  index: number  
+  index: number;
+  fetchData: Function;
 }
 
 export interface IFCDataWithIndex extends FleetCompleteData
 {
   index: number
+  fetchData: Function;
 }
 
 export interface ICADDataWithIndex extends CADData
 {
   index: number
+  fetchData: Function;
 }
 
 export interface IUnitDataWithIndex extends UnitData
 {
   index: number
+  fetchData: Function;
+
 }
 
 export interface IUnitControls extends IUnitDataWithIndex
@@ -85,11 +118,12 @@ export interface IListHeader
 {
   title: string;
   title_description: string;
-  search_type: string;
+  //search_type: string;
   loading: boolean;
   fetchData: Function;
-  data_filter: string;
-  special_filter: string;
+  view_name: string;
+  //data_filter: string;
+  //special_filter: string;
   header_filters: Array<IHeaderFilter>;
 }
 
