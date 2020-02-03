@@ -96,8 +96,6 @@ export const WebMapView = () =>
           var homeWidget = new Home({ view: view });
           view.ui.add(homeWidget, { position: "top-left" });
 
-          //view.ui.add(layerlist, { position: "top-right" });
-
           view.on("click", (event) =>
           {
             view.hitTest(event).then(function (response)
@@ -124,14 +122,12 @@ export const WebMapView = () =>
                   update_app_view(view_name, { data_filter: graphic.attributes.device_id, special_filter: '' });
                   update_other_view(view_name, graphic.attributes.device_id, undefined, { details: true });
                 }
-                console.log(graphic.attributes);
               }
             });
           });
 
           view.when(() =>
           {
-            console.log('view.then running');
             dispatch({ type: 'save_map', payload: map });
             dispatch({ type: 'save_map_view', payload: view });
 
