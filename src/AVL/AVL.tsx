@@ -7,6 +7,7 @@ import UnitOptions from '../UnitOptions';
 import UnitHistory from '../UnitHistory';
 import UnitHistoryList from '../UnitHistoryList';
 import { IAVLDataWithIndex } from '../interfaces';
+import DeviceDetails from '../DeviceDetails';
 
 const AVL = (props:IAVLDataWithIndex) =>
 {
@@ -25,6 +26,24 @@ const AVL = (props:IAVLDataWithIndex) =>
     }
   }
 
+  let view_name = 'avl_view';
+
+  let view = state[view_name];
+
+  const update_view = (option: object) => 
+  {
+    dispatch(
+      {
+        type: 'update_view_device',
+        payload:
+        {
+          view: view_name,
+          device_id: props.device_id,
+          option: option
+        }
+      });
+  }
+
   const viewOnMap = (longitude, latitude) =>
   {
     if (!state.map_view) return;
@@ -37,12 +56,24 @@ const AVL = (props:IAVLDataWithIndex) =>
     if (state.map_view.zoom < 18) state.map_view.zoom = 18;
   }
 
-  //const fetchAVLData = async () =>
-  //{
-  //  const data = await AVLData.Get();
-  //  return dispatch({ type: 'get_avl_data', payload: data });
-  //}
+  const get_property = (property: string) =>
+  {
+    const d = view.e[props.device_id];
+    if (!d) return false;
+    return d[property];
+  }
 
+  const get_history = () =>
+  {
+    if (view.e[props.device_id] && view.e[props.device_id].history)
+    {
+      return view.e[props.device_id].history;
+    }
+    else
+    {
+      return [];
+    }
+  }
 
   return (
     <>
@@ -51,7 +82,16 @@ const AVL = (props:IAVLDataWithIndex) =>
           {props.index + 1}
         </td>
         <td>
-          {props.device_id}
+          <span
+            title="View device details"
+            className="cursor_pointer has-text-link"
+            onClick={event =>
+            {
+              update_view({ details: !get_property('details') });              
+            }}>
+            {props.device_id}
+          </span>
+          
           {props.latitude !== 0 ? (
             <span
               title="View this on the Map"
@@ -77,7 +117,7 @@ const AVL = (props:IAVLDataWithIndex) =>
             className="cursor_pointer has-text-link"
             onClick={event =>
             {
-              dispatch({ type: 'avl_data_toggle_show_unit_options', payload: props.device_id });
+              update_view({ options: !get_property('options') });
             }}>
             {props.unitcode.length === 0 ? 'Add' : props.unitcode}
           </span>
@@ -98,7 +138,7 @@ const AVL = (props:IAVLDataWithIndex) =>
               className="icon cursor_pointer has-text-warning"
               onClick={event =>
               {
-                dispatch({ type: 'avl_data_toggle_show_errors', payload: props.device_id });
+                update_view({ errors: !get_property('errors') });
               }
               }>
               <i className="fas fa-exclamation-circle"></i>
@@ -111,28 +151,16 @@ const AVL = (props:IAVLDataWithIndex) =>
             onClick={async event =>
             {
               event.preventDefault();
-
-              if (!props.device_history || props.device_history.length === 0)
+              let history = get_history();
+              if (history.length === 0)
               {
-                let deviceHistory = await UnitHistory.GetByDeviceId(props.device_id);
-                dispatch({
-                  type: 'avl_device_history',
-                  payload: {
-                    device_id: props.device_id,
-                    device_history: deviceHistory
-                  }
-                });
+                history = await UnitHistory.GetByUnit(props.unitcode);
               }
               else
               {
-                dispatch({
-                  type: 'avl_device_history',
-                  payload: {
-                    device_id: props.device_id,
-                    device_history: []
-                  }
-                });
+                history = [];
               }
+              update_view({ history: history });
             }}>
             <i className="fas fa-history"></i>
           </span>
@@ -160,19 +188,25 @@ const AVL = (props:IAVLDataWithIndex) =>
 
         </td>
       </tr>
+      <DeviceDetails
+        colspan={7}
+        show_details={get_property('details')}
+        {...props}
+      />
       <UnitOptions
         colspan={7}
         new_unitcode=""
-        update_data = {UpdateAVLData}
+        update_data={UpdateAVLData}
+        show_unit_options={get_property('options')}
         {...props} />
       <ErrorInformation
         colspan={7}
         error_information={props.error_information}
-        show_errors={props.show_errors} />
+        show_errors={get_property('errors')} />
       <UnitHistoryList
         colspan={7}
         title="History By Device Id"
-        history={props.device_history}
+        history={get_history()}
       />
     </>
   );

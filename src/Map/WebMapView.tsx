@@ -9,6 +9,34 @@ export const WebMapView = () =>
 
   const { dispatch } = React.useContext(Store);
 
+  const update_app_view = (view_name: string, option: object) => 
+  {
+    dispatch(
+      {
+        type: 'update_view',
+        payload:
+        {
+          view: view_name,
+          option: option
+        }
+      });
+  }
+
+  const update_other_view = (view_name: string, unitcode: string, device_id: string, option: object) => 
+  {
+    dispatch(
+      {
+        type: 'update_view_device',
+        payload:
+        {
+          view: view_name,
+          unitcode: unitcode,
+          device_id: device_id,
+          option: option
+        }
+      });
+  }
+
   useEffect(
     () =>
     {
@@ -69,6 +97,37 @@ export const WebMapView = () =>
           view.ui.add(homeWidget, { position: "top-left" });
 
           //view.ui.add(layerlist, { position: "top-right" });
+
+          view.on("click", (event) =>
+          {
+            view.hitTest(event).then(function (response)
+            {
+              const mylayers = ["avl", "fc", "cad"];
+              if (response.results.length)
+              {
+                var graphic = response.results.filter(function (result)
+                {
+                  // check if the graphic belongs to the layer of interest
+                  return mylayers.indexOf(result.graphic.layer.id) > -1;
+                })[0].graphic;
+
+                // do something with the result graphic
+                let view = graphic.attributes.view;
+                let view_name = view + '_view';
+                if (view === "cad")
+                {
+                  update_app_view(view_name, { data_filter: graphic.attributes.unitcode, special_filter: '' });
+                  update_other_view(view_name, undefined, graphic.attributes.unitcode, { details: true });
+                }
+                else
+                {
+                  update_app_view(view_name, { data_filter: graphic.attributes.device_id, special_filter: '' });
+                  update_other_view(view_name, graphic.attributes.device_id, undefined, { details: true });
+                }
+                console.log(graphic.attributes);
+              }
+            });
+          });
 
           view.when(() =>
           {

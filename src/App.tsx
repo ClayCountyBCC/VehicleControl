@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Nav from './nav';
 import { Store } from './Store';
 import AVLData from './AVL/AVLData';
@@ -18,10 +18,10 @@ const App: React.FC = () =>
 {
   const { state, dispatch } = React.useContext(Store);
 
-  const { isLoading: isAVLLoading, isError: isAVLError, fetchData: fetchAVLData } = useFetchData(AVLData.Get, "get_avl_data", false);
-  const { isLoading: isFCLoading, isError: isFCError, fetchData: fetchFCData } = useFetchData(FleetCompleteData.Get, "get_fc_data", false);
-  const { isLoading: isCADLoading, isError: isCADError, fetchData: fetchCADData } = useFetchData(CADData.Get, "get_cad_data", false);
-  const { isLoading: isUnitLoading, isError: isUnitError, fetchData: fetchUnitData } = useFetchData(UnitData.Get, "get_unit_data", false);
+  const { fetchData: fetchAVLData } = useFetchData(AVLData.Get, "get_avl_data", false);
+  const { fetchData: fetchFCData } = useFetchData(FleetCompleteData.Get, "get_fc_data", false);
+  const { fetchData: fetchCADData } = useFetchData(CADData.Get, "get_cad_data", false);
+  const { fetchData: fetchUnitData } = useFetchData(UnitData.Get, "get_unit_data", false);
 
   React.useEffect(() =>
   {

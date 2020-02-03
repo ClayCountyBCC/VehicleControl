@@ -14,12 +14,14 @@ namespace VehicleControl.Models
     public string group_label { get; set; } = "";
     public bool show_in_minicad { get; set; } = false;
 
+    public string avl_device_id { get; set; } = "";
     public decimal avl_longitude { get; set; } = 0;
     public decimal avl_latitude { get; set; } = 0;
     public DateTime avl_location_timestamp { get; set; }
     public bool has_avl_device { get; set; } = false;
     public bool has_avl_error { get; set; } = false;
 
+    public string fc_device_id { get; set; } = "";
     public decimal fc_longitude { get; set; } = 0;
     public decimal fc_latitude { get; set; } = 0;
     public DateTime fc_location_timestamp { get; set; }
@@ -49,6 +51,7 @@ namespace VehicleControl.Models
                   ,'') group_label
           ,ISNULL(UG.show_in_minicad -- this property should be in the unit_tracking_data table
                   ,0) show_in_minicad
+          ,COALESCE(AI.device_id, AP.device_id, '') avl_device_id
           ,COALESCE(AI.longitude
                     ,AP.longitude
                     ,0) avl_longitude
@@ -59,6 +62,7 @@ namespace VehicleControl.Models
                     ,AP.location_timestamp
                     ,'1/1/1995') avl_location_timestamp
           ,UTD.has_avl_device
+          ,COALESCE(F.device_id, '') fc_device_id
           ,COALESCE(F.longitude
                     ,0) fc_longitude
           ,COALESCE(F.latitude

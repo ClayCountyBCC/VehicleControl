@@ -64,6 +64,7 @@ export interface IDataElementOptions
   options: boolean;
   errors: boolean;
   history: Array<UnitHistory>;
+  details: boolean;
 }
 
 export interface IAVLDataWithIndex extends AVLData

@@ -7,12 +7,14 @@ interface IUnitData
   group_label: string;
   show_in_minicad: boolean;
 
+  avl_device_id: string;
   avl_longitude: number;
   avl_latitude: number;
   avl_location_timestamp: Date;
   has_avl_device: boolean;
   has_avl_error: boolean;
 
+  fc_device_id: string;
   fc_longitude: number;
   fc_latitude: number;
   fc_location_timestamp: Date;
@@ -39,12 +41,14 @@ export class UnitData implements IUnitData
   public group_label: string = "";
   public show_in_minicad: boolean = false;
   
+  public avl_device_id: string = "";
   public avl_longitude: number = 0;
   public avl_latitude: number = 0;
   public avl_location_timestamp: Date = new Date();
   public has_avl_device: boolean = false;
   public has_avl_error: boolean = false;
   
+  public fc_device_id: string = "";
   public fc_longitude: number = 0;
   public fc_latitude: number =0;
   public fc_location_timestamp: Date = new Date();

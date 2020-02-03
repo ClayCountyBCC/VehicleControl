@@ -210,6 +210,7 @@
     <TypeScriptCompile Include="src\Cad\CAD.tsx" />
     <TypeScriptCompile Include="src\Cad\CADData.ts" />
     <TypeScriptCompile Include="src\Cad\CADList.tsx" />
+    <TypeScriptCompile Include="src\DeviceDetails.tsx" />
     <TypeScriptCompile Include="src\ErrorInformation.tsx" />
     <TypeScriptCompile Include="src\FleetComplete\FC.tsx" />
     <TypeScriptCompile Include="src\FleetComplete\FCList.tsx" />

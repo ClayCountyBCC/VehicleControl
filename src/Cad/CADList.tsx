@@ -14,6 +14,24 @@ const CADList: React.FC = () =>
 
   const Header = CADHeader(isLoading, fetchData);
 
+  let view_name = 'cad_view';
+
+  let view = state[view_name];
+
+  let sort_view = (sort_by: string) =>
+  {
+    dispatch({
+      type: 'update_view',
+      payload: {
+        view: view_name,
+        option: {
+          sort_field: sort_by,
+          sort_ascending: !view.sort_ascending
+        }
+      }
+    });
+  }
+
   useEffect(() =>
   {
 
@@ -21,7 +39,7 @@ const CADList: React.FC = () =>
     isLoading,
     isError,
     state.filtered_cad_data,
-    state.cad_view]);
+    view]);
 
   return (
     <section>
@@ -40,9 +58,10 @@ const CADList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'cad_data_sort', payload: 'unitcode' });
+                  sort_view('unitcode');
+                  //dispatch({ type: 'cad_data_sort', payload: 'unitcode' });
                 }}
-                className={`${state.cad_data_sort_field !== 'unitcode' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'unitcode' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Unit Code
               </a>
             </th>
@@ -52,9 +71,10 @@ const CADList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'cad_data_sort', payload: 'inci_id' });
+                  sort_view('inci_id');
+                  //dispatch({ type: 'cad_data_sort', payload: 'inci_id' });
                 }}
-                className={`${state.cad_data_sort_field !== 'inci_id' ? '' : state.cad_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'inci_id' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Call Status
               </a>
             </th>
@@ -64,9 +84,10 @@ const CADList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'cad_data_sort', payload: 'status' });
+                  sort_view('status');
+                  //dispatch({ type: 'cad_data_sort', payload: 'status' });
                 }}
-                className={`${state.cad_data_sort_field !== 'status' ? '' : state.cad_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'status' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Status
               </a>
             </th>
@@ -76,9 +97,10 @@ const CADList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'cad_data_sort', payload: 'avstatus' });
+                  sort_view('avstatus');
+                  //dispatch({ type: 'cad_data_sort', payload: 'avstatus' });
                 }}
-                className={`${state.cad_data_sort_field !== 'avstatus' ? '' : state.cad_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'avstatus' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 AV Status
               </a>
             </th>
@@ -88,9 +110,10 @@ const CADList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'cad_data_sort', payload: 'updated_on' });
+                  sort_view('updated_on');
+                  //dispatch({ type: 'cad_data_sort', payload: 'updated_on' });
                 }}
-                className={`${state.cad_data_sort_field !== 'updated_on' ? '' : state.cad_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'updated_on' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Data Saved On
               </a>
             </th>
@@ -100,9 +123,10 @@ const CADList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'cad_data_sort', payload: 'location_timestamp' });
+                  sort_view('location_timestamp');
+                  //dispatch({ type: 'cad_data_sort', payload: 'location_timestamp' });
                 }}
-                className={`${state.cad_data_sort_field !== 'location_timestamp' ? '' : state.cad_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'location_timestamp' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Location On
               </a>
             </th>

@@ -81,13 +81,16 @@ function reducer(state: IState, action: IAction): IState
       return {
         ...state,
         unit_groups: action.payload
-      }
+      };
 
     case "set_current_view":
       return {
         ...state,
         current_view: action.payload
-      }
+      };
+
+    case "view_by_device":
+
 
     case "view_avl_by_unit":
       let tmp_avl_view = {
@@ -180,65 +183,98 @@ function reducer(state: IState, action: IAction): IState
             state.unit_view)
       };
 
-    case "search_avl_data":
-      let tmp_avl_search_view = {
-        ...state.avl_view,
-        data_filter: action.payload
-      };
-
+    case "update_view":
+      let v = state[action.payload.view];
+      v = {
+        ...state[action.payload.view],
+        ...action.payload.option
+      }
       return {
         ...state,
-        filtered_avl_data:
-          process_avl(
-            state.avl_data,
-            tmp_avl_search_view),
-        avl_view: tmp_avl_search_view
+        [action.payload.view]: v,
+        ...filter_data(action.payload.view, v, state)
+      };
+
+    case "update_view_device":      
+      let new_view = action.payload.view.split("_")[0];
+      let ve = state[action.payload.view].e;
+      let id = action.payload.unitcode ? action.payload.unitcode : action.payload.device_id;
+      if (!ve[id])
+      {
+        ve[id] = NewDataElementOptions();
+      }
+      ve[id] = {
+        ...ve[id],
+        ...action.payload.option
+      }
+      return {
+        ...state,
+        current_view: new_view,
+        [action.payload.view]: {
+          ...state[action.payload.view],
+          e: ve
+        }
       }
 
-    case "search_fc_data":
-      let tmp_fc_search_view = {
-        ...state.fc_view,
-        data_filter: action.payload
-      };
+    //case "search_avl_data":
+    //  let tmp_avl_search_view = {
+    //    ...state.avl_view,
+    //    data_filter: action.payload
+    //  };
 
-      return {
-        ...state,
-        filtered_fc_data:
-          process_fc(
-            state.fc_data,
-            tmp_fc_search_view),
-        fc_view: tmp_fc_search_view
-      }
+    //  return {
+    //    ...state,
+    //    filtered_avl_data:
+    //      process_avl(
+    //        state.avl_data,
+    //        tmp_avl_search_view),
+    //    avl_view: tmp_avl_search_view
+    //  }
 
-    case "search_cad_data":
-      let tmp_cad_search_view = {
-        ...state.cad_view,
-        data_filter: action.payload
-      };
+    //case "search_fc_data":
+    //  let tmp_fc_search_view = {
+    //    ...state.fc_view,
+    //    data_filter: action.payload
+    //  };
 
-      return {
-        ...state,
-        filtered_cad_data:
-          process_cad(
-            state.cad_data,
-            tmp_cad_search_view),
-        cad_view: tmp_cad_search_view
-      }
+    //  return {
+    //    ...state,
+    //    filtered_fc_data:
+    //      process_fc(
+    //        state.fc_data,
+    //        tmp_fc_search_view),
+    //    fc_view: tmp_fc_search_view
+    //  }
 
-    case "search_unit_data":
-      let tmp_unit_search_view = {
-        ...state.unit_view,
-        data_filter: action.payload
-      };
+    //case "search_cad_data":
+    //  let tmp_cad_search_view = {
+    //    ...state.cad_view,
+    //    data_filter: action.payload
+    //  };
 
-      return {
-        ...state,
-        filtered_unit_data:
-          process_unit(
-            state.unit_data,
-            tmp_unit_search_view),
-        unit_view: tmp_unit_search_view        
-      };
+    //  return {
+    //    ...state,
+    //    filtered_cad_data:
+    //      process_cad(
+    //        state.cad_data,
+    //        tmp_cad_search_view),
+    //    cad_view: tmp_cad_search_view
+    //  }
+
+    //case "search_unit_data":
+    //  let tmp_unit_search_view = {
+    //    ...state.unit_view,
+    //    data_filter: action.payload
+    //  };
+
+    //  return {
+    //    ...state,
+    //    filtered_unit_data:
+    //      process_unit(
+    //        state.unit_data,
+    //        tmp_unit_search_view),
+    //    unit_view: tmp_unit_search_view        
+    //  };
 
       //return {
       //  ...state,
@@ -252,53 +288,38 @@ function reducer(state: IState, action: IAction): IState
       //  unit_data_filter: action.payload
       //};
 
-    case "avl_device_history":
-      let showAVLHistory = state.filtered_avl_data.map(a =>
-      {
-        if (a.device_id === action.payload.device_id)
-        {
-          a.device_history = action.payload.device_history;
-        }
-        return a;
-      });
+    //case "avl_device_history":
+    //  let showAVLHistory = state.filtered_avl_data.map(a =>
+    //  {
+    //    if (a.device_id === action.payload.device_id)
+    //    {
+    //      a.device_history = action.payload.device_history;
+    //    }
+    //    return a;
+    //  });
 
-      return {
-        ...state,
-        filtered_avl_data: showAVLHistory
-      };
+    //  return {
+    //    ...state,
+    //    filtered_avl_data: showAVLHistory
+    //  };
 
-    case "fc_device_history":
-      let showFCHistory = state.filtered_fc_data.map(a =>
-      {
-        if (a.device_id === action.payload.device_id)
-        {
-          a.device_history = action.payload.device_history;
-        }
-        return a;
-      });
+    //case "fc_device_history":
+    //  let showFCHistory = state.filtered_fc_data.map(a =>
+    //  {
+    //    if (a.device_id === action.payload.device_id)
+    //    {
+    //      a.device_history = action.payload.device_history;
+    //    }
+    //    return a;
+    //  });
 
-      return {
-        ...state,
-        filtered_fc_data: showFCHistory
-      };
+    //  return {
+    //    ...state,
+    //    filtered_fc_data: showFCHistory
+    //  };
 
-    case "cad_device_history":
-      let showCADHistory = state.filtered_cad_data.map(a =>
-      {
-        if (a.unitcode === action.payload.unitcode)
-        {
-          a.device_history = action.payload.device_history;
-        }
-        return a;
-      });
-
-      return {
-        ...state,
-        filtered_cad_data: showCADHistory
-      };
-
-    //case "unit_device_history":
-    //  let showUnitHistory = state.filtered_unit_data.map(a =>
+    //case "cad_device_history":
+    //  let showCADHistory = state.filtered_cad_data.map(a =>
     //  {
     //    if (a.unitcode === action.payload.unitcode)
     //    {
@@ -309,85 +330,84 @@ function reducer(state: IState, action: IAction): IState
 
     //  return {
     //    ...state,
-    //    filtered_unit_data: showUnitHistory
+    //    filtered_cad_data: showCADHistory
     //  };
 
+    //case "avl_data_special_filter":
+    //  let avl_view_special = {
+    //    ...state.avl_view,
+    //    special_filter: action.payload
+    //  }
+    //  return {
+    //    ...state,
+    //    filtered_avl_data: process_avl(state.avl_data, avl_view_special), avl_view: avl_view_special
+    //  };
 
-    case "avl_data_special_filter":
-      let avl_view_special = {
-        ...state.avl_view,
-        special_filter: action.payload
-      }
-      return {
-        ...state,
-        filtered_avl_data: process_avl(state.avl_data, avl_view_special), avl_view: avl_view_special
-      };
+    //case "fc_data_special_filter":
+    //  let fc_view_special = {
+    //    ...state.fc_view,
+    //    special_filter: action.payload
+    //  }
+    //  return {
+    //    ...state,
+    //    filtered_fc_data: process_fc(state.fc_data, fc_view_special), fc_view: fc_view_special
+    //  };
 
-    case "fc_data_special_filter":
-      let fc_view_special = {
-        ...state.fc_view,
-        special_filter: action.payload
-      }
-      return {
-        ...state,
-        filtered_fc_data: process_fc(state.fc_data, fc_view_special), fc_view: fc_view_special
-      };
-
-    case "cad_data_special_filter":
-      let cad_view_special = {
-        ...state.cad_view,
-        special_filter: action.payload
-      }
-      return {
-        ...state,
-        filtered_cad_data: process_cad(state.cad_data, cad_view_special), cad_view: cad_view_special
-      };
+    //case "cad_data_special_filter":
+    //  let cad_view_special = {
+    //    ...state.cad_view,
+    //    special_filter: action.payload
+    //  }
+    //  return {
+    //    ...state,
+    //    filtered_cad_data: process_cad(state.cad_data, cad_view_special), cad_view: cad_view_special
+    //  };
       //return {
       //  ...state,
       //  filtered_cad_data: process_cad(state.cad_data, state.cad_data_filter, state.cad_data_sort_field, state.cad_data_sort_ascending, action.payload),
       //  cad_data_special_filter: action.payload
       //};
 
-    case "unit_data_special_filter":
-      let unit_view_special = {
-        ...state.unit_view,
-        special_filter: action.payload
-      }
-      return {
-        ...state,
-        filtered_unit_data: process_unit(state.unit_data, unit_view_special), unit_view: unit_view_special
-      };
+    //case "unit_data_special_filter":
+    //  let unit_view_special = {
+    //    ...state.unit_view,
+    //    special_filter: action.payload
+    //  }
+    //  return {
+    //    ...state,
+    //    filtered_unit_data: process_unit(state.unit_data, unit_view_special), unit_view: unit_view_special
+    //  };
       //return {
       //  ...state,
       //  filtered_unit_data: process_cad(state.unit_data, state.unit_data_filter, state.unit_data_sort_field, state.unit_data_sort_ascending, action.payload),
       //  unit_data_special_filter: action.payload
       //};
 
-    case "avl_data_sort":
-      let avl_sort_view = {
-        ...state.avl_view,
-        sort_field: action.payload,
-        sort_ascending: !state.avl_view.sort_ascending
-      }
-      let avl_filtered = sort(state.filtered_avl_data, avl_sort_view);
-      return {
-        ...state,
-        filtered_avl_data: avl_filtered,
-        avl_view: avl_sort_view
-      };
+    //case "avl_data_sort":
+    //  let avl_sort_view = {
+    //    ...state.avl_view,
+    //    sort_field: action.payload,
+    //    sort_ascending: !state.avl_view.sort_ascending
+    //  }
+    //  let avl_filtered = sort(state.filtered_avl_data, avl_sort_view);
+    //  return {
+    //    ...state,
+    //    filtered_avl_data: avl_filtered,
+    //    avl_view: avl_sort_view
+    //  };
 
-    case "fc_data_sort":
-      let fc_sort_view = {
-        ...state.fc_view,
-        sort_field: action.payload,
-        sort_ascending: !state.fc_view.sort_ascending
-      }
-      let fc_filtered = sort(state.filtered_fc_data, fc_sort_view);
-      return {
-        ...state,
-        filtered_fc_data: fc_filtered,
-        fc_view: fc_sort_view
-      };
+    //case "fc_data_sort":
+    //  let fc_sort_view = {
+    //    ...state.fc_view,
+    //    sort_field: action.payload,
+    //    sort_ascending: !state.fc_view.sort_ascending
+    //  }
+    //  let fc_filtered = sort(state.filtered_fc_data, fc_sort_view);
+    //  return {
+    //    ...state,
+    //    filtered_fc_data: fc_filtered,
+    //    fc_view: fc_sort_view
+    //  };
       //let filterFC = sort(state.filtered_fc_data, action.payload, !state.fc_data_sort_ascending);
       //return {
       //  ...state,
@@ -396,74 +416,74 @@ function reducer(state: IState, action: IAction): IState
       //  fc_data_sort_ascending: !state.fc_data_sort_ascending
       //};
 
-    case "cad_data_sort":
-      let cad_sort_view = {
-        ...state.cad_view,
-        sort_field: action.payload,
-        sort_ascending: !state.cad_view.sort_ascending
-      }
-      let cad_filtered = sort(state.filtered_cad_data, cad_sort_view);
-      return {
-        ...state,
-        filtered_cad_data: cad_filtered,
-        cad_view: cad_sort_view
-      };
+    //case "cad_data_sort":
+    //  let cad_sort_view = {
+    //    ...state.cad_view,
+    //    sort_field: action.payload,
+    //    sort_ascending: !state.cad_view.sort_ascending
+    //  }
+    //  let cad_filtered = sort(state.filtered_cad_data, cad_sort_view);
+    //  return {
+    //    ...state,
+    //    filtered_cad_data: cad_filtered,
+    //    cad_view: cad_sort_view
+    //  };
 
 
-    case "unit_data_sort":
-      let unit_sort_view = {
-        ...state.unit_view,
-        sort_field: action.payload,
-        sort_ascending: !state.unit_view.sort_ascending
-      }
-      let unit_filtered = sort(state.filtered_unit_data, unit_sort_view);
-      return {
-        ...state,
-        filtered_unit_data: unit_filtered,
-        unit_view: unit_sort_view
-      };
+    //case "unit_data_sort":
+    //  let unit_sort_view = {
+    //    ...state.unit_view,
+    //    sort_field: action.payload,
+    //    sort_ascending: !state.unit_view.sort_ascending
+    //  }
+    //  let unit_filtered = sort(state.filtered_unit_data, unit_sort_view);
+    //  return {
+    //    ...state,
+    //    filtered_unit_data: unit_filtered,
+    //    unit_view: unit_sort_view
+    //  };
 
-    case "avl_data_toggle_show_errors":
-      let showAVLError = state.filtered_avl_data.map(a =>
-      {
-        if (a.device_id === action.payload)
-        {
-          a.show_errors = !a.show_errors;
-        }
-        return a;
-      });
-      return {
-        ...state,
-        filtered_avl_data: showAVLError
-      };
+    //case "avl_data_toggle_show_errors":
+    //  let showAVLError = state.filtered_avl_data.map(a =>
+    //  {
+    //    if (a.device_id === action.payload)
+    //    {
+    //      a.show_errors = !a.show_errors;
+    //    }
+    //    return a;
+    //  });
+    //  return {
+    //    ...state,
+    //    filtered_avl_data: showAVLError
+    //  };
 
-    case "fc_data_toggle_show_errors":
-      let showFCError = state.filtered_fc_data.map(a =>
-      {
-        if (a.device_id === action.payload)
-        {
-          a.show_errors = !a.show_errors;
-        }
-        return a;
-      });
-      return {
-        ...state,
-        filtered_fc_data: showFCError
-      };
+    //case "fc_data_toggle_show_errors":
+    //  let showFCError = state.filtered_fc_data.map(a =>
+    //  {
+    //    if (a.device_id === action.payload)
+    //    {
+    //      a.show_errors = !a.show_errors;
+    //    }
+    //    return a;
+    //  });
+    //  return {
+    //    ...state,
+    //    filtered_fc_data: showFCError
+    //  };
 
-    case "cad_data_toggle_show_errors":
-      let showCADError = state.filtered_cad_data.map(a =>
-      {
-        if (a.unitcode === action.payload)
-        {
-          a.show_errors = !a.show_errors;
-        }
-        return a;
-      });
-      return {
-        ...state,
-        filtered_cad_data: showCADError
-      };
+    //case "cad_data_toggle_show_errors":
+    //  let showCADError = state.filtered_cad_data.map(a =>
+    //  {
+    //    if (a.unitcode === action.payload)
+    //    {
+    //      a.show_errors = !a.show_errors;
+    //    }
+    //    return a;
+    //  });
+    //  return {
+    //    ...state,
+    //    filtered_cad_data: showCADError
+    //  };
 
     //case "unit_data_toggle_show_errors":
     //  let showUnitError = state.filtered_unit_data.map(a =>
@@ -479,121 +499,114 @@ function reducer(state: IState, action: IAction): IState
     //    filtered_unit_data: showUnitError
     //  };
 
-    case "avl_data_toggle_show_unit_options":
-      let showAVLUO = state.filtered_avl_data.map(a =>
-      {
-        if (a.device_id === action.payload)
-        {
-          a.show_unit_options = !a.show_unit_options;
-        }
-        return a;
-      });
+    //case "avl_data_toggle_show_unit_options":
+    //  let showAVLUO = state.filtered_avl_data.map(a =>
+    //  {
+    //    if (a.device_id === action.payload)
+    //    {
+    //      a.show_unit_options = !a.show_unit_options;
+    //    }
+    //    return a;
+    //  });
 
-      return {
-        ...state,
-        filtered_avl_data: showAVLUO
-      };
+    //  return {
+    //    ...state,
+    //    filtered_avl_data: showAVLUO
+    //  };
 
-    case "fc_data_toggle_show_unit_options":
-      let showFCUO = state.filtered_fc_data.map(a =>
-      {
-        if (a.device_id === action.payload)
-        {
-          a.show_unit_options = !a.show_unit_options;
-        }
-        return a;
-      });
+    //case "fc_data_toggle_show_unit_options":
+    //  let showFCUO = state.filtered_fc_data.map(a =>
+    //  {
+    //    if (a.device_id === action.payload)
+    //    {
+    //      a.show_unit_options = !a.show_unit_options;
+    //    }
+    //    return a;
+    //  });
 
-      return {
-        ...state,
-        filtered_fc_data: showFCUO
-      };
+    //  return {
+    //    ...state,
+    //    filtered_fc_data: showFCUO
+    //  };
 
-    case "update_avl_view_device":
-      let avle = state.avl_view.e;
-      let avl_unitcode = action.payload.unitcode;
-      if (!avle[avl_unitcode])
-      {
-        avle[avl_unitcode] = NewDataElementOptions();
-      }
-      avle[avl_unitcode] = {
-        ...avle[avl_unitcode],
-        ...action.payload.view
-      }
-      return {
-        ...state,
-        avl_view: {
-          ...state.avl_view,
-          e: avle
-        }
-      }
-
-    case "update_view":
-      console.log('updating view', action.payload);
-      let v = state[action.payload.view];
-      v = {
-        ...state[action.payload.view],
-        ...action.payload.option
-      }
-      return {
-        ...state,
-        [action.payload.view]: v
-      };
+    //case "update_avl_view_device":
+    //  let avle = state.avl_view.e;
+    //  let avl_unitcode = action.payload.unitcode;
+    //  if (!avle[avl_unitcode])
+    //  {
+    //    avle[avl_unitcode] = NewDataElementOptions();
+    //  }
+    //  avle[avl_unitcode] = {
+    //    ...avle[avl_unitcode],
+    //    ...action.payload.view
+    //  }
+    //  return {
+    //    ...state,
+    //    avl_view: {
+    //      ...state.avl_view,
+    //      e: avle
+    //    }
+    //  }
 
 
-    case "update_unit_view":
-      let uv = state.unit_view;
-      uv = {
-        ...state.unit_view,
-        ...action.payload
-      }
-      return {
-        ...state,
-        unit_view: uv
-      };
 
-    case "update_unit_view_unit":
-      let uve = state.unit_view.e;
-      let unitcode = action.payload.unitcode;
-      if (!uve[unitcode])
-      {
-        uve[unitcode] = NewDataElementOptions();
-      }
-      uve[unitcode] = {
-        ...uve[unitcode],
-        ...action.payload.view
-      }
-      return {
-        ...state,
-        unit_view: {
-          ...state.unit_view,
-          e: uve
-        }
-      }
+
+    //case "update_unit_view":
+    //  let uv = state.unit_view;
+    //  uv = {
+    //    ...state.unit_view,
+    //    ...action.payload
+    //  }
+    //  return {
+    //    ...state,
+    //    unit_view: uv
+    //  };
+
+    //case "update_unit_view_unit":
+    //  let uve = state.unit_view.e;
+    //  let unitcode = action.payload.unitcode;
+    //  if (!uve[unitcode])
+    //  {
+    //    uve[unitcode] = NewDataElementOptions();
+    //  }
+    //  uve[unitcode] = {
+    //    ...uve[unitcode],
+    //    ...action.payload.view
+    //  }
+    //  return {
+    //    ...state,
+    //    unit_view: {
+    //      ...state.unit_view,
+    //      e: uve
+    //    }
+    //  }
+
+
 
     default:
+      console.log('action type not found, returning current state', action.type);
       return state;
   }
 }
 
-function filter_data(view: string, state: IState): Array<AVLData> | Array<FleetCompleteData> | Array<UnitData> | Array<CADData>
+function filter_data(view: string, new_view: IDataView, state: IState): {}
 {
   switch (view)
   {
     case 'unit_view':
-      return process_unit(state.unit_data, state.unit_view);
+      return { filtered_unit_data: process_unit(state.unit_data, new_view) };
       
     case 'cad_view':
-      return process_cad(state.cad_data, state.cad_view);
+      return { filtered_cad_data: process_cad(state.cad_data, new_view) };
 
     case 'avl_view':
-      return process_avl(state.avl_data, state.avl_view);
+      return { filtered_avl_data: process_avl(state.avl_data, new_view) };      
 
     case 'fc_view':
-      return process_fc(state.fc_data, state.fc_view);
+      return { filtered_fc_data: process_fc(state.fc_data, new_view) };      
 
     default:
-      return [];      
+      return {};      
   }
 }
 
@@ -601,7 +614,6 @@ function filter_avl(arrayToFilter:Array<AVLData>, filterUsing:string): Array<AVL
 {
   if (filterUsing.length === 0) return arrayToFilter;
   let split = filterUsing.toLowerCase().split(",");
-  //let f = filterUsing.toLowerCase();
   let filtered = arrayToFilter.filter(j =>
   {
     let check = false;
@@ -612,8 +624,6 @@ function filter_avl(arrayToFilter:Array<AVLData>, filterUsing:string): Array<AVL
       if (check) break;
     }
     return check;
-    //return j.device_id.toLowerCase().indexOf(f) > -1 ||
-    //  j.unitcode.toLowerCase().indexOf(f) > -1;
   });
   return filtered;
 }
@@ -622,7 +632,6 @@ function filter_fc(arrayToFilter: Array<FleetCompleteData>, filterUsing: string)
 {
   if (filterUsing.length === 0) return arrayToFilter;
   let split = filterUsing.toLowerCase().split(",");
-  //let f = filterUsing.toLowerCase();
   let filtered = arrayToFilter.filter(j =>
   {
     let check = false;
@@ -633,9 +642,6 @@ function filter_fc(arrayToFilter: Array<FleetCompleteData>, filterUsing: string)
       if (check) break;
     }
     return check;
-    //return j.device_id.toLowerCase().indexOf(f) > -1 ||
-    //  j.unitcode.toLowerCase().indexOf(f) > -1 || 
-    //  j.asset_tag.toLowerCase().indexOf(f) > -1;
   });
   return filtered;
 }
@@ -644,7 +650,6 @@ function filter_cad(arrayToFilter: Array<CADData>, filterUsing: string): Array<C
 {
   if (filterUsing.length === 0) return arrayToFilter;
   let split = filterUsing.toLowerCase().split(",");
-  //let f = filterUsing.toLowerCase();
   let filtered = arrayToFilter.filter(j =>
   {
     let check = false;
@@ -655,7 +660,6 @@ function filter_cad(arrayToFilter: Array<CADData>, filterUsing: string): Array<C
       if (check) break;
     }
     return check;
-    //return j.unitcode.toLowerCase().indexOf(f) > -1;
   });
   return filtered;
 }
@@ -777,6 +781,7 @@ function NewDataElementOptions(): IDataElementOptions
   return {
     options: false,
     errors: false,
-    history: []
+    history: [],
+    details: false
   }
 }

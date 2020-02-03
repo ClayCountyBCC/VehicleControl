@@ -4,7 +4,11 @@ import { loadModules } from 'esri-loader';
 
 const LocationLayer = ({ state_array, title, r, g, b, view_type }) =>
 {
-  const { state } = React.useContext(Store);
+  const { state, dispatch } = React.useContext(Store);
+
+  const view_name = view_type + '_view';
+
+
 
   const [graphicsLayer, setGraphicsLayer] = useState(null);
 
@@ -35,6 +39,7 @@ const LocationLayer = ({ state_array, title, r, g, b, view_type }) =>
     {
       let layer = graphicsLayer === null ? new GraphicsLayer() : graphicsLayer;
       if (layer.graphics.length > 0) layer.removeAll();
+      layer.id = view_type;
       layer.title = title;
 
       let now = new Date();
@@ -56,6 +61,17 @@ const LocationLayer = ({ state_array, title, r, g, b, view_type }) =>
           geometry: point
           , symbol: symbol
         });
+
+        symbolGraphic.setAttribute("view", view_type);
+        symbolGraphic.setAttribute("device_id", d.device_id);
+        symbolGraphic.setAttribute("unitcode", d.unitcode);
+
+        //symbolGraphic.onClick = (event) =>
+        //{
+          
+
+          
+        //}
 
         var text = {
           type: "text"
@@ -80,7 +96,6 @@ const LocationLayer = ({ state_array, title, r, g, b, view_type }) =>
         layer.add(textGraphic);
 
       }
-
       setGraphicsLayer(layer);
       state.map.add(layer);
 

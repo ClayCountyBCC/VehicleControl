@@ -7,6 +7,7 @@ import UnitOptions from '../UnitOptions';
 import UnitHistory from '../UnitHistory';
 import UnitHistoryList from '../UnitHistoryList';
 import { IFCDataWithIndex } from '../interfaces';
+import DeviceDetails from '../DeviceDetails';
 
 const FC = (props: IFCDataWithIndex) =>
 {
@@ -17,12 +18,30 @@ const FC = (props: IFCDataWithIndex) =>
     const response = await FleetCompleteData.Update(asset_tag, current_unit);
     if (response.ok)
     {
-      fetchFCData();
+      props.fetchData();
     }
     else
     {
       alert("There was a problem with deleting this record. Please contact MIS Development for more information.");
     }
+  }
+
+  let view_name = 'fc_view';
+
+  let view = state[view_name];
+
+  const update_view = (option: object) => 
+  {
+    dispatch(
+      {
+        type: 'update_view_device',
+        payload:
+        {
+          view: view_name,
+          device_id: props.device_id,
+          option: option
+        }
+      });
   }
 
   const viewOnMap = (longitude, latitude) =>
@@ -37,21 +56,41 @@ const FC = (props: IFCDataWithIndex) =>
     if (state.map_view.zoom < 18) state.map_view.zoom = 18;
   }
 
-  const fetchFCData = async () =>
+  const get_property = (property: string) =>
   {
-    const data = await FleetCompleteData.Get();
-    return dispatch({ type: 'get_fc_data', payload: data });
+    const d = view.e[props.device_id];
+    if (!d) return false;
+    return d[property];
   }
 
+  const get_history = () =>
+  {
+    if (view.e[props.device_id] && view.e[props.device_id].history)
+    {
+      return view.e[props.device_id].history;
+    }
+    else
+    {
+      return [];
+    }
+  }
 
   return (
     <>
-      <tr id={'fc' + props.device_id}>
+      <tr>
         <td>
           {props.index + 1}
         </td>
         <td>
-          {props.device_id.replace(/^0+/, '')}
+          <span
+            title="View device details"
+            className="cursor_pointer has-text-link"
+            onClick={event =>
+            {
+              update_view({ details: !get_property('details') });
+            }}>
+            {props.device_id.replace(/^0+/, '')}
+          </span>
           {props.latitude !== 0 ? (
             <span
               title="View this on the Map"
@@ -74,7 +113,7 @@ const FC = (props: IFCDataWithIndex) =>
             className="cursor_pointer has-text-link"
             onClick={event =>
             {
-              dispatch({ type: 'fc_data_toggle_show_unit_options', payload: props.device_id });
+              update_view({ options: !get_property('options') });
             }}>
             {props.unitcode.length === 0 ? 'Add' : props.unitcode}
           </span>
@@ -96,7 +135,7 @@ const FC = (props: IFCDataWithIndex) =>
               className="icon cursor_pointer has-text-warning"
               onClick={event =>
               {
-                dispatch({ type: 'fc_data_toggle_show_errors', payload: props.device_id });
+                update_view({ errors: !get_property('errors') });
               }
               }>
               <i className="fas fa-exclamation-circle"></i>
@@ -110,27 +149,16 @@ const FC = (props: IFCDataWithIndex) =>
             {
               event.preventDefault();
 
-              if (!props.device_history || props.device_history.length === 0)
+              let history = get_history();
+              if (history.length === 0)
               {
-                let deviceHistory = await UnitHistory.GetByDeviceId(props.asset_tag);
-                dispatch({
-                  type: 'fc_device_history',
-                  payload: {
-                    device_id: props.device_id,
-                    device_history: deviceHistory
-                  }
-                });
+                history = await UnitHistory.GetByDeviceId(props.asset_tag);
               }
               else
               {
-                dispatch({
-                  type: 'fc_device_history',
-                  payload: {
-                    device_id: props.device_id,
-                    device_history: []
-                  }
-                });
+                history = [];
               }
+              update_view({ history: history });
             }}>
             <i className="fas fa-history"></i>
           </span>
@@ -144,7 +172,7 @@ const FC = (props: IFCDataWithIndex) =>
               const response = await FleetCompleteData.Delete(props.device_id);
               if (response.ok)
               {
-                fetchFCData();
+                props.fetchData();
               }
               else
               {
@@ -158,21 +186,26 @@ const FC = (props: IFCDataWithIndex) =>
 
         </td>
       </tr>
-
+      <DeviceDetails
+        colspan={7}
+        show_details={get_property('details')}
+        {...props}
+      />
       <UnitOptions
         colspan={7}
         new_unitcode=""
         update_data={updateFCData}
+        show_unit_options={get_property('options')}
         {...props} />
 
       <ErrorInformation
         colspan={7}
         error_information={props.error_information}
-        show_errors={props.show_errors} />
+        show_errors={get_property('errors')} />
       <UnitHistoryList
         colspan={7}
         title="History By Device Id"
-        history={props.device_history}
+        history={get_history()}
       />
     </>
   );

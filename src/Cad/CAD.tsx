@@ -6,15 +6,28 @@ import ErrorInformation from '../ErrorInformation';
 import UnitHistory from '../UnitHistory';
 import UnitHistoryList from '../UnitHistoryList';
 import { ICADDataWithIndex } from '../interfaces';
+import DeviceDetails from '../DeviceDetails';
 
 const CAD = (props:ICADDataWithIndex) =>
 {
   const { state, dispatch } = React.useContext(Store);
 
-  const fetchCADData = async () =>
+  let view_name = 'cad_view';
+
+  let view = state[view_name];
+
+  const update_view = (option: object) => 
   {
-    const data = await CADData.Get();
-    return dispatch({ type: 'get_cad_data', payload: data });
+    dispatch(
+      {
+        type: 'update_view_device',
+        payload:
+        {
+          view: view_name,
+          unitcode: props.unitcode,
+          option: option
+        }
+      });
   }
 
   const viewOnMap = (longitude, latitude) =>
@@ -29,6 +42,24 @@ const CAD = (props:ICADDataWithIndex) =>
     if (state.map_view.zoom < 18) state.map_view.zoom = 18;
   }
 
+  const get_property = (property: string) =>
+  {
+    const d = view.e[props.unitcode];
+    if (!d) return false;
+    return d[property];
+  }
+
+  const get_history = () =>
+  {
+    if (view.e[props.unitcode] && view.e[props.unitcode].history)
+    {
+      return view.e[props.unitcode].history;
+    }
+    else
+    {
+      return [];
+    }
+  }
 
   return (
     <>
@@ -37,7 +68,15 @@ const CAD = (props:ICADDataWithIndex) =>
           {props.index + 1}
         </td>
         <td>
-          {props.unitcode}
+          <span
+            title="View device details"
+            className="cursor_pointer has-text-link"
+            onClick={event =>
+            {
+              update_view({ details: !get_property('details') });
+            }}>
+            {props.unitcode}
+          </span>
           {props.latitude !== 0 ? (
             <span
               title="View this on the Map"
@@ -74,7 +113,7 @@ const CAD = (props:ICADDataWithIndex) =>
               className="icon cursor_pointer has-text-warning"
               onClick={event =>
               {
-                dispatch({ type: 'cad_data_toggle_show_errors', payload: props.unitcode });
+                update_view({ errors: !get_property('errors') });
               }
               }>
               <i className="fas fa-exclamation-circle"></i>
@@ -88,27 +127,16 @@ const CAD = (props:ICADDataWithIndex) =>
             {
               event.preventDefault();
 
-              if (!props.device_history || props.device_history.length === 0)
+              let history = get_history();
+              if (history.length === 0)
               {
-                let deviceHistory = await UnitHistory.GetByDeviceId(props.unitcode);
-                dispatch({
-                  type: 'cad_device_history',
-                  payload: {
-                    unitcode: props.unitcode,
-                    device_history: deviceHistory
-                  }
-                });
+                history = await UnitHistory.GetByDeviceId(props.unitcode);
               }
               else
               {
-                dispatch({
-                  type: 'cad_device_history',
-                  payload: {
-                    unitcode: props.unitcode,
-                    device_history: []
-                  }
-                });
+                history = [];
               }
+              update_view({ history: history });
             }}>
             <i className="fas fa-history"></i>
           </span>
@@ -122,7 +150,7 @@ const CAD = (props:ICADDataWithIndex) =>
               const response = await CADData.Delete(props.unitcode);
               if (response.ok)
               {
-                fetchCADData();
+                props.fetchData();
               }
               else
               {
@@ -135,15 +163,20 @@ const CAD = (props:ICADDataWithIndex) =>
 
 
         </td>
-      </tr>      
+      </tr>  
+      <DeviceDetails
+        colspan={8}
+        show_details={get_property('details')}
+        {...props}
+      />
       <ErrorInformation
         colspan={8}
         error_information={props.error_information}
-        show_errors={props.show_errors} />
+        show_errors={get_property('errors')} />
       <UnitHistoryList
         colspan={8}
         title="History By Device Id"
-        history={props.device_history}
+        history={get_history()}
       />
     </>
   );

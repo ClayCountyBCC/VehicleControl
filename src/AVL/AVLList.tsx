@@ -15,6 +15,24 @@ const AVLList: React.FC = () =>
 
   const Header = AVLHeader(isLoading, fetchData);
 
+  let view_name = 'avl_view';
+
+  let view = state[view_name];
+
+  let sort_view = (sort_by: string) =>
+  {
+    dispatch({
+      type: 'update_view',
+      payload: {
+        view: view_name,
+        option: {
+          sort_field: sort_by,
+          sort_ascending: !view.sort_ascending
+        }
+      }
+    });
+  }
+   
   useEffect(() =>
   {
 
@@ -22,7 +40,7 @@ const AVLList: React.FC = () =>
     isLoading,
     isError,
     state.filtered_avl_data,
-    state.avl_view]);
+    view]);
 
   return (
     <section>
@@ -41,9 +59,9 @@ const AVLList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'avl_data_sort', payload: 'device_id' });
+                  sort_view('device_id');
                 }}
-                className={`${state.avl_data_sort_field !== 'device_id' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'device_id' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Device Id
               </a>
             </th>
@@ -53,9 +71,9 @@ const AVLList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'avl_data_sort', payload: 'device_type' });
+                  sort_view('device_type');
                 }}
-                className={`${state.avl_data_sort_field !== 'device_type' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'device_type' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Type
               </a>
             </th>
@@ -65,9 +83,9 @@ const AVLList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'avl_data_sort', payload: 'unitcode' });
+                  sort_view('unitcode');
                 }}
-                className={`${state.avl_data_sort_field !== 'unitcode' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'unitcode' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Unit
               </a>
             </th>
@@ -77,9 +95,9 @@ const AVLList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'avl_data_sort', payload: 'updated_on' });
+                  sort_view('updated_on');
                 }}
-                className={`${state.avl_data_sort_field !== 'updated_on' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'updated_on' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Data Saved On
               </a>
             </th>
@@ -89,9 +107,9 @@ const AVLList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'avl_data_sort', payload: 'location_timestamp' });
+                  sort_view('location_timestamp');
                 }}
-                className={`${state.avl_data_sort_field !== 'location_timestamp' ? '' : state.avl_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'location_timestamp' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Location On
               </a>
             </th>

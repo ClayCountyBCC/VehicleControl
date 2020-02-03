@@ -12,7 +12,9 @@ const UnitList: React.FC = () =>
 {
   const { state, dispatch } = React.useContext(Store);
   const [showAddUnit, setShowAddUnit] = useState(false);
-  const [currentSearch, setCurrentSearch] = useState(state.unit_view.data_filter || "");
+  const view_name = 'unit_view';
+  const view = state[view_name];
+  const [currentSearch, setCurrentSearch] = useState(view.data_filter || "");
   
   const hideAddUnit = () =>
   {
@@ -22,6 +24,20 @@ const UnitList: React.FC = () =>
   const { isLoading, isError, fetchData } = useFetchData(UnitData.Get, "get_unit_data", false);
 
   const Header = UnitHeader(isLoading, fetchData);
+   
+  const sort_view = (sort_by: string) =>
+  {
+    dispatch({
+      type: 'update_view',
+      payload: {
+        view: view_name,
+        option: {
+          sort_field: sort_by,
+          sort_ascending: !state[view_name].sort_ascending
+        }
+      }
+    });
+  }
 
   useEffect(() =>
   {
@@ -48,9 +64,10 @@ const UnitList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'unit_data_sort', payload: 'unitcode' });
+                  sort_view('unitcode');
+
                 }}
-                className={`${state.unit_view.sort_field !== 'unitcode' ? '' : state.unit_view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'unitcode' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Unit
               </a>
               <span
@@ -70,9 +87,9 @@ const UnitList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'unit_data_sort', payload: 'using_unit' });
+                  sort_view('using_unit');
                 }}
-                className={`${state.unit_view.sort_field !== 'using_unit' ? '' : state.unit_view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'using_unit' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Using Unit
               </a>
             </th>
@@ -82,9 +99,9 @@ const UnitList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'unit_data_sort', payload: 'group_label' });
+                  sort_view('group_label');
                 }}
-                className={`${state.unit_view.sort_field !== 'group_label' ? '' : state.unit_view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'group_label' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 <span
                   title="View this on the Map"
                   className="icon">
@@ -102,10 +119,16 @@ const UnitList: React.FC = () =>
                       let currentOption = event.target.options[event.target.selectedIndex].innerText;
                       if (currentOption === "All Groups") currentOption = "";
                       setCurrentSearch(currentOption);
+
                       dispatch({
-                        type: "search_unit_data",
-                        payload: currentOption
-                      })
+                        type: 'update_view',
+                        payload: {
+                          view: view_name,
+                          option: {
+                            data_filter: currentOption
+                          }
+                        }
+                      });
 
                     }}>
                     <option value="">All Groups</option>

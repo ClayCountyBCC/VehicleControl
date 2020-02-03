@@ -6,7 +6,6 @@ export const ListHeaderView = (
   {
     title,
     title_description,
-    //search_type,
     loading,
     fetchData,
     view_name,
@@ -15,6 +14,19 @@ export const ListHeaderView = (
   const { state, dispatch } = React.useContext(Store);
 
   const [currentSearch, setCurrentSearch] = useState(state[view_name].data_filter || "");
+
+  const update_view = (option: object) => 
+  {
+    dispatch(
+      {
+        type: 'update_view',
+        payload:
+        {
+          view: view_name,
+          option: option
+        }
+      });
+  }
 
   useEffect(() =>
   {
@@ -46,19 +58,7 @@ export const ListHeaderView = (
                   {
                     event.preventDefault();
                     event.stopPropagation();
-                    dispatch({
-                      type: 'update_view',
-                      payload: {
-                        view: view_name,
-                        option: {
-                          data_filter: currentSearch
-                        }
-                      }
-                    })
-                    //dispatch({
-                    //  type: search_type,
-                    //  payload: currentSearch
-                    //})
+                    update_view({ data_filter: currentSearch });
                   }
 
                 }} />
@@ -86,19 +86,8 @@ export const ListHeaderView = (
               event.preventDefault();
               event.stopPropagation();
               setCurrentSearch("");
-              dispatch({
-                type: 'update_view',
-                payload: {
-                  view: view_name,
-                  option: {
-                    special_filter: ''
-                  }
-                }
-              })
-              //dispatch({
-              //  type: search_type,
-              //  payload: ''
-              //})
+              update_view({ data_filter: '' });
+
             }}
             title="Reset the Search"
             type="button"
@@ -123,16 +112,7 @@ export const ListHeaderView = (
                     <a
                       onClick={event =>
                       {
-                        //dispatch({ type: view_name + '_special_filter', payload: f.value })
-                        dispatch({
-                          type: 'update_view',
-                          payload: {
-                            view: view_name,
-                            option: {
-                              special_filter: f.value
-                            }
-                          }
-                        })
+                        update_view({ special_filter: f.value });
                       }}>
                       {f.label}
                     </a>

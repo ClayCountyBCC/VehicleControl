@@ -14,6 +14,24 @@ const FCList: React.FC = () =>
 
   const Header = FCHeader(isLoading, fetchData);
 
+  let view_name = 'fc_view';
+
+  let view = state[view_name];
+
+  let sort_view = (sort_by: string) =>
+  {
+    dispatch({
+      type: 'update_view',
+      payload: {
+        view: view_name,
+        option: {
+          sort_field: sort_by,
+          sort_ascending: !view.sort_ascending
+        }
+      }
+    });
+  }
+
   useEffect(() =>
   {
 
@@ -21,7 +39,7 @@ const FCList: React.FC = () =>
     isLoading,
     isError,
     state.filtered_fc_data,
-    state.fc_view]);
+    view]);
 
 
   return (
@@ -40,9 +58,9 @@ const FCList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'fc_data_sort', payload: 'device_id' });
+                  sort_view('device_id');
                 }}
-                className={`${state.fc_data_sort_field !== 'device_id' ? '' : state.fc_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'device_id' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Device Id
               </a>
             </th>
@@ -52,9 +70,9 @@ const FCList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'fc_data_sort', payload: 'asset_tag' });
+                  sort_view('asset_tag');
                 }}
-                className={`${state.fc_data_sort_field !== 'asset_tag' ? '' : state.fc_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'asset_tag' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Asset Tag
               </a>
             </th>
@@ -64,9 +82,9 @@ const FCList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'fc_data_sort', payload: 'unitcode' });
+                  sort_view('unitcode');
                 }}
-                className={`${state.fc_data_sort_field !== 'unitcode' ? '' : state.fc_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'unitcode' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Unit
               </a>
             </th>
@@ -76,9 +94,9 @@ const FCList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'fc_data_sort', payload: 'updated_on' });
+                  sort_view('updated_on');
                 }}
-                className={`${state.fc_data_sort_field !== 'updated_on' ? '' : state.fc_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'updated_on' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Data Saved On
               </a>
             </th>
@@ -88,9 +106,9 @@ const FCList: React.FC = () =>
                 onClick={event =>
                 {
                   event.preventDefault();
-                  dispatch({ type: 'fc_data_sort', payload: 'location_timestamp' });
+                  sort_view('location_timestamp');
                 }}
-                className={`${state.fc_data_sort_field !== 'location_timestamp' ? '' : state.fc_data_sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
+                className={`${view.sort_field !== 'location_timestamp' ? '' : view.sort_ascending ? 'sort_ascending' : 'sort_descending'}`}>
                 Location On
               </a>
             </th>

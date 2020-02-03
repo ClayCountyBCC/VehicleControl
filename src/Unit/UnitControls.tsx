@@ -22,7 +22,7 @@ const UnitControls = (props: IUnitControls) =>
   const [hasCAD, setHasCAD] = useState(props.should_have_cad_location);
 
 
-  if (!state.unit_view[props.unitcode] || !state.unit_view[props.unitcode]['options']) return null;
+  if (!state.unit_view.e[props.unitcode] || !state.unit_view.e[props.unitcode]['options']) return null;
 
   return (
     <>

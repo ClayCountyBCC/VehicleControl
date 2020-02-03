@@ -11,11 +11,9 @@ const Unit = (props: IUnitDataWithIndex) =>
 {
   const { state, dispatch } = React.useContext(Store);
 
-  //const fetchUnitData = async () =>
-  //{
-  //  const data = await UnitData.Get();
-  //  return dispatch({ type: 'get_unit_data', payload: data });
-  //}
+  const view_name = 'unit_view';
+
+  const view = state[view_name];
 
   const viewOnMap = (longitude, latitude) =>
   {
@@ -27,6 +25,68 @@ const Unit = (props: IUnitDataWithIndex) =>
     };
     state.map_view.center = point;
     if (state.map_view.zoom < 18) state.map_view.zoom = 18;
+  }
+
+  const update_view = (option: object) => 
+  {
+    dispatch(
+      {
+        type: 'update_view_device',
+        payload:
+        {
+          view: view_name,
+          unitcode: props.unitcode,
+          option: option
+        }
+      });
+  }
+
+  const update_app_view = (view_name: string, option: object) => 
+  {
+    dispatch(
+      {
+        type: 'update_view',
+        payload:
+        {
+          view: view_name,
+          option: option
+        }
+      });
+  }
+
+  const update_other_view = (view_name: string, unitcode: string, device_id: string, option: object) => 
+  {
+    dispatch(
+      {
+        type: 'update_view_device',
+        payload:
+        {
+          view: view_name,
+          unitcode: unitcode,
+          device_id: device_id,
+          option: option
+        }
+      });
+  }
+
+  const get_property = (property: string) =>
+  {
+    const d = view.e[props.unitcode];
+    if (!d) return false;
+    return d[property];
+  }
+
+  const get_history = () =>
+  {
+    const d = view.e[props.unitcode];
+    if (d && d.history)
+    {
+      return d.history;
+    }
+    else
+    {
+      return [];
+    }
   }
 
   return (
@@ -41,19 +101,7 @@ const Unit = (props: IUnitDataWithIndex) =>
             className="cursor_pointer has-text-link"
             onClick={event =>
             {
-              let options_toggle = state.unit_view.e[props.unitcode] && state.unit_view.e[props.unitcode]['options'] ? !state.unit_view.e[props.unitcode]['options'] : true;
-              dispatch(
-                {
-                  type: 'update_unit_view_unit',
-                  payload:
-                  {
-                    unitcode: props.unitcode,
-                    view:
-                    {
-                      options: options_toggle
-                    }
-                  }
-                });
+              update_view({ options: !get_property('options') });
             }}>
             {props.unitcode}
           </span>
@@ -85,7 +133,8 @@ const Unit = (props: IUnitDataWithIndex) =>
               className="icon cursor_pointer"
               onClick={event =>
               {
-                dispatch({ type: 'view_avl_by_unit', payload: props.unitcode });
+                update_app_view('avl_view', { data_filter: props.avl_device_id, special_filter: '' });
+                update_other_view('avl_view', props.avl_device_id, undefined, { details: true });
               }
               }>
               <i className="fas fa-edit"></i>
@@ -112,7 +161,8 @@ const Unit = (props: IUnitDataWithIndex) =>
               className="icon cursor_pointer"
               onClick={event =>
               {
-                dispatch({ type: 'view_fc_by_unit', payload: props.unitcode });
+                update_app_view('fc_view', { data_filter: props.fc_device_id, special_filter: '' });
+                update_other_view('fc_view', props.fc_device_id, undefined, { details: true });
               }
               }>
               <i className="fas fa-edit"></i>
@@ -139,7 +189,8 @@ const Unit = (props: IUnitDataWithIndex) =>
               className="icon cursor_pointer"
               onClick={event =>
               {
-                dispatch({ type: 'view_cad_by_unit', payload: props.unitcode });
+                update_app_view('cad_view', { data_filter: props.unitcode, special_filter: '' });
+                update_other_view('cad_view', undefined, props.unitcode, { details: true });
               }
               }>
               <i className="fas fa-edit"></i>
@@ -157,22 +208,8 @@ const Unit = (props: IUnitDataWithIndex) =>
               className="icon cursor_pointer has-text-warning"
               onClick={event =>
               {
-                let errors_toggle = state.unit_view.e[props.unitcode] && state.unit_view.e[props.unitcode]['errors'] ? !state.unit_view.e[props.unitcode]['errors'] : true;
-                dispatch(
-                  {
-                    type: 'update_unit_view_unit',
-                    payload:
-                    {
-                      unitcode: props.unitcode,
-                      view:
-                      {
-                        errors: errors_toggle
-                      }
-                    }
-                  });
-
-              }
-              }>
+                update_view({ errors: !get_property('errors') });
+              }}>
               <i className="fas fa-exclamation-circle"></i>
             </span>
           ) : ''}
@@ -184,24 +221,16 @@ const Unit = (props: IUnitDataWithIndex) =>
             {
               event.preventDefault();
 
-              let history = [];
-              if (!state.unit_view.e[props.unitcode]['history'] || state.unit_view.e[props.unitcode]['history'].length === 0)
+              let history = get_history();
+              if (history.length === 0)
               {
                 history = await UnitHistory.GetByUnit(props.unitcode);
               }
-
-              dispatch(
-                {
-                  type: 'update_unit_view_unit',
-                  payload:
-                  {
-                    unitcode: props.unitcode,
-                    view:
-                    {
-                      history: history
-                    }
-                  }
-                });
+              else
+              {
+                history = [];
+              }
+              update_view({ history: history });
 
             }}>
             <i className="fas fa-history"></i>
@@ -238,16 +267,17 @@ const Unit = (props: IUnitDataWithIndex) =>
       <UnitControls 
         colspan={8}
         refresh_data={props.fetchData}
+        show_unit_options={get_property('options')}
         {...props}
         />
       <ErrorInformation
         colspan={8}
         error_information={props.error_information}
-        show_errors={state.unit_view.e[props.unitcode] && state.unit_view.e[props.unitcode]['errors']} />
+        show_errors={get_property('errors')} />
       <UnitHistoryList
         colspan={8}
         title="History By Device Id"
-        history={state.unit_view.e[props.unitcode] && state.unit_view.e[props.unitcode]['history']}
+        history={get_history()}
       />
     </>
   );
