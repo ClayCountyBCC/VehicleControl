@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/vehiclecontrol/static/js/main.e8409ca1.chunk.js",
-    "main.js.map": "/vehiclecontrol/static/js/main.e8409ca1.chunk.js.map",
+    "main.js": "/vehiclecontrol/static/js/main.d6e97e4c.chunk.js",
+    "main.js.map": "/vehiclecontrol/static/js/main.d6e97e4c.chunk.js.map",
     "runtime-main.js": "/vehiclecontrol/static/js/runtime-main.3110bd82.js",
     "runtime-main.js.map": "/vehiclecontrol/static/js/runtime-main.3110bd82.js.map",
     "static/js/2.fc4a5ee4.chunk.js": "/vehiclecontrol/static/js/2.fc4a5ee4.chunk.js",
     "static/js/2.fc4a5ee4.chunk.js.map": "/vehiclecontrol/static/js/2.fc4a5ee4.chunk.js.map",
     "index.html": "/vehiclecontrol/index.html",
-    "precache-manifest.3cc24d025b6f8a45a8be220f15c76048.js": "/vehiclecontrol/precache-manifest.3cc24d025b6f8a45a8be220f15c76048.js",
+    "precache-manifest.3bad7a620b7faebabffa0e7e2e3102a5.js": "/vehiclecontrol/precache-manifest.3bad7a620b7faebabffa0e7e2e3102a5.js",
     "service-worker.js": "/vehiclecontrol/service-worker.js",
     "static/js/2.fc4a5ee4.chunk.js.LICENSE": "/vehiclecontrol/static/js/2.fc4a5ee4.chunk.js.LICENSE"
   },
   "entrypoints": [
     "static/js/runtime-main.3110bd82.js",
     "static/js/2.fc4a5ee4.chunk.js",
-    "static/js/main.e8409ca1.chunk.js"
+    "static/js/main.d6e97e4c.chunk.js"
   ]
 }
