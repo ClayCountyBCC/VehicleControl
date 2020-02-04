@@ -13,7 +13,7 @@ export const ListHeaderView = (
 {
   const { state, dispatch } = React.useContext(Store);
 
-  const [currentSearch, setCurrentSearch] = useState(state[view_name].data_filter || "");
+  const [currentSearch, setCurrentSearch] = useState(state[view_name].data_filter);
 
   const update_view = (option: object) => 
   {
@@ -30,8 +30,11 @@ export const ListHeaderView = (
 
   useEffect(() =>
   {
-
-  }, [loading, state[view_name]]);
+    if (currentSearch.length === 0 && state[view_name].data_filter.length > 0)
+    {
+      setCurrentSearch(state[view_name].data_filter);
+    }
+  }, [loading, state[view_name].data_filter, state[view_name].special_filter, currentSearch]);
 
   return (
     <div
