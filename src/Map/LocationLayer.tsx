@@ -4,9 +4,9 @@ import { loadModules } from 'esri-loader';
 
 const LocationLayer = ({ state_array, title, r, g, b, view_type }) =>
 {
-  const { state, dispatch } = React.useContext(Store);
+  const { state } = React.useContext(Store);
 
-  const view_name = view_type + '_view';
+  //const view_name = view_type + '_view';
 
 
 

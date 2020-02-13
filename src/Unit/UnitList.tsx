@@ -14,7 +14,7 @@ const UnitList: React.FC = () =>
   const [showAddUnit, setShowAddUnit] = useState(false);
   const view_name = 'unit_view';
   const view = state[view_name];
-  const [currentSearch, setCurrentSearch] = useState(view.data_filter || "");
+  const [setCurrentSearch] = useState(view.data_filter || "");
   
   const hideAddUnit = () =>
   {

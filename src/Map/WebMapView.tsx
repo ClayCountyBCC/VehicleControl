@@ -7,7 +7,7 @@ export const WebMapView = () =>
 {
   const mapRef = useRef(null);
 
-  const { dispatch } = React.useContext(Store);
+  const { state, dispatch } = React.useContext(Store);
 
   const update_app_view = (view_name: string, option: object) => 
   {
@@ -35,6 +35,17 @@ export const WebMapView = () =>
           option: option
         }
       });
+  }
+
+  
+
+  const get_property = (view_name: string, device_id: string, unitcode: string, property: string) =>
+  {
+    const view = state[view_name];
+    let device = device_id ? device_id : unitcode;
+    const d = view.e[device];
+    if (!d) return false;
+    return d[property];
   }
 
   useEffect(
@@ -114,13 +125,17 @@ export const WebMapView = () =>
                 let view_name = view + '_view';
                 if (view === "cad")
                 {
-                  update_app_view(view_name, { data_filter: graphic.attributes.unitcode, special_filter: '' });
-                  update_other_view(view_name, undefined, graphic.attributes.unitcode, { details: true });
+                  let details = get_property(view_name, undefined, graphic.attributes.unitcode, 'details');
+                  let filter = !details ? graphic.attributes.unitcode : '';
+                  update_app_view(view_name, { data_filter: filter, special_filter: '' });
+                  update_other_view(view_name, undefined, graphic.attributes.unitcode, { details: !details });
                 }
                 else
                 {
-                  update_app_view(view_name, { data_filter: graphic.attributes.device_id, special_filter: '' });
-                  update_other_view(view_name, graphic.attributes.device_id, undefined, { details: true });
+                  let details = get_property(view_name, graphic.attributes.device_id, undefined, 'details');
+                  let filter = !details ? graphic.attributes.device_id : '';
+                  update_app_view(view_name, { data_filter: filter, special_filter: '' });
+                  update_other_view(view_name, graphic.attributes.device_id, undefined, { details: !details });
                 }
               }
             });

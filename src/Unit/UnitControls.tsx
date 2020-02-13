@@ -15,12 +15,10 @@ const UnitControls = (props: IUnitControls) =>
     return '';
   }
 
-  const [currentUnit, setCurrentUnit] = useState(props.unitcode);
   const [group, setGroup] = useState(getGroupValue(props.group_label));
   const [hasAVL, setHasAVL] = useState(props.has_avl_device);
   const [hasFC, setHasFC] = useState(props.has_fc_device);
   const [hasCAD, setHasCAD] = useState(props.should_have_cad_location);
-
 
   if (!state.unit_view.e[props.unitcode] || !state.unit_view.e[props.unitcode]['options']) return null;
 

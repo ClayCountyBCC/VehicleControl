@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { Store } from '../Store';
 import CADData from './CADData';
 import CAD from './CAD';

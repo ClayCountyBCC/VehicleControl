@@ -30,11 +30,8 @@ export const ListHeaderView = (
 
   useEffect(() =>
   {
-    if (currentSearch.length === 0 && state[view_name].data_filter.length > 0)
-    {
-      setCurrentSearch(state[view_name].data_filter);
-    }
-  }, [loading, state[view_name].data_filter, state[view_name].special_filter, currentSearch]);
+    setCurrentSearch(state[view_name].data_filter);
+  }, [loading, state[view_name].data_filter, state[view_name].special_filter]);
 
   return (
     <div
