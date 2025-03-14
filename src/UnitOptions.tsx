@@ -39,10 +39,10 @@ const UnitOptions = (props: IUnitOptions) =>
               onClick={async event =>
               {
                 event.preventDefault();
-                console.log('props asset_tag', props.asset_tag);
-                if (props.asset_tag)
+                console.log('props serial_number', props.serial_number);
+                if (props.serial_number)
                 {
-                  props.update_data(props.asset_tag, currentUnit.trim());
+                  props.update_data(props.serial_number, currentUnit.trim());
                 }
                 else
                 {

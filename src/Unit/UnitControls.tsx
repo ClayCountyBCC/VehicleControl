@@ -17,7 +17,7 @@ const UnitControls = (props: IUnitControls) =>
 
   const [group, setGroup] = useState(getGroupValue(props.group_label));
   const [hasAVL, setHasAVL] = useState(props.has_avl_device);
-  const [hasFC, setHasFC] = useState(props.has_fc_device);
+  //const [hasFC, setHasFC] = useState(props.has_fc_device);
   const [hasCAD, setHasCAD] = useState(props.should_have_cad_location);
 
   if (!state.unit_view.e[props.unitcode] || !state.unit_view.e[props.unitcode]['options']) return null;
@@ -79,22 +79,6 @@ const UnitControls = (props: IUnitControls) =>
       <tr>
         <td>
         </td>
-        <td colSpan={2}
-          className="has-text-right">
-          Has Fleet Complete Device
-        </td>
-        <td>
-          <div className="field">
-            <div className="control">
-              <label className="checkbox">
-                <input
-                  checked={hasFC}
-                  onChange={event => setHasFC(event.target.checked)}
-                  type="checkbox" />
-              </label>
-            </div>
-          </div>
-        </td>
         <td colSpan={4}></td>
       </tr>
       <tr>
@@ -128,7 +112,7 @@ const UnitControls = (props: IUnitControls) =>
                 onClick={async (event) => 
                 {
                   event.preventDefault();
-                  const response = await UnitData.Update(props.unitcode, group, hasAVL, hasFC, hasCAD);
+                  const response = await UnitData.Update(props.unitcode, group, hasAVL, hasCAD);
                   if (response.ok)
                   {
                     props.refresh_data();

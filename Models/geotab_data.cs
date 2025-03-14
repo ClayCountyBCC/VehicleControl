@@ -1,87 +1,71 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Dapper;
+using System;
+using System.Collections.Generic;
 
 namespace VehicleControl.Models
 {
-  public class fleetcomplete_data
+  public class geotab_data
   {
     public string device_id { get; set; }
-    public string asset_tag { get; set; }
-    public string unitcode { get; set; }  = "";
-    public string vin { get; set; }
-    public string make { get; set; }
-    public string model { get; set; }
-    public string vehicle_year { get; set; }
-    public DateTime location_timestamp { get; set; }
-    public DateTime updated_on { get; set; }
+    public string serial_number { get; set; }
+    public string device_type { get; set; }
+    public string unitcode { get; set; }
+    public DateTime date_device_updated { get; set; }
+    public DateTime location_updated_on { get; set; }
     public decimal latitude { get; set; }
     public decimal longitude { get; set; }
-    public int direction { get; set; }
-    public int velocity { get; set; }
-    public List<string> error_information { get; set; } = new List<string>( );
+    public List<string> error_information { get; set; } = new List<string>();
     public bool has_date_error { get; set; } = false;
     public bool has_location_error { get; set; } = false;
     public bool has_unit_error { get; set; } = false;
-    public bool has_asset_tag_error { get; set; } = false;
 
-    public fleetcomplete_data() { }
 
-    public static List<fleetcomplete_data> Get()
+    public static List<geotab_data> Get()
     {
       string query = @"
-        SELECT 
-          F.[device_id]
-          ,F.[asset_tag]
-          ,ISNULL(U.unitcode, '') unitcode
-          ,F.[vin]
-          ,F.[make]
-          ,F.[model]
-          ,F.[year]
-          ,F.[timestamp] location_timestamp
-          ,F.[date_updated] updated_on
-          ,F.[latitude]
-          ,F.[longitude]
-          ,F.[direction]
-          ,F.[velocity]
-        FROM [dbo].[fleetcomplete_data] F
-        LEFT OUTER JOIN unit_tracking_data U ON F.asset_tag = U.asset_tag
-        ORDER BY asset_tag, device_id";
+        USE Tracking;
 
-      var data = Constants.Get_Data<fleetcomplete_data>(query);
+        SELECT
+            D.id AS device_id,
+            D.serial_number,
+            D.device_type,
+	        ISNULL(UTD.unitcode, '') AS unitcode,
+            D.date_last_updated AS date_device_updated,
+            L.status_date AS location_updated_on,
+            ISNULL(L.latitude, 0) AS latitude,
+            ISNULL(L.longitude, 0) AS longitude
+        FROM 
+            dbo.geotab_devices D
+            LEFT OUTER JOIN dbo.geotab_locations L ON L.device_id = D.id
+	        LEFT OUTER JOIN dbo.unit_tracking_data UTD ON D.serial_number = UTD.geotab_serial";
+
+      var data = Constants.Get_Data<geotab_data>(query);
       return CheckForErrors(data);
     }
 
-    private static List<fleetcomplete_data> CheckForErrors(List<fleetcomplete_data> data)
+    private static List<geotab_data> CheckForErrors(List<geotab_data> data)
     {
       if (data == null) return data; // null is our error condition
 
-      foreach (fleetcomplete_data a in data)
+      foreach (geotab_data a in data)
       {
-        if(a.unitcode.Length == 0)
+        if (a.unitcode.Length == 0)
         {
           a.error_information.Add("Device is not tied to a unit that is on one of the county maps like Minicad or the Inspector View.");
           a.has_unit_error = true;
         }
-        if(a.device_id == a.asset_tag)
-        {
-          a.error_information.Add("Asset Tag and Device Id match.  This means that the asset tag is not set properly in Fleet Complete.");
-          a.has_asset_tag_error = true;
-        }
-        if (a.location_timestamp > DateTime.Now.AddMinutes(5))
+        if (a.location_updated_on > DateTime.Now.AddMinutes(5))
         {
           a.error_information.Add("Location is set in the future.");
           a.has_date_error = true;
         }
         var yesterday = DateTime.Now.AddDays(-1);
-        if (a.location_timestamp < yesterday)
+        if (a.location_updated_on < yesterday)
         {
           a.error_information.Add("Location has not been updated in the last 24 hours.");
           a.has_date_error = true;
         }
-        if (a.updated_on < yesterday)
+        if (a.date_device_updated < yesterday)
         {
           a.error_information.Add("Device has not been seen in the last 24 hours.");
           a.has_date_error = true;
@@ -102,18 +86,28 @@ namespace VehicleControl.Models
       param.Add("@device_id", device_id);
       string query = @"
         DELETE
-        FROM fleetcomplete_data
-        WHERE device_id = @device_id;";
+        FROM geotab_locations
+        WHERE device_id = @device_id;
+
+        UPDATE UTD
+        SET UTD.geotab_serial = ''
+        FROM unit_tracking_data UTD
+        INNER JOIN geotab_devices D ON UTD.geotab_serial = D.serial_number AND D.id = @device_id
+
+        DELETE
+        FROM geotab_devices
+        WHERE id = @device_id;";
+
 
       return Constants.Exec_Query(query, param);
     }
 
-    public static int UpdateUnit(string asset_tag, string unitcode, string username)
+    public static int UpdateUnit(string geotab_serial, string unitcode, string username)
     {
       // This function is going to associate a given asset tag with a unitcode.
       var param = new DynamicParameters();
 
-      param.Add("@asset_tag", asset_tag);      
+      param.Add("@geotab_serial", geotab_serial);
       param.Add("@username", username);
       param.Add("@unitcode", unitcode);
 
@@ -127,19 +121,19 @@ namespace VehicleControl.Models
         INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
           unitcode
-          ,'asset_tag' field
-          ,asset_tag
+          ,'geotab_serial' field
+          ,geotab_serial
           ,''
           ,@username
         FROM unit_tracking_data
         WHERE 
-          asset_tag = @asset_tag;
+          geotab_serial = @geotab_serial;
 
         UPDATE unit_tracking_data
         SET 
-          asset_tag = ''  
+          geotab_serial = ''  
         WHERE            
-          asset_tag=@asset_tag;";
+          geotab_serial=@geotab_serial;";
       }
       else
       {
@@ -148,7 +142,7 @@ namespace VehicleControl.Models
 
         WITH NewData AS (
           SELECT
-            @asset_tag asset_tag
+            @geotab_serial geotab_serial
             ,@username username
             ,@unitcode unitcode
           WHERE NOT EXISTS (SELECT unitcode FROM unit_tracking_data UTD2 WHERE UTD2.unitcode = @unitcode)
@@ -165,7 +159,7 @@ namespace VehicleControl.Models
 
         WITH NewData AS (
           SELECT
-            @asset_tag asset_tag
+            @geotab_serial geotab_serial
             ,@username username
             ,@unitcode unitcode
           WHERE NOT EXISTS (SELECT unitcode FROM unit_tracking_data UTD2 WHERE UTD2.unitcode = @unitcode)
@@ -178,59 +172,60 @@ namespace VehicleControl.Models
                    ,[data_source]
                    ,[imei]
                    ,[phone_number]
+                   ,[geotab_serial]
                    ,[asset_tag]
                    ,[date_last_communicated])
         SELECT
           unitcode
           ,0
           ,0
-          ,'FC'
+          ,'GT'
           ,0
           ,0
-          ,@asset_tag
+          ,@geotab_serial
+          ,''
           ,GETDATE()
         FROM NewData;
 
         INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
           unitcode
-          ,'asset_tag' field
-          ,asset_tag
+          ,'geotab_serial' field
+          ,geotab_serial
           ,''
           ,@username
         FROM unit_tracking_data
         WHERE 
           unitcode != @unitcode
-          AND asset_tag = @asset_tag;
+          AND geotab_serial = @geotab_serial;
 
         UPDATE unit_tracking_data
         SET 
-          asset_tag = ''
+          geotab_serial = ''
         WHERE  
           unitcode != @unitcode
-          AND asset_tag = @asset_tag;
+          AND geotab_serial = @geotab_serial;
 
         INSERT INTO unit_maintenance_history (unitcode, field, changed_from, changed_to, changed_by)
         SELECT
           unitcode
-          ,'asset_tag' field
-          ,asset_tag
-          ,@asset_tag
+          ,'geotab_serial' field
+          ,geotab_serial
+          ,@geotab_serial
           ,@username
         FROM unit_tracking_data
         WHERE 
           unitcode = @unitcode
-          AND asset_tag != @asset_tag;
+          AND geotab_serial != @geotab_serial;
 
         UPDATE unit_tracking_data
         SET 
-          asset_tag=@asset_tag          
+          geotab_serial=@geotab_serial          
         WHERE
           unitcode = @unitcode
-          AND asset_tag != @asset_tag;";
+          AND geotab_serial != @geotab_serial;";
       }
       return Constants.Exec_Query(query, param);
     }
-
   }
 }

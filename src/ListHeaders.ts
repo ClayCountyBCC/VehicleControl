@@ -85,6 +85,46 @@ export const FCHeader = (isLoading: boolean, fetchData: Function) =>
   };
 }
 
+export const GTHeader = (isLoading: boolean, fetchData: Function) => {
+  return {
+    loading: isLoading,
+    title: "GT",
+    title_description: "Search for text in the Device Id, and Unit fields. Search for multiple items by separating with comma. Hit Enter to Search.",
+
+    fetchData: fetchData,
+    view_name: "gt_view",
+    //data_filter: data_filter,
+    //special_filter: "fc_data_special_filter",
+    header_filters: [
+      {
+        id: 0,
+        label: "Show All",
+        value: ""
+      },
+      {
+        id: 1,
+        label: "Errors",
+        value: "error"
+      },
+      {
+        id: 2,
+        label: "Unit",
+        value: "unit"
+      },
+      {
+        id: 3,
+        label: "Date",
+        value: "date"
+      },
+      {
+        id: 4,
+        label: "Location",
+        value: "location"
+      }
+    ]
+  };
+}
+
 export const CADHeader = (isLoading: boolean, fetchData: Function) =>
 {
   return {
@@ -150,8 +190,8 @@ export const UnitHeader = (isLoading: boolean, fetchData: Function) =>
       },
       {
         id: 3,
-        label: "FC",
-        value: "fc"
+        label: "GT",
+        value: "gt"
       },
       {
         id: 4,

@@ -14,12 +14,20 @@ interface IUnitData
   has_avl_device: boolean;
   has_avl_error: boolean;
 
+  /*
   fc_device_id: string;
   fc_longitude: number;
   fc_latitude: number;
   fc_location_timestamp: Date;
   has_fc_device: boolean;
-  has_fc_error: boolean;
+  has_fc_error: boolean;*/
+
+  gt_device_id: string;
+  gt_longitude: number;
+  gt_latitude: number;
+  gt_location_timestamp: Date;
+  has_gt_device: boolean;
+  has_gt_error: boolean;
 
   cad_longitude: number;
   cad_latitude: number;
@@ -47,13 +55,21 @@ export class UnitData implements IUnitData
   public avl_location_timestamp: Date = new Date();
   public has_avl_device: boolean = false;
   public has_avl_error: boolean = false;
-  
+
+  /*
   public fc_device_id: string = "";
   public fc_longitude: number = 0;
   public fc_latitude: number =0;
   public fc_location_timestamp: Date = new Date();
   public has_fc_device: boolean = false;
-  public has_fc_error: boolean = false;
+  public has_fc_error: boolean = false;*/
+
+  public gt_device_id: string = "";
+  public gt_longitude: number = 0;
+  public gt_latitude: number = 0;
+  public gt_location_timestamp: Date = new Date();
+  public has_gt_device: boolean = false;
+  public has_gt_error: boolean = false;
   
   public cad_longitude: number = 0;
   public cad_latitude: number = 0;
@@ -78,9 +94,9 @@ export class UnitData implements IUnitData
     return response;
   }
 
-  public static async Update(unitcode: string, group: string, has_avl: boolean, has_fc: boolean, should_have_cad: boolean): Promise<Response>
+  public static async Update(unitcode: string, group: string, has_avl: boolean, should_have_cad: boolean): Promise<Response>
   {
-    const response = await Post_Empty(`API/Unit/Update?unitcode=${unitcode}&group=${group}&has_avl=${has_avl}&has_fc=${has_fc}&should_have_cad=${should_have_cad}`, {});
+    const response = await Post_Empty(`API/Unit/Update?unitcode=${unitcode}&group=${group}&has_avl=${has_avl}&should_have_cad=${should_have_cad}`, {});
     return response;
   }
 

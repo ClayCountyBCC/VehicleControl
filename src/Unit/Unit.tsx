@@ -142,27 +142,27 @@ const Unit = (props: IUnitDataWithIndex) =>
           ) : ''}
         </td>
         <td>
-          {props.fc_latitude !== 0 ? (
+          {props.gt_latitude !== 0 ? (
             <span
               title="View this on the Map"
               className="icon cursor_pointer"
               style={{ color: "rgb(0,225,0)" }}
               onClick={event =>
               {
-                viewOnMap(props.fc_longitude, props.fc_latitude);
+                viewOnMap(props.gt_longitude, props.gt_latitude);
               }}>
               <i className="fas fa-eye"></i>
             </span>
           ) : ''}
-          {new Date(props.fc_location_timestamp).getFullYear() > 1995 ? (
+          {new Date(props.gt_location_timestamp).getFullYear() > 1995 ? (
             <span
               style={{ marginLeft: ".5em", color: "rgb(0, 225, 0)" }}
-              title="View this on the Fleet Complete Menu"
+              title="View this on the Geotab Menu"
               className="icon cursor_pointer"
               onClick={event =>
               {
-                update_app_view('fc_view', { data_filter: props.fc_device_id, special_filter: '' });
-                update_other_view('fc_view', props.fc_device_id, undefined, { details: true });
+                update_app_view('gt_view', { data_filter: props.gt_device_id, special_filter: '' });
+                update_other_view('gt_view', props.gt_device_id, undefined, { details: true });
               }
               }>
               <i className="fas fa-edit"></i>
@@ -237,7 +237,7 @@ const Unit = (props: IUnitDataWithIndex) =>
           </span>
 
           {new Date(props.avl_location_timestamp).getFullYear() === 1995 && 
-            new Date(props.fc_location_timestamp).getFullYear() === 1995 && 
+            new Date(props.gt_location_timestamp).getFullYear() === 1995 && 
             new Date(props.cad_location_timestamp).getFullYear() === 1995? (
             <span
               style={{ marginLeft: ".5em" }}

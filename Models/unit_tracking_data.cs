@@ -21,12 +21,11 @@ namespace VehicleControl.Models
     public bool has_avl_device { get; set; } = false;
     public bool has_avl_error { get; set; } = false;
 
-    public string fc_device_id { get; set; } = "";
-    public decimal fc_longitude { get; set; } = 0;
-    public decimal fc_latitude { get; set; } = 0;
-    public DateTime fc_location_timestamp { get; set; }
-    public bool has_fc_device { get; set; } = false;
-    public bool has_fc_error { get; set; } = false;
+    public string gt_device_id { get; set; } = "";
+    public decimal gt_longitude { get; set; } = 0;
+    public decimal gt_latitude { get; set; } = 0;
+    public DateTime gt_location_timestamp { get; set; }
+    public bool has_gt_error { get; set; } = false;
 
     public decimal cad_longitude { get; set; } = 0;
     public decimal cad_latitude { get; set; } = 0;
@@ -62,14 +61,13 @@ namespace VehicleControl.Models
                     ,AP.location_timestamp
                     ,'1/1/1995') avl_location_timestamp
           ,UTD.has_avl_device
-          ,COALESCE(F.device_id, '') fc_device_id
-          ,COALESCE(F.longitude
-                    ,0) fc_longitude
-          ,COALESCE(F.latitude
-                    ,0) fc_latitude
-          ,COALESCE(F.timestamp
-                    ,'1/1/1995') fc_location_timestamp
-          ,UTD.has_fc_device
+          ,COALESCE(GTD.id, '') gt_device_id
+          ,COALESCE(GTL.longitude
+                    ,0) gt_longitude
+          ,COALESCE(GTL.latitude
+                    ,0) gt_latitude
+          ,COALESCE(GTL.status_date
+                    ,'1/1/1995') gt_location_timestamp
           ,COALESCE(C.longitude
                     ,0) cad_longitude
           ,COALESCE(C.latitude
@@ -87,7 +85,8 @@ namespace VehicleControl.Models
           LEFT OUTER JOIN avl_data AP ON CAST(UTD.phone_number AS VARCHAR(50)) = AP.device_id
                                          AND AP.device_type = 'Phone Number'
                                          AND UTD.phone_number != 0
-          LEFT OUTER JOIN fleetcomplete_data F ON UTD.asset_tag = F.asset_tag
+          LEFT OUTER JOIN geotab_devices GTD ON UTD.geotab_serial = GTD.serial_number
+          LEFT OUTER JOIN geotab_locations GTL ON GTL.device_id = GTD.id
           LEFT OUTER JOIN cad_unit_location_data C ON UTD.unitcode = C.unitcode
         ORDER  BY
           UTD.unitcode;";
@@ -122,22 +121,22 @@ namespace VehicleControl.Models
           }
         }
 
-        if (a.has_fc_device)
+        if (a.gt_device_id != "")
         {
           // check for FC errors here
           // if there are any, a.has_fc_error = true
-          var l = CheckForLocationErrors("Fleet Complete", a.has_fc_device, a.fc_longitude, a.fc_latitude);
+          var l = CheckForLocationErrors("Geotab", true, a.gt_longitude, a.gt_latitude);
           if (l.Count() > 0)
           {
             a.error_information.AddRange(l);
-            a.has_fc_error = true;
+            a.has_gt_error = true;
           }
 
-          var d = CheckForDateErrors("Fleet Complete", a.fc_location_timestamp, yesterday);
+          var d = CheckForDateErrors("Geotab", a.gt_location_timestamp, yesterday);
           if (d.Count() > 0)
           {
             a.error_information.AddRange(d);
-            a.has_fc_error = true;
+            a.has_gt_error = true;
           }
         }
 

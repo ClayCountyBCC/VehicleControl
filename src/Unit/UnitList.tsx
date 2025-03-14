@@ -147,7 +147,7 @@ const UnitList: React.FC = () =>
               AVL
             </th>
             <th>
-              FC
+              GT
             </th>
             <th>
               CAD

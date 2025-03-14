@@ -5,6 +5,8 @@ import AVLData from './AVL/AVLData';
 import AVLList from './AVL/AVLList';
 import FleetCompleteData from './FleetComplete/FleetCompleteData';
 import FCList from './FleetComplete/FCList';
+import GeotabData from './Geotab/GeotabData';
+import GTList from './Geotab/GTList';
 import CADData from './Cad/CADData';
 import CADList from './Cad/CADList';
 import UnitData from './Unit/UnitData';
@@ -19,7 +21,7 @@ const App: React.FC = () =>
   const { state, dispatch } = React.useContext(Store);
 
   const { fetchData: fetchAVLData } = useFetchData(AVLData.Get, "get_avl_data", false);
-  const { fetchData: fetchFCData } = useFetchData(FleetCompleteData.Get, "get_fc_data", false);
+  const { fetchData: fetchGTData } = useFetchData(GeotabData.Get, "get_gt_data", false);
   const { fetchData: fetchCADData } = useFetchData(CADData.Get, "get_cad_data", false);
   const { fetchData: fetchUnitData } = useFetchData(UnitData.Get, "get_unit_data", false);
 
@@ -27,7 +29,7 @@ const App: React.FC = () =>
   {
     fetchUnitData();
     fetchAVLData();
-    fetchFCData();
+    fetchGTData();
     fetchCADData();
     fetchUnitGroups();
   }, []);
@@ -37,7 +39,7 @@ const App: React.FC = () =>
     console.log("automatically refreshing all");
     fetchUnitData();
     fetchAVLData();
-    fetchFCData();
+    fetchGTData();
     fetchCADData();
     fetchUnitGroups();
   }, 60000);
@@ -58,7 +60,7 @@ const App: React.FC = () =>
           className={`column left-side ${state.current_view !== 'map' ? 'is-full-mobile is-full-tablet is-full-desktop is-half-widescreen is-half-fullhd' : 'hide'}`}>
           {state.current_view === "avl" ? <AVLList /> : null}
           {state.current_view === "unit" ? <UnitList /> : null}
-          {state.current_view === "fc" ? <FCList /> : null}
+          {state.current_view === "gt" ? <GTList /> : null}
           {state.current_view === "cad" ? <CADList /> : null}
         </div>
 

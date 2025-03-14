@@ -2,6 +2,7 @@
 import { IState, IAction, IDataView, IDataElementOptions } from './interfaces';
 import AVLData from './AVL/AVLData';
 import FleetCompleteData from './FleetComplete/FleetCompleteData';
+import GeotabData from './Geotab/GeotabData';
 import CADData from './Cad/CADData';
 import UnitData from './Unit/UnitData';
 
@@ -30,6 +31,15 @@ const initialState: IState =
     special_filter: ""
   },
 
+  gt_view:
+  {
+    e: {},
+    data_filter: "",
+    sort_field: "device_id",
+    sort_ascending: true,
+    special_filter: ""
+  },
+
   cad_view:
   {
     e: {},
@@ -49,11 +59,13 @@ const initialState: IState =
 
   avl_data: new Array<AVLData>(),
   fc_data: new Array<FleetCompleteData>(),
+  gt_data: new Array<GeotabData>(),
   cad_data: new Array<CADData>(),
   unit_data: new Array<UnitData>(),
 
   filtered_avl_data: new Array<AVLData>(),
   filtered_fc_data: new Array<FleetCompleteData>(),
+  filtered_gt_data: new Array<GeotabData>(),
   filtered_cad_data: new Array<CADData>(),
   filtered_unit_data: new Array<UnitData>(),
 }
@@ -124,6 +136,23 @@ function reducer(state: IState, action: IAction): IState
         fc_view: tmp_fc_view
       }
 
+    case "view_gt_by_unit":
+      let tmp_gt_view = {
+        ...state.gt_view,
+        data_filter: action.payload,
+        special_filter: ''
+      };
+
+      return {
+        ...state,
+        current_view: 'gt',
+        filtered_gt_data:
+          process_gt(
+            state.gt_data,
+            tmp_gt_view),
+        gt_view: tmp_gt_view
+      }
+
     case "view_cad_by_unit":
       let tmp_cad_view = {
         ...state.cad_view,
@@ -158,6 +187,16 @@ function reducer(state: IState, action: IAction): IState
           process_fc(
             action.payload,
             state.fc_view)
+      };
+
+    case "get_gt_data":
+      return {
+        ...state,
+        gt_data: action.payload,
+        filtered_gt_data:
+          process_gt(
+            action.payload,
+            state.gt_view)
       };
 
     case "get_cad_data":
@@ -233,7 +272,10 @@ function filter_data(view: string, new_view: IDataView, state: IState): {}
       return { filtered_avl_data: process_avl(state.avl_data, new_view) };      
 
     case 'fc_view':
-      return { filtered_fc_data: process_fc(state.fc_data, new_view) };      
+      return { filtered_fc_data: process_fc(state.fc_data, new_view) };  
+
+    case 'gt_view':
+      return { filtered_gt_data: process_gt(state.gt_data, new_view) }; 
 
     default:
       return {};      
@@ -269,6 +311,21 @@ function filter_fc(arrayToFilter: Array<FleetCompleteData>, filterUsing: string)
     {
       s = s.trim();
       check = (j.unitcode.toLowerCase().indexOf(s) > -1 || j.device_id.toLowerCase().indexOf(s) > -1 || j.asset_tag.toLowerCase().indexOf(s) > -1);
+      if (check) break;
+    }
+    return check;
+  });
+  return filtered;
+}
+
+function filter_gt(arrayToFilter: Array<GeotabData>, filterUsing: string): Array<GeotabData> {
+  if (filterUsing.length === 0) return arrayToFilter;
+  let split = filterUsing.toLowerCase().split(",");
+  let filtered = arrayToFilter.filter(j => {
+    let check = false;
+    for (let s of split) {
+      s = s.trim();
+      check = (j.unitcode.toLowerCase().indexOf(s) > -1 || j.device_id.toLowerCase().indexOf(s) > -1 || j.serial_number.toLowerCase().indexOf(s) > -1);
       if (check) break;
     }
     return check;
@@ -343,6 +400,9 @@ function special_filter(array: Array<any>, specialFilter: string): Array<any>
     case "fc":
       return array.filter(d => d.has_fc_error);
 
+    case "gt":
+      return array.filter(d => d.has_gt_error);
+
     default:
       return array;
   }  
@@ -385,6 +445,12 @@ function process_fc(array: Array<any>, view: IDataView): Array<FleetCompleteData
   let special_filtered = special_filter(filtered, view.special_filter);
   return sort(special_filtered, view);
 }
+function process_gt(array: Array<any>, view: IDataView): Array<GeotabData> {
+  let filtered = filter_gt(array, view.data_filter);
+  let special_filtered = special_filter(filtered, view.special_filter);
+  return sort(special_filtered, view);
+}
+
 
 function process_cad(array: Array<any>, view: IDataView): Array<CADData>
 {

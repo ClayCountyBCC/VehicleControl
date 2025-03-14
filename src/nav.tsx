@@ -36,12 +36,11 @@ const Nav = () =>
             AVL
           </p>
           <p
-            onClick={event =>
-            {
-              dispatch({ type: "set_current_view", payload: "fc" });
+            onClick={event => {
+              dispatch({ type: "set_current_view", payload: "gt" });
             }}
-            className={`navbar-item is-tab cursor_pointer ${state.current_view === "fc" ? 'is-active' : ''} `}>
-            Fleet Complete
+            className={`navbar-item is-tab cursor_pointer ${state.current_view === "gt" ? 'is-active' : ''} `}>
+            Geotab
           </p>
           <p
             onClick={event =>

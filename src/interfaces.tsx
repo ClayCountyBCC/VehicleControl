@@ -1,6 +1,7 @@
 ﻿import UnitHistory from './UnitHistory';
 import AVLData from './AVL/AVLData';
 import FleetCompleteData from './FleetComplete/FleetCompleteData';
+import GeotabData from './Geotab/GeotabData';
 import CADData from './Cad/CADData';
 import UnitData from './Unit/UnitData';
 import SimpleValue from './SimpleValue';
@@ -16,16 +17,19 @@ export interface IState
 
   avl_view: IDataView;
   fc_view: IDataView;
+  gt_view: IDataView;
   cad_view: IDataView;
   unit_view: IDataView;
 
   avl_data: Array<AVLData>;
   fc_data: Array<FleetCompleteData>;
+  gt_data: Array<GeotabData>;
   cad_data: Array<CADData>;
   unit_data: Array<UnitData>;
 
   filtered_avl_data: Array<AVLData>;
   filtered_fc_data: Array<FleetCompleteData>;
+  filtered_gt_data: Array<GeotabData>;
   filtered_cad_data: Array<CADData>;
   filtered_unit_data: Array<UnitData>;
 
@@ -75,6 +79,11 @@ export interface IAVLDataWithIndex extends AVLData
 
 export interface IFCDataWithIndex extends FleetCompleteData
 {
+  index: number
+  fetchData: Function;
+}
+
+export interface IGTDataWithIndex extends GeotabData {
   index: number
   fetchData: Function;
 }
@@ -155,7 +164,7 @@ export interface IUnitOptions
   unitcode: string
   device_id: string
   device_type?: string
-  asset_tag?: string
+  serial_number?: string
   new_unitcode: string
   update_data: Function
 }

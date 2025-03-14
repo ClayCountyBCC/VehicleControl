@@ -111,7 +111,7 @@ export const WebMapView = () =>
           {
             view.hitTest(event).then(function (response)
             {
-              const mylayers = ["avl", "fc", "cad"];
+              const mylayers = ["avl", "fc", "gt", "cad"];
               if (response.results.length)
               {
                 var graphic = response.results.filter(function (result)
@@ -164,6 +164,7 @@ export const WebMapView = () =>
     <div className="webmap" ref={mapRef}>
       <LocationLayer state_array="filtered_avl_data" title="AVL Units" r="255" g="0" b="0" view_type="avl" />
       <LocationLayer state_array="filtered_fc_data" title="Fleet Complete Units" r="0" g="255" b="0" view_type="fc" />
+      <LocationLayer state_array="filtered_gt_data" title="Geotab Units" r="0" g="255" b="0" view_type="fc" />
       <LocationLayer state_array="filtered_cad_data" title="CAD Units" r="0" g="0" b="255" view_type="cad" />
       
     </div>);
